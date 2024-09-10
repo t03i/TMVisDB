@@ -38,7 +38,7 @@ class Sequence(PublicSequence, table=True):
     organism_id: int = Field(foreign_key="organism.id", index=True)
 
     tminfo: "TMInfo" = Relationship(back_populates="sequence")
-    orgamism: Organism = Relationship(back_populates="sequences")
+    organism: Organism = Relationship(back_populates="sequences")
     annotations: List["Annotation"] = Relationship(back_populates="sequence")
 
 
@@ -76,10 +76,7 @@ class ProteinInfo(PublicTMInfo, PublicSequence, PublicOrganism, table=False):
     pass
 
 
-class Annotation(SQLModel, table=True):
-    __tablename__ = "annotation"
-    id: Optional[int] = Field(default=None, primary_key=True)
-    sequence_id: int = Field(foreign_key="sequence.id", index=True)
+class PublicAnnotation(SQLModel, table=False):
     start: int
     end: int
     label: str = Field(max_length=100)
@@ -87,6 +84,12 @@ class Annotation(SQLModel, table=True):
     source_db: str
     source_db_ref: Optional[str] = None
     source_db_url: Optional[str] = Field(max_length=400, nullable=True)
+
+
+class Annotation(PublicAnnotation, table=True):
+    __tablename__ = "annotation"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    sequence_id: int = Field(foreign_key="sequence.id", index=True)
 
     sequence: Sequence = Relationship(back_populates="annotations")
 

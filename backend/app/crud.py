@@ -3,9 +3,10 @@
 
 import random
 
-from sqlalchemy import func, select, Session
+from sqlalchemy import func, select
+from sqlmodel import Session
 
-from .models import Sequence, Annotation, Organism, TMInfo
+from .models import Sequence, Annotation, Organism, TMInfo, ProteinInfo
 
 
 def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annotation]:
@@ -37,4 +38,18 @@ def get_random_proteins(db: Session, num_sequences: int):
     )
 
     result = db.execute(query)
-    return result.fetchall()
+
+    protein_infos = []
+    for row in result:
+        # Create a combined dictionary from all three Pydantic models
+        combined_dict = {
+            **row.Sequence.model_dump(),
+            **row.TMInfo.model_dump(),
+            **row.Organism.model_dump(),
+        }
+
+        # Construct ProteinInfo from the combined dictionary
+        protein_info = ProteinInfo.model_validate(combined_dict)
+        protein_infos.append(protein_info)
+
+    return protein_infos

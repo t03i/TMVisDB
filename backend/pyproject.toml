@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.114.0",
+    "pydantic-settings>=2.4.0",
     "pydantic>=2.9.0",
     "sentry-sdk>=2.14.0",
     "sqlmodel>=0.0.22",
@@ -14,3 +15,8 @@ dependencies = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "fastapi-cli>=0.0.5",
+]

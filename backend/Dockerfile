@@ -20,9 +20,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy the project into the image
-ADD . /app
+ADD ./app /app
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen
+    uv sync --frozen --no-dev
 
+CMD ["fastapi", "dev", "--host", "0.0.0.0", "main"]

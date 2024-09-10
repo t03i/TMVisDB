@@ -1,18 +1,15 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
 
-import warnings
 from typing import Annotated, Any, Literal
 
 from pydantic import (
     AnyUrl,
     BeforeValidator,
     HttpUrl,
-    SQLAlchemyDsn,
     computed_field,
     FilePath,
 )
-from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -52,7 +49,7 @@ class Settings(BaseSettings):
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQL_ALCHEMY_DB_URL(self) -> SQLAlchemyDsn:
+    def SQL_ALCHEMY_DB_URL(self) -> AnyUrl:
         return f"sqlite:///{self.SQLITE_DATABASE_PATH}"
 
 

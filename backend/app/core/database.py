@@ -4,10 +4,10 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
 
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import SQLModel, create_engine
 from sqlalchemy import event
 
-from core.config import settings
+from .config import settings
 
 # Create the SQLAlchemy engine
 engine = create_engine(
