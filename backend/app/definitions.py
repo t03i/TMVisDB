@@ -8,11 +8,6 @@ class Topology(Enum):
     BETA_STRAND = "Beta-strand"
 
 
-class TaxaSelectionCriterion(Enum):
-    ORGANISM = "Organism ID"
-    DOMAIN = "Domain/Kingdom"
-
-
 class Domain(Enum):
     ALL = "All"
     BACTERIA = "Bacteria"

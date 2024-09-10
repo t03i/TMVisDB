@@ -1,8 +1,12 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
+from typing import Optional
 
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, PositiveInt
+
+from .definitions import Topology
+from .core.config import settings
 
 
 class LabelInfo(BaseModel):
@@ -22,6 +26,16 @@ class DatabaseType(str, Enum):
     membranome = "membranome"
     uniprot = "uniprot"
     tmalphafold = "tmalphafold"
+
+
+class ProteinFilter(BaseModel):
+    topology: Optional[Topology] = None
+    has_signal_peptide: Optional[bool] = None
+    sequence_length_min: PositiveInt = Field(default=0, ge=0)
+    sequence_length_max: PositiveInt = Field(default=5500, le=5500)
+    limit: PositiveInt = Field(
+        default=settings.MAX_RESULTS_LIMIT, le=settings.MAX_RESULTS_LIMIT
+    )
 
 
 def get_database_legend(database: DatabaseType) -> AnnotationLegend:
