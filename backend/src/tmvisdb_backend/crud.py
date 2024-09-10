@@ -7,22 +7,6 @@ from sqlalchemy import func, select, Session
 
 from .models import Sequence, Annotation, Organism, TMInfo
 
-SEQUENCE_INFO = [
-    Sequence.uniprot_id,
-    Sequence.uniprot_accession,
-    Sequence.seq_length,
-    Organism.name,
-    Organism.taxon_id,
-    Organism.super_kingdom,
-    Organism.clade,
-    TMInfo.has_alpha_helix,
-    TMInfo.has_beta_strand,
-    TMInfo.has_signal,
-    TMInfo.tm_helix_count,
-    TMInfo.tm_strand_count,
-    TMInfo.signal_count,
-]
-
 
 def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annotation]:
     sequence = (
@@ -45,7 +29,7 @@ def get_random_proteins(db: Session, num_sequences: int):
 
     # Query the database for these random sequences
     query = (
-        select(*SEQUENCE_INFO)
+        select(Sequence, TMInfo, Organism)
         .join(TMInfo)
         .join(Organism)
         .filter(Sequence.id.in_(random_ids))
