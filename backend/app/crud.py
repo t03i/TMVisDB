@@ -9,6 +9,7 @@ from pydantic import Field, BaseModel, PositiveInt
 
 from . import utils
 from .models import Sequence, Annotation, Organism, TMInfo, ProteinInfo, ProteinFilter
+from .core.config import settings
 from .definitions import Topology, Taxonomy
 
 
@@ -50,11 +51,13 @@ def filtered_query(filter: ProteinFilter):
         conditions.append(TMInfo.has_signal == filter.has_signal_peptide)
 
     # Sequence length filter
-    conditions.append(
-        Sequence.seq_length.between(
-            filter.sequence_length_min, filter.sequence_length_max
-        )
+    if filter.sequence_length_min is not None or filter.sequence_length_max is not None:
+        conditions.append(
+            Sequence.seq_length.between(
+                filter.sequence_length_min if filter.sequence_length_min is not None else settings.MIN_PROTEIN_LENGTH, filter.sequence_length_max if filter.sequence_length_max is not None else settings.MAX_PROTEIN_LENGTH
+            )
     )
+
 
     # Apply all conditions
     if conditions:
@@ -62,6 +65,9 @@ def filtered_query(filter: ProteinFilter):
 
     # Apply limit
     query = query.limit(filter.limit)
+
+    if filter.offset is not None:
+        query = query.offset(filter.offset)
 
     return query
 
