@@ -1,11 +1,17 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from datetime import date
+
+from fastapi import Query
 from sqlmodel import (
     Field,
     Relationship,
     SQLModel,
     Index,
 )
+from pydantic import BaseModel, PositiveInt, Field as PD_Field, validator
+
+from .definitions import Topology
+from .core.config import settings
 
 
 class PublicOrganism(SQLModel, table=False):
@@ -96,3 +102,24 @@ class Annotation(PublicAnnotation, table=True):
     __table_args__ = (
         Index("ix_annotation_sequence_id_start_end", "sequence_id", "start", "end"),
     )
+
+
+class ProteinFilter(BaseModel):
+    topology: Optional[Topology] = None
+    has_signal_peptide: Optional[bool] = None
+    sequence_length_min: PositiveInt = PD_Field(default=settings.MIN_PROTEIN_LENGTH, ge=settings.MIN_PROTEIN_LENGTH)
+    sequence_length_max: PositiveInt = PD_Field(default=settings.MAX_PROTEIN_LENGTH, le=settings.MAX_PROTEIN_LENGTH)
+    limit: PositiveInt = PD_Field(
+        default=100, le=settings.MAX_RESULTS_LIMIT
+    )
+
+
+class LabelInfo(BaseModel):
+    label: str
+    description: str
+
+
+class AnnotationLegend(BaseModel):
+    name: str
+    description: str
+    labels: list[LabelInfo]

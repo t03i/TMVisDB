@@ -1,4 +1,13 @@
+from typing import Union
 from enum import Enum
+
+
+class DatabaseType(str, Enum):
+    tmvis = "tmvis"
+    topdb = "topdb"
+    membranome = "membranome"
+    uniprot = "uniprot"
+    tmalphafold = "tmalphafold"
 
 
 class Topology(Enum):
@@ -8,110 +17,72 @@ class Topology(Enum):
     BETA_STRAND = "Beta-strand"
 
 
-class Domain(Enum):
-    ALL = "All"
-    BACTERIA = "Bacteria"
-    EUKARYOTA = "Eukaryota"
+class Taxonomy(Enum):
     ARCHAEA = "Archaea"
+    EUKARYOTA = "Eukaryota"
+    BACTERIA = "Bacteria"
     UNCLASSIFIED = "unclassified sequences"
 
+    # Kingdom Archaea
+    ARCHAEA_BASGARD_GROUP = "Asgard group"
+    ARCHAEA_HYDROTHERMARCHAEOTA = "Candidatus Hydrothermarchaeota"
+    ARCHAEA_THERMOPLASMATOTA = "Candidatus Thermoplasmatota"
+    ARCHAEA_DPANN_GROUP = "DPANN group"
+    ARCHAEA_EURYARCHAEOTA = "Euryarchaeota"
+    ARCHAEA_TACK_GROUP = "TACK group"
+    ARCHAEA_ARCHA_INCERTAE_SEDIS = "Archaea incertae sedis"
+    ARCHAEA_UNCLASSIFIED = "unclassified Archaea"
+    ARCHAEA_ENVIRONMENTAL_SAMPLES = "environmental samples"
 
-class Kingdom(Enum):
-    pass
+    # Kingdom Eukaryota
+    EUKARYOTA_AMOEBOZOA = "Amoebozoa"
+    EUKARYOTA_ANCYROMONADIDA = "Ancyromonadida"
+    EUKARYOTA_APUSOZOA = "Apusozoa"
+    EUKARYOTA_BREVITEA = "Breviatea"
+    EUKARYOTA_CRUMS = "CRuMs"
+    EUKARYOTA_CRYPTOPHYCEAE = "Cryptophyceae (cryptomonads)"
+    EUKARYOTA_DISCOBA = "Discoba"
+    EUKARYOTA_GLAUCOCYSTOPHYCEAE = "Glaucocystophyceae"
+    EUKARYOTA_HAPTISTA = "Haptista"
+    EUKARYOTA_HEMIMASTIGOPHORA = "Hemimastigophora"
+    EUKARYOTA_MALAWIMONADIDA = "Malawimonadida"
+    EUKARYOTA_METAMONADA = "Metamonada"
+    EUKARYOTA_OPISTHOKONTA = "Opisthokonta"
+    EUKARYOTA_RHODELPHEA = "Rhodelphea"
+    EUKARYOTA_RHODOPHYTA = "Rhodophyta (red algae)"
+    EUKARYOTA_SAR = "Sar"
+    EUKARYOTA_VIRIDIPLANTAE = "Viridiplantae"
+    EUKARYOTA_EUKARYOTA_INCERTAE_SEDIS = "Eukaryota incertae sedis"
+    EUKARYOTA_UNCLASSIFIED = "unclassified eukaryotes"
+    EUKARYOTA_ENVIRONMENTAL_SAMPLES = "environmental samples"
 
-
-class Archaea(Kingdom):
-    ALL = "All Archaea"
-    ASGARD_GROUP = "Asgard group"
-    HYDROTHERMARCHAEOTA = "Candidatus Hydrothermarchaeota"
-    THERMOPLASMATOTA = "Candidatus Thermoplasmatota"
-    DPANN_GROUP = "DPANN group"
-    EURYARCHAEOTA = "Euryarchaeota"
-    TACK_GROUP = "TACK group"
-    ARCHA_INCERTAE_SEDIS = "Archaea incertae sedis"
-    UNCLASSIFIED_ARCHAEA = "unclassified Archaea"
-    ENVIRONMENTAL_SAMPLES = "environmental samples"
-
-
-class Eukaryota(Kingdom):
-    ALL = "All Eukaryota"
-    AMOEBOZOA = "Amoebozoa"
-    ANCYROMONADIDA = "Ancyromonadida"
-    APUSOZOA = "Apusozoa"
-    BREVITEA = "Breviatea"
-    CRUMS = "CRuMs"
-    CRYPTOPHYCEAE = "Cryptophyceae (cryptomonads)"
-    DISCOBA = "Discoba"
-    GLAUCOCYSTOPHYCEAE = "Glaucocystophyceae"
-    HAPTISTA = "Haptista"
-    HEMIMASTIGOPHORA = "Hemimastigophora"
-    MALAWIMONADIDA = "Malawimonadida"
-    METAMONADA = "Metamonada"
-    OPISTHOKONTA = "Opisthokonta"
-    RHODELPHEA = "Rhodelphea"
-    RHODOPHYTA = "Rhodophyta (red algae)"
-    SAR = "Sar"
-    VIRIDIPLANTAE = "Viridiplantae"
-    EUKARYOTA_INCERTAE_SEDIS = "Eukaryota incertae sedis"
-    UNCLASSIFIED_EUKARYOTES = "unclassified eukaryotes"
-    ENVIRONMENTAL_SAMPLES = "environmental samples"
-
-
-class Bacteria(Kingdom):
-    ALL = "All Bacteria"
-    ACIDOBACTERIA = "Acidobacteria"
-    AQUIFICAE = "Aquificae"
-    ATRIBACTEROA = "Atribacterota"
-    CALDISERICA_CRYOSERICOTA_GROUP = "Caldiserica/Cryosericota group"
-    CALDITRICHAEOTA = "Calditrichaeota"
-    CANDIDATUS_KRUMHOLZIBACTERIOTA = "Candidatus Krumholzibacteriota"
-    CANDIDATUS_THARPELLOTA = "Candidatus Tharpellota"
-    CHRYSIOGENETES = "Chrysiogenetes"
-    COLEOSPERMUM = "Coleospermum"
-    COPROTHERMOBACTEROTA = "Coprothermobacterota"
-    DEFERRIBACTERES = "Deferribacteres"
-    DESULFOBACTEROTA = "Desulfobacterota"
-    DICTYOGLOMI = "Dictyoglomi"
-    ELUSIMICROBIA = "Elusimicrobia"
-    FCB_GROUP = "FCB group"
-    FUSOBACTERIA = "Fusobacteria"
-    MYXOCCOCOTA = "Myxococcota"
-    NITROSFINAE_TECTOMICROBIA_GROUP = "Nitrospinae/Tectomicrobia group"
-    NITROSPIRAE = "Nitrospirae"
-    PROTEOBACTERIA = "Proteobacteria"
-    PVC_GROUP = "PVC group"
-    SPIROCHAETES = "Spirochaetes"
-    SYNERGISTETES = "Synergistetes"
-    TERRABACTERIA_GROUP = "Terrabacteria group"
-    THERMODESULFOBACTERIA = "Thermodesulfobacteria"
-    THERMOTOGAE = "Thermotogae"
-    BACTERIA_INCERTAE_SEDIS = "Bacteria incertae sedis"
-    UNCLASSIFIED_BACTERIA = "unclassified Bacteria"
-    ENVIRONMENTAL_SAMPLES = "environmental samples"
-
-
-AllKingdoms = Kingdom(
-    "AllKingdoms",
-    {
-        "ALL": "All",
-        **{item.name: item.value for item in Archaea if item.name != "ALL"},
-        **{item.name: item.value for item in Eukaryota if item.name != "ALL"},
-        **{item.name: item.value for item in Bacteria if item.name != "ALL"},
-    },
-)
-
-DOMAIN_MAP = {
-    Domain.ARCHAEA: Archaea,
-    Domain.BACTERIA: Bacteria,
-    Domain.EUKARYOTA: Eukaryota,
-    Domain.ALL: AllKingdoms,
-    Domain.UNCLASSIFIED: AllKingdoms,
-}
-
-
-def get_kingdom_for_domain(domain: Domain):
-    if domain in Domain:
-        kingdom_type = DOMAIN_MAP[domain]
-    else:
-        kingdom_type = AllKingdoms
-    return kingdom_type
+    # Kingdom Bacteria
+    BACTERIA_ACIDOBACTERIA = "Acidobacteria"
+    BACTERIA_AQUIFICAE = "Aquificae"
+    BACTERIA_ATRIBACTEROA = "Atribacterota"
+    BACTERIA_CALDISERICA_CRYOSERICOTA_GROUP = "Caldiserica/Cryosericota group"
+    BACTERIA_CALDITRICHAEOTA = "Calditrichaeota"
+    BACTERIA_CANDIDATUS_KRUMHOLZIBACTERIOTA = "Candidatus Krumholzibacteriota"
+    BACTERIA_CANDIDATUS_THARPELLOTA = "Candidatus Tharpellota"
+    BACTERIA_CHRYSIOGENETES = "Chrysiogenetes"
+    BACTERIA_COLEOSPERMUM = "Coleospermum"
+    BACTERIA_COPROTHERMOBACTEROTA = "Coprothermobacterota"
+    BACTERIA_DEFERRIBACTERES = "Deferribacteres"
+    BACTERIA_DESULFOBACTEROTA = "Desulfobacterota"
+    BACTERIA_DICTYOGLOMI = "Dictyoglomi"
+    BACTERIA_ELUSIMICROBIA = "Elusimicrobia"
+    BACTERIA_FCB_GROUP = "FCB group"
+    BACTERIA_FUSOBACTERIA = "Fusobacteria"
+    BACTERIA_MYXOCCOCOTA = "Myxococcota"
+    BACTERIA_NITROSFINAE_TECTOMICROBIA_GROUP = "Nitrospinae/Tectomicrobia group"
+    BACTERIA_NITROSPIRAE = "Nitrospirae"
+    BACTERIA_PROTEOBACTERIA = "Proteobacteria"
+    BACTERIA_PVC_GROUP = "PVC group"
+    BACTERIA_SPIROCHAETES = "Spirochaetes"
+    BACTERIA_SYNERGISTETES = "Synergistetes"
+    BACTERIA_TERRABACTERIA_GROUP = "Terrabacteria group"
+    BACTERIA_THERMODESULFOBACTERIA = "Thermodesulfobacteria"
+    BACTERIA_THERMOTOGAE = "Thermotogae"
+    BACTERIA_BACTERIA_INCERTAE_SEDIS = "Bacteria incertae sedis"
+    BACTERIA_UNCLASSIFIED = "unclassified Bacteria"
+    BACTERIA_ENVIRONMENTAL_SAMPLES = "environmental samples"

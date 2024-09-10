@@ -1,41 +1,10 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
+
 from typing import Optional
 
-from enum import Enum
-from pydantic import BaseModel, Field, PositiveInt
-
-from .definitions import Topology
-from .core.config import settings
-
-
-class LabelInfo(BaseModel):
-    label: str
-    description: str
-
-
-class AnnotationLegend(BaseModel):
-    name: str
-    description: str
-    labels: list[LabelInfo]
-
-
-class DatabaseType(str, Enum):
-    tmvis = "tmvis"
-    topdb = "topdb"
-    membranome = "membranome"
-    uniprot = "uniprot"
-    tmalphafold = "tmalphafold"
-
-
-class ProteinFilter(BaseModel):
-    topology: Optional[Topology] = None
-    has_signal_peptide: Optional[bool] = None
-    sequence_length_min: PositiveInt = Field(default=0, ge=0)
-    sequence_length_max: PositiveInt = Field(default=5500, le=5500)
-    limit: PositiveInt = Field(
-        default=settings.MAX_RESULTS_LIMIT, le=settings.MAX_RESULTS_LIMIT
-    )
+from .definitions import DatabaseType, Taxonomy
+from .models import AnnotationLegend, LabelInfo
 
 
 def get_database_legend(database: DatabaseType) -> AnnotationLegend:
@@ -93,3 +62,29 @@ def get_database_legend(database: DatabaseType) -> AnnotationLegend:
     }
 
     return legends.get(database, None)
+
+
+def get_all_taxonomies() -> dict[str, Optional[list[str]]]:
+    taxonomy_info = {}
+    
+    for member in Taxonomy:
+        if '_' not in member.name:
+            # This is a super kingdom (domain)
+            taxonomy_info[member.value] = []
+        else:
+            super_kingdom, clade = get_separated_taxonomy(member)
+            taxonomy_info[super_kingdom].append(clade)
+            
+    return taxonomy_info
+    
+    
+
+def get_separated_taxonomy(taxonmy: Taxonomy) -> tuple[str, str | None]:
+    
+    if "_" not in taxonmy.name:
+        return taxonmy.value, None
+    
+    super_kingdom_key= taxonmy.name.split("_")[0]
+    super_kingdom = Taxonomy[super_kingdom_key.upper()].value  
+    clade = taxonmy.value
+    return super_kingdom, clade

@@ -7,9 +7,9 @@ from sqlalchemy import func, select, and_
 from sqlmodel import Session
 from pydantic import Field, BaseModel, PositiveInt
 
-from .models import Sequence, Annotation, Organism, TMInfo, ProteinInfo
-from .definitions import Topology, Kingdom, Domain
-from .utils import ProteinFilter
+from . import utils
+from .models import Sequence, Annotation, Organism, TMInfo, ProteinInfo, ProteinFilter
+from .definitions import Topology, Taxonomy
 
 
 def _query_to_protein_info(query_result):
@@ -106,12 +106,12 @@ def get_proteins_by_organism(db: Session, organism_id: int, filter: ProteinFilte
     return _query_to_protein_info(result)
 
 
-def get_proteins_by_lineage(
-    db: Session, domain: Domain, kingdom: Optional[Kingdom], filter: ProteinFilter
-):
+def get_proteins_by_lineage(db: Session, taxonomy: Taxonomy, filter: ProteinFilter):
     query = filtered_query(filter)
-    query = query.where(Organism.domain == domain)
-    if kingdom:
-        query = query.where(Organism.kingdom == kingdom)
+    super_kingdom, clade = utils.get_separated_taxonomy(taxonomy)
+    print(super_kingdom, clade)
+    query = query.where(Organism.super_kingdom == super_kingdom)
+    if clade:
+        query = query.where(Organism.clade == clade)
     result = db.execute(query)
     return _query_to_protein_info(result)

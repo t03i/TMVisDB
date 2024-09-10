@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     DOMAIN: str = "localhost"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
     MAX_RESULTS_LIMIT: int = 1000
+    MIN_PROTEIN_LENGTH: int = 16
+    MAX_PROTEIN_LENGTH: int = 5500
 
     @computed_field  # type: ignore[prop-decorator]
     @property

@@ -1,12 +1,15 @@
 from fastapi import APIRouter
 
-from .routes import annotations, proteins
+from .routes import annotations, proteins, info
 from app.core.config import settings
 
 api_router = APIRouter()
 api_router.include_router(proteins.router, prefix="/proteins", tags=["proteins"])
 api_router.include_router(
     annotations.router, prefix="/annotations", tags=["annotations"]
+)
+api_router.include_router(
+    info.router, prefix="/info", tags=["information"]
 )
 
 
