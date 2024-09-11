@@ -1,11 +1,9 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
-from typing import Annotated, Optional
 import random
 
 from sqlalchemy import func, select, and_
 from sqlmodel import Session
-from pydantic import Field, BaseModel, PositiveInt
 
 from . import utils
 from .models import Sequence, Annotation, Organism, TMInfo, ProteinInfo, ProteinFilter
@@ -38,12 +36,12 @@ def filtered_query(filter: ProteinFilter):
     # Topology filter
     if filter.topology:
         if filter.topology == Topology.ALPHA_HELIX:
-            conditions.append(TMInfo.has_alpha_helix == True)
+            conditions.append(TMInfo.has_alpha_helix == True)  # noqa: E712
         elif filter.topology == Topology.BETA_STRAND:
-            conditions.append(TMInfo.has_beta_strand == True)
+            conditions.append(TMInfo.has_beta_strand == True)  # noqa: E712
         elif filter.topology == Topology.BOTH:
             conditions.append(
-                and_(TMInfo.has_alpha_helix == True, TMInfo.has_beta_strand == True)
+                and_(TMInfo.has_alpha_helix == True, TMInfo.has_beta_strand == True)  # noqa: E712
             )
 
     # Signal peptide filter
@@ -54,10 +52,14 @@ def filtered_query(filter: ProteinFilter):
     if filter.sequence_length_min is not None or filter.sequence_length_max is not None:
         conditions.append(
             Sequence.seq_length.between(
-                filter.sequence_length_min if filter.sequence_length_min is not None else settings.MIN_PROTEIN_LENGTH, filter.sequence_length_max if filter.sequence_length_max is not None else settings.MAX_PROTEIN_LENGTH
+                filter.sequence_length_min
+                if filter.sequence_length_min is not None
+                else settings.MIN_PROTEIN_LENGTH,
+                filter.sequence_length_max
+                if filter.sequence_length_max is not None
+                else settings.MAX_PROTEIN_LENGTH,
             )
-    )
-
+        )
 
     # Apply all conditions
     if conditions:
@@ -66,8 +68,9 @@ def filtered_query(filter: ProteinFilter):
     # Apply limit
     query = query.limit(filter.limit)
 
-    if filter.offset is not None:
-        query = query.offset(filter.offset)
+    if filter.page is not None:
+        offset = filter.limit * filter.page
+        query = query.offset(offset)
 
     return query
 

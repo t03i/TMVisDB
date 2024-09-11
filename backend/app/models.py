@@ -1,7 +1,6 @@
 from typing import List, Optional, Annotated
 from datetime import date
 
-from fastapi import Query
 from sqlmodel import (
     Field,
     Relationship,
@@ -107,12 +106,14 @@ class Annotation(PublicAnnotation, table=True):
 class ProteinFilter(BaseModel):
     topology: Optional[Topology] = None
     has_signal_peptide: Optional[bool] = None
-    sequence_length_min: Annotated[Optional[PositiveInt], PD_Field(default=None, ge=settings.MIN_PROTEIN_LENGTH)]
-    sequence_length_max: Annotated[Optional[PositiveInt], PD_Field(default=None, le=settings.MAX_PROTEIN_LENGTH)]
-    offset: Annotated[Optional[PositiveInt], PD_Field(default=None, ge=0)]
-    limit: PositiveInt = PD_Field(
-        default=100, le=settings.MAX_RESULTS_LIMIT
-    )
+    sequence_length_min: Annotated[
+        Optional[PositiveInt], PD_Field(default=None, ge=settings.MIN_PROTEIN_LENGTH)
+    ]
+    sequence_length_max: Annotated[
+        Optional[PositiveInt], PD_Field(default=None, le=settings.MAX_PROTEIN_LENGTH)
+    ]
+    page: Annotated[Optional[PositiveInt], PD_Field(default=None, ge=0)]
+    limit: PositiveInt = PD_Field(default=100, le=settings.MAX_RESULTS_LIMIT)
 
 
 class LabelInfo(BaseModel):

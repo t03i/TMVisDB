@@ -66,25 +66,23 @@ def get_database_legend(database: DatabaseType) -> AnnotationLegend:
 
 def get_all_taxonomies() -> dict[str, Optional[list[str]]]:
     taxonomy_info = {}
-    
+
     for member in Taxonomy:
-        if '_' not in member.name:
+        if "_" not in member.name:
             # This is a super kingdom (domain)
             taxonomy_info[member.value] = []
         else:
             super_kingdom, clade = get_separated_taxonomy(member)
             taxonomy_info[super_kingdom].append(clade)
-            
+
     return taxonomy_info
-    
-    
+
 
 def get_separated_taxonomy(taxonmy: Taxonomy) -> tuple[str, str | None]:
-    
     if "_" not in taxonmy.name:
         return taxonmy.value, None
-    
-    super_kingdom_key= taxonmy.name.split("_")[0]
-    super_kingdom = Taxonomy[super_kingdom_key.upper()].value  
+
+    super_kingdom_key = taxonmy.name.split("_")[0]
+    super_kingdom = Taxonomy[super_kingdom_key.upper()].value
     clade = taxonmy.value
     return super_kingdom, clade
