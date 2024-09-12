@@ -168,5 +168,5 @@ cython_debug/
 *.dbg
 
 data/*
-
-.pdm-python
+.DS_Store
+**/.DS_Store

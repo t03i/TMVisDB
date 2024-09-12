@@ -8,9 +8,7 @@ api_router.include_router(proteins.router, prefix="/proteins", tags=["proteins"]
 api_router.include_router(
     annotations.router, prefix="/annotations", tags=["annotations"]
 )
-api_router.include_router(
-    info.router, prefix="/info", tags=["information"]
-)
+api_router.include_router(info.router, prefix="/info", tags=["information"])
 
 
 @api_router.get("/", tags=["root"], include_in_schema=False)

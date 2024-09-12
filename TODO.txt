@@ -1,0 +1,5 @@
+
+
+- Export openapi from fastapi automatically
+- Generate Svelte-Query using https://orval.dev/reference/configuration/output
+- Generate API calls for Svelte Query in Uniprot and AF-DB
