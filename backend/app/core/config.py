@@ -44,7 +44,7 @@ class Settings(BaseSettings):
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
 
-    PROJECT_NAME: str
+    PROJECT_NAME: str = "TMVis"
     SENTRY_DSN: HttpUrl | None = None
 
     SQLITE_DATABASE_PATH: FilePath = "data/tmvis.db"
