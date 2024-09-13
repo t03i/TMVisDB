@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      svelte-query:
+        specifier: 0.0.1-alpha1
+        version: 0.0.1-alpha1
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^3.0.0
@@ -1025,6 +1029,9 @@ packages:
     peerDependencies:
       svelte: ^3.19.0 || ^4.0.0
 
+  svelte-query@0.0.1-alpha1:
+    resolution: {integrity: sha512-nkC1sbYr6iYYRQv9gXRgIjA5CKYDlgB/0suEq4HeJn/ksEZ8eQ8nyOawuttx0K4bbzjfui8mBHRAiOsDvltQZg==}
+
   svelte@4.2.19:
     resolution: {integrity: sha512-IY1rnGr6izd10B0A8LqsBfmlT5OILVuZ7XsI0vdGPEvuonFV7NYEUK4dAkm9Zg2q0Um92kYjTpS1CAP3Nh/KWw==}
     engines: {node: '>=16'}
@@ -2038,6 +2045,8 @@ snapshots:
   svelte-hmr@0.16.0(svelte@4.2.19):
     dependencies:
       svelte: 4.2.19
+
+  svelte-query@0.0.1-alpha1: {}
 
   svelte@4.2.19:
     dependencies:
