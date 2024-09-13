@@ -15,18 +15,38 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref }}
-        token: ${{ secrets.FULL_STACK_FASTAPI_TEMPLATE_REPO_TOKEN }}
-    - uses: actions/setup-node@v4
+
+    # Setup Python
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v2
       with:
-        node-version: lts/*
-    - uses: actions/setup-python@v5
+        version: "0.4.9"
+        enable-cache: true
+        cache-suffix: "uv-cache"
+        cache-dependency-glob: "backend/uv.lock"
+
+    - name: Install Python 3.12
+      run: uv python install 3.12
+
+    # Setup PNPM
+    - uses: pnpm/action-setup@v4
+      name: Install pnpm
       with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: npm ci
+        version: 9
+        run_install: false
+
+    # Install Frontend/ Backend dependencies
+    - name: Install Frontend dependencies
+      run: pnpm install --frozen-lockfile
       working-directory: frontend
-    - run: pip install ./backend
-    - run: bash scripts/generate-client.sh
+
+    - name: Install Python dependencies
+      run: uv install --frozen
+      working-directory: backend
+
+    - name: Generate client
+      run: bash scripts/generate-client.sh
+
     - name: Commit changes
       run: |
         git config --local user.email "github-actions@github.com"
