@@ -1,2 +1,8 @@
-<h1 class="h1">Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+  import FilterForm from "$lib/components/FilterForm.svelte";
+</script>
+
+<div class="container mx-auto p-4">
+  <h2 class="text-2xl font-bold mb-4">Filter Proteins</h2>
+  <FilterForm />
+</div>
