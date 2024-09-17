@@ -54,7 +54,7 @@ module.exports = {
   backend: {
     output: {
       mode: "split",
-      target: "$FRONTEND_DIR/src/client",
+      target: "$FRONTEND_DIR/src/lib/client",
       schemas: "$FRONTEND_DIR/src/lib/client/model",
       client: "svelte-query",
     },
