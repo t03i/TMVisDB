@@ -1,3 +1,8 @@
-<script>import "../app.css";</script>
+<script>
+    import "../app.css";
+    import Footer from "$lib/components/Footer.svelte";
+
+</script>
 
 <slot></slot>
+<Footer />

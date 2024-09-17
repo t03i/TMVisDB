@@ -1,4 +1,4 @@
-export const emojis = {
+export const emojis: { [key: number]: string }= {
 	// 1xx Informational
 	100: '💬', // Continue
 	101: '🔄', // Switching Protocols
