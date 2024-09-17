@@ -13,7 +13,7 @@
         <header class="card-header justify-center text-9xl" >{emojis[$page.status] ?? emojis[500]}</header>
         <div class="p-4 space-y-4">
             <h3>Error {$page.status} - Oops! Something went wrong.</h3>
-            <p class='pre'>{$page.error.message}</p>
+            <p class='pre'>{$page.error?.message ?? 'An unknown error occurred'}</p>
         </div>
     </div>
 </div>
