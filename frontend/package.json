@@ -32,7 +32,6 @@
 	"dependencies": {
 		"@tanstack/svelte-query": "^5.56.2",
 		"axios": "^1.7.7",
-		"i": "^0.3.7",
 		"iconify-icon": "^2.1.0"
 	}
 }

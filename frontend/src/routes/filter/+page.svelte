@@ -6,7 +6,7 @@
     createGetProteinsByLineage,
     createGetRandomProteins,
   } from "$lib/client/tMVis";
-  import { DataTable } from "@vincjo/datatables";
+  import { DataTable } from "svelte-simple-datatables";
   import FilterForm from "$lib/components/FilterForm.svelte";
 
   export let data;
@@ -15,8 +15,8 @@
   let isFiltered = false;
 
   $: params = Object.fromEntries($page.url.searchParams);
-  $: currentPage = Number.parseInt(params.page || "1", 10);
-  $: itemsPerPage = 100; // Adjust based on your API's default or desired value
+  $: currentPage = parseInt(params.page || "1", 10);
+  $: itemsPerPage = 20; // Adjust based on your API's default or desired value
 
   $: query = isFiltered
     ? createGetProteinsByLineage(
