@@ -30,7 +30,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@sveltestack/svelte-query": "^1.6.0",
+		"@tanstack/svelte-query": "^5.56.2",
+		"axios": "^1.7.7",
 		"i": "^0.3.7",
 		"iconify-icon": "^2.1.0"
 	}

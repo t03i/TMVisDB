@@ -41,7 +41,7 @@ services:
     env_file:
       - .env
     environment:
-      - DOMAIN=${API_DOMAIN}
+      - DOMAIN=${PUBLIC_API_DOMAIN}
       - ENVIRONMENT=${NODE_ENV}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - SENTRY_DSN=${SENTRY_DSN}
