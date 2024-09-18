@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     )
     API_V1_STR: str = "/api/v1"
     DOMAIN: str = "localhost"
-    ENVIRONMENT: Literal["local", "staging", "production"] = "local"
-    MAX_RESULTS_LIMIT: int = 1000
+    ENVIRONMENT: Literal["development", "staging", "production"] = "development"
+    MAX_RESULTS_LIMIT: int = 100
     MIN_PROTEIN_LENGTH: int = 16
     MAX_PROTEIN_LENGTH: int = 5500
 

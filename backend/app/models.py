@@ -81,6 +81,11 @@ class ProteinInfo(PublicTMInfo, PublicSequence, PublicOrganism, table=False):
     pass
 
 
+class ProteinResponse(BaseModel):
+    items: list[ProteinInfo]
+    total_count: int
+
+
 class PublicAnnotation(SQLModel, table=False):
     start: int
     end: int

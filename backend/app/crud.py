@@ -65,14 +65,24 @@ def filtered_query(filter: ProteinFilter):
     if conditions:
         query = query.where(and_(*conditions))
 
-    # Apply limit
-    query = query.limit(filter.limit)
+    return query
 
-    if filter.page is not None:
-        offset = filter.limit * filter.page
+
+def get_paginated_proteins_with_count(
+    db: Session, base_query, page_size: int, page: int | None
+):
+    count_query = select(func.count()).select_from(base_query.subquery())
+    total_count = db.execute(count_query).scalar()
+
+    query = base_query.limit(page_size)
+
+    if page is not None:
+        offset = page_size * page
         query = query.offset(offset)
 
-    return query
+    result = db.execute(query)
+    proteins = _query_to_protein_info(result)
+    return proteins, total_count
 
 
 def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annotation]:
@@ -88,7 +98,9 @@ def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annota
     return annotations
 
 
-def get_random_proteins(db: Session, num_sequences: int):
+def get_random_proteins(
+    db: Session, num_sequences: int
+) -> tuple[list[ProteinInfo], int]:
     max_id = db.query(func.max(Sequence.id)).scalar()
 
     # Generate a list of random IDs
@@ -104,23 +116,27 @@ def get_random_proteins(db: Session, num_sequences: int):
     )
 
     result = db.execute(query)
+    proteins = _query_to_protein_info(result)
 
-    return _query_to_protein_info(result)
+    return proteins, len(proteins)
 
 
-def get_proteins_by_organism(db: Session, organism_id: int, filter: ProteinFilter):
+def get_proteins_by_organism(
+    db: Session, organism_id: int, filter: ProteinFilter
+) -> tuple[list[ProteinInfo], int]:
     query = filtered_query(filter)
     query = query.where(Organism.taxon_id == organism_id)
-    result = db.execute(query)
-    return _query_to_protein_info(result)
+
+    return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
 
 
-def get_proteins_by_lineage(db: Session, taxonomy: Taxonomy, filter: ProteinFilter):
+def get_proteins_by_lineage(
+    db: Session, taxonomy: Taxonomy, filter: ProteinFilter
+) -> tuple[list[ProteinInfo], int]:
     query = filtered_query(filter)
     super_kingdom, clade = utils.get_separated_taxonomy(taxonomy)
-    print(super_kingdom, clade)
     query = query.where(Organism.super_kingdom == super_kingdom)
     if clade:
         query = query.where(Organism.clade == clade)
-    result = db.execute(query)
-    return _query_to_protein_info(result)
+
+    return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
