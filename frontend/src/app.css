@@ -7,3 +7,11 @@ iconify-icon {
     width: 1em;
     height: 1em;
  }
+
+.gradient-heading {
+	@apply bg-clip-text text-transparent box-decoration-clone;
+	/* Direction */
+	@apply bg-gradient-to-br;
+	/* Color Stops */
+	@apply from-primary-500 via-tertiary-500 to-secondary-500;
+}
