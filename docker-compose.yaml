@@ -41,8 +41,8 @@ services:
     env_file:
       - .env
     environment:
-      - DOMAIN=${DOMAIN}
-      - ENVIRONMENT=${ENVIRONMENT}
+      - DOMAIN=${API_DOMAIN}
+      - ENVIRONMENT=${NODE_ENV}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - SENTRY_DSN=${SENTRY_DSN}
       - SQLITE_DATABASE_PATH=${SQLITE_DATABASE_PATH}
