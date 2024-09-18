@@ -20,6 +20,6 @@ const config: Config = {
     API_BASE_URL: PUBLIC_API_DOMAIN || 'http://localhost:8000',
     APP_NAME: PUBLIC_PROJECT_NAME || 'TMVisDB',
 };
-axios.defaults.baseURL = '<BACKEND URL>';
+axios.defaults.baseURL = config.API_BASE_URL;
 
 export default config;
