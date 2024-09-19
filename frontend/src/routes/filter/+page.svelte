@@ -1,18 +1,26 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { page } from "$app/stores";
 
   /** @type {import('./$types').PageData} */
   export let data;
 
   let isHydrated = data.isHydrated;
+  const itemsPerPage = 20;
+
+  let params = Object.fromEntries($page.url.searchParams);
+
+  $: isFiltered = !!params;
 
   onMount(() => {
     isHydrated = true;
+    params = Object.fromEntries($page.url.searchParams);
+    console.log("isFiltered", isFiltered);
+    console.log("params", params);
   });
 </script>
 
 {#if data.initialProteins}
-  console.log(data.initialProteins);
   <table>
     <thead>
       <tr>

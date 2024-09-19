@@ -7,6 +7,11 @@
   import config from "$lib/config";
   import { Topology } from "$lib/client/model";
 
+  /** @type {import('./$types').PageData} */
+  export let taxonomy = {
+    "No-domain": ["No-kingdom"],
+  };
+
   type FilterType = "taxa" | "id";
   let filterType: FilterType;
   let filterTopology: Topology;
@@ -25,6 +30,7 @@
       filterSignalPeptide = true;
     }
   }
+  console.log(taxonomy);
 
   const dispatch = createEventDispatcher();
 
@@ -73,6 +79,7 @@
         type="number"
         placeholder="Enter Organism ID"
         bind:value={filterOrganismId}
+        required
       />
     </div>
   {:else}
@@ -86,6 +93,7 @@
         type="text"
         placeholder="Enter Domain of Life"
         bind:value={filterDomain}
+        required
       />
     </div>
     <div>
