@@ -1,40 +1,48 @@
-<!--
- Copyright 2024 Tobias Olenyi.
- SPDX-License-Identifier: Apache-2.0
--->
-
-<script>
+<script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
-  import { RadioGroup, RadioItem, RangeSlider } from "@skeletonlabs/skeleton";
+  import { RadioGroup, RadioItem } from "@skeletonlabs/skeleton";
   import { SlideToggle } from "@skeletonlabs/skeleton";
 
   import config from "$lib/config";
   import { Topology } from "$lib/client/model";
 
+  type FilterType = "taxa" | "id";
+  let filterType: FilterType;
+  let filterTopology: Topology;
+
   $: filterType = "taxa";
-  $: topology = Topology.All;
-  $: minLength = config.MIN_PROTEIN_LENGTH;
-  $: maxLength = config.MAX_PROTEIN_LENGTH;
-  $: signalPeptide = true;
-  $: filtered = true;
+  $: filterTopology = Topology.All;
+  $: filterMinLength = config.MIN_PROTEIN_LENGTH;
+  $: filterMaxLength = config.MAX_PROTEIN_LENGTH;
+  $: filterSignalPeptide = true;
+  $: filterOrganismId = "";
+  $: filterDomain = "";
+  $: filterKingdom = "";
 
   $: {
-    if (topology === Topology.All) {
-      signalPeptide = true;
+    if (filterTopology === Topology.All) {
+      filterSignalPeptide = true;
     }
   }
 
   const dispatch = createEventDispatcher();
 
   function handleSubmit() {
-    const params = {
-      lineage,
-      topology,
-      hasSignalPeptide: signalPeptide,
-      sequenceLengthMin: minLength,
-      sequenceLengthMax: maxLength,
+    const params: Record<string, string> = {
+      search_for: filterType,
+      topology: filterTopology,
+      peptide: String(filterSignalPeptide),
+      min: String(filterMinLength),
+      max: String(filterMaxLength),
     };
+
+    if (filterType === "id") {
+      params.organism_id = String(filterOrganismId);
+    } else {
+      params.domain = filterDomain;
+      params.kingdom = filterKingdom;
+    }
 
     // Navigate to the current page with query parameters
     goto(`?${new URLSearchParams(params).toString()}`);
@@ -44,7 +52,7 @@
   }
 </script>
 
-<form class="space-y-6">
+<form class="space-y-6" on:submit|preventDefault={handleSubmit}>
   <RadioGroup class="flex space-x-4">
     <RadioItem bind:group={filterType} name="justify" value={"taxa"}
       >Taxonomy</RadioItem
@@ -63,7 +71,8 @@
         class="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
         id="organism_id"
         type="number"
-        placeholder="Organism ID"
+        placeholder="Enter Organism ID"
+        bind:value={filterOrganismId}
       />
     </div>
   {:else}
@@ -75,7 +84,8 @@
         class="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
         id="domain"
         type="text"
-        placeholder="Domain of Life"
+        placeholder="Enter Domain of Life"
+        bind:value={filterDomain}
       />
     </div>
     <div>
@@ -86,10 +96,12 @@
         class="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
         id="kingdom"
         type="text"
-        placeholder="Kingdom"
+        placeholder="Enter Kingdom"
+        bind:value={filterKingdom}
       />
     </div>
   {/if}
+
   <div>
     <label class="block text-sm font-bold mb-2" for="topology">
       Structural Topology
@@ -99,65 +111,62 @@
       rounded="rounded-container-token"
       flexDirection="flex-col"
     >
-      <RadioItem bind:group={topology} name="justify" value={Topology.All}
+      <RadioItem bind:group={filterTopology} name="justify" value={Topology.All}
         >Non-filtered</RadioItem
       >
       <RadioItem
-        bind:group={topology}
+        bind:group={filterTopology}
         name="justify"
         value={Topology["Alpha-helix"]}>Only Alpha-Helices</RadioItem
       >
       <RadioItem
-        bind:group={topology}
+        bind:group={filterTopology}
         name="justify"
         value={Topology["Beta-strand"]}>Only Beta-Barrels</RadioItem
       >
-      <RadioItem bind:group={topology} name="justify" value={Topology.Both}
-        >Both Helix and Barrel</RadioItem
+      <RadioItem
+        bind:group={filterTopology}
+        name="justify"
+        value={Topology.Both}>Both Helix and Barrel</RadioItem
       >
     </RadioGroup>
   </div>
+
   <div class="flex items-center space-x-2">
     <SlideToggle
       name="signalPeptide"
-      bind:checked={signalPeptide}
-      disabled={topology === Topology.All}
+      bind:checked={filterSignalPeptide}
+      disabled={filterTopology === Topology.All}
       >Show sequences with signal peptides</SlideToggle
     >
   </div>
-  <div class="flex items-center space-x-2">
-    <RangeSlider
-      name="min_length"
-      min={config.MIN_PROTEIN_LENGTH}
-      max={maxLength}
-      step={1}
-      bind:value={minLength}
+
+  <div class="space-y-4">
+    <label class="block text-sm font-bold" for="sequence-length"
+      >Sequence Length Range</label
     >
-      <div class="flex justify-between items-center">
-        <div class="font-bold">Minimum Sequence Length:</div>
-        <div class="text-xs">{minLength}</div>
-      </div></RangeSlider
-    >
-  </div>
-  <div class="flex items-center space-x-2">
-    <RangeSlider
-      name="max_length"
-      min={minLength}
-      max={config.MAX_PROTEIN_LENGTH}
-      step={1}
-      bind:value={maxLength}
-    >
-      <div class="flex justify-between items-center">
-        <div class="font-bold">Maximum Sequence Length:</div>
-        <div class="text-xs">{maxLength}</div>
-      </div></RangeSlider
-    >
+    <div class="flex items-center space-x-4">
+      <input
+        type="number"
+        name="min_length"
+        bind:value={filterMinLength}
+        min={config.MIN_PROTEIN_LENGTH}
+        max={filterMaxLength}
+        placeholder="Min Length"
+      />
+      <span>to</span>
+      <input
+        type="number"
+        name="max_length"
+        bind:value={filterMaxLength}
+        min={filterMinLength}
+        max={config.MAX_PROTEIN_LENGTH}
+        placeholder="Max Length"
+      />
+    </div>
   </div>
 
-  <button type="submit" class="btn variant-filled-primary">Apply</button>
-  <button type="button" class="btn variant-filled-secondary"
-    >{#if filtered}
-      Reset &
-    {/if}Random</button
-  >
+  <div class="flex space-x-4">
+    <button type="submit" class="btn variant-filled-primary">Apply</button>
+  </div>
 </form>
