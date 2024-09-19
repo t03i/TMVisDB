@@ -9,9 +9,9 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
       - traefik.http.routers.traefik-dashboard-http.entrypoints=http
-      - traefik.http.routers.traefik-dashboard-http.rule=Host(`traefik.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.traefik-dashboard-http.rule=Host(`traefik.${API_DOMAIN?Variable not set}`)
       - traefik.http.routers.traefik-dashboard-https.entrypoints=https
-      - traefik.http.routers.traefik-dashboard-https.rule=Host(`traefik.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.traefik-dashboard-https.rule=Host(`traefik.${API_DOMAIN?Variable not set}`)
       - traefik.http.routers.traefik-dashboard-https.tls=true
       - traefik.http.routers.traefik-dashboard-https.tls.certresolver=le
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
@@ -41,7 +41,7 @@ services:
     env_file:
       - .env
     environment:
-      - DOMAIN=${PUBLIC_API_DOMAIN}
+      - DOMAIN=${API_DOMAIN}
       - ENVIRONMENT=${NODE_ENV}
       - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
       - SENTRY_DSN=${SENTRY_DSN}
@@ -61,18 +61,18 @@ services:
 
       - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
 
-      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=(Host(`${DOMAIN?Variable not set}`) || Host(`www.${DOMAIN?Variable not set}`)) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=(Host(`${API_DOMAIN?Variable not set}`) || Host(`www.${API_DOMAIN?Variable not set}`)) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.entrypoints=http
 
-      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=(Host(`${DOMAIN?Variable not set}`) || Host(`www.${DOMAIN?Variable not set}`)) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))
+      - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.rule=(Host(`${API_DOMAIN?Variable not set}`) || Host(`www.${API_DOMAIN?Variable not set}`)) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.entrypoints=https
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-https.tls.certresolver=le
 
       # Define Traefik Middleware to handle domain with and without "www" to redirect to only one
-      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.regex=^http(s)?://www.(${DOMAIN?Variable not set})/(.*)
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.regex=^http(s)?://www.(${API_DOMAIN?Variable not set})/(.*)
       # Redirect a domain with www to non-www
-      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.replacement=http$${1}://${DOMAIN?Variable not set}/$${3}
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.replacement=http$${1}://${API_DOMAIN?Variable not set}/$${3}
 
       # Enable www redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect,${STACK_NAME?Variable not set}-www-redirect
@@ -87,7 +87,7 @@ services:
   #   build:
   #     context: ./frontend
   #     args:
-  #       - VITE_API_URL=https://${DOMAIN?Variable not set}
+  #       - VITE_API_URL=https://${API_DOMAIN?Variable not set}
   #       - NODE_ENV=production
   #   labels:
   #     - traefik.enable=true
@@ -96,10 +96,10 @@ services:
 
   #     - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=80
 
-  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`${DOMAIN?Variable not set}`) || Host(`www.${DOMAIN?Variable not set}`)
+  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=Host(`${API_DOMAIN?Variable not set}`) || Host(`www.${API_DOMAIN?Variable not set}`)
   #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.entrypoints=http
 
-  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`${DOMAIN?Variable not set}`) || Host(`www.${DOMAIN?Variable not set}`)
+  #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.rule=Host(`${API_DOMAIN?Variable not set}`) || Host(`www.${API_DOMAIN?Variable not set}`)
   #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.entrypoints=https
   #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls=true
   #     - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.tls.certresolver=le

@@ -5,7 +5,7 @@
 
 <script>
   import "iconify-icon";
-  const LogoURL = new URL("/static/logo_sq_light.svg", import.meta.url).href;
+  import logo from "$lib/assets/logo_sq_light.svg";
 </script>
 
 <footer class="bg-surface-100-800-token font-small pt-4 mt-20">
@@ -15,7 +15,7 @@
     >
       <div class="text-center md:col-span-1">
         <a href="https://rostlab.org">
-          <img src={LogoURL} class=" mx-auto" alt="Rostlab Logo" />
+          <img src={logo} class="mx-auto object-none h-44" alt="Rostlab Logo" />
         </a>
       </div>
 
