@@ -21,7 +21,6 @@ services:
     volumes:
       - ./backend/app:/app/app
     build:
-      context: ./backend
       args:
         INSTALL_DEV: true
     develop:

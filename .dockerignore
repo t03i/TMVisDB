@@ -1,0 +1,15 @@
+backend/data/
+backend/shared/
+backend/.venv/
+**/venv/
+backend/tools/
+*/__pycache__
+
+.*
+*/.*
+.git
+*/build
+*/dist
+
+*/node_modules
+frontend/shared/

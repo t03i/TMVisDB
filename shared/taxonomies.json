@@ -1,0 +1,79 @@
+[
+    {
+        "value": "Archaea",
+        "clades": [
+            "Asgard group",
+            "Candidatus Hydrothermarchaeota",
+            "Candidatus Thermoplasmatota",
+            "DPANN group",
+            "Euryarchaeota",
+            "TACK group",
+            "Archaea incertae sedis",
+            "unclassified Archaea",
+            "environmental samples"
+        ]
+    },
+    {
+        "value": "Eukaryota",
+        "clades": [
+            "Amoebozoa",
+            "Ancyromonadida",
+            "Apusozoa",
+            "Breviatea",
+            "CRuMs",
+            "Cryptophyceae (cryptomonads)",
+            "Discoba",
+            "Glaucocystophyceae",
+            "Haptista",
+            "Hemimastigophora",
+            "Malawimonadida",
+            "Metamonada",
+            "Opisthokonta",
+            "Rhodelphea",
+            "Rhodophyta (red algae)",
+            "Sar",
+            "Viridiplantae",
+            "Eukaryota incertae sedis",
+            "unclassified eukaryotes",
+            "environmental samples"
+        ]
+    },
+    {
+        "value": "Bacteria",
+        "clades": [
+            "Acidobacteria",
+            "Aquificae",
+            "Atribacterota",
+            "Caldiserica/Cryosericota group",
+            "Calditrichaeota",
+            "Candidatus Krumholzibacteriota",
+            "Candidatus Tharpellota",
+            "Chrysiogenetes",
+            "Coleospermum",
+            "Coprothermobacterota",
+            "Deferribacteres",
+            "Desulfobacterota",
+            "Dictyoglomi",
+            "Elusimicrobia",
+            "FCB group",
+            "Fusobacteria",
+            "Myxococcota",
+            "Nitrospinae/Tectomicrobia group",
+            "Nitrospirae",
+            "Proteobacteria",
+            "PVC group",
+            "Spirochaetes",
+            "Synergistetes",
+            "Terrabacteria group",
+            "Thermodesulfobacteria",
+            "Thermotogae",
+            "Bacteria incertae sedis",
+            "unclassified Bacteria",
+            "environmental samples"
+        ]
+    },
+    {
+        "value": "unclassified sequences",
+        "clades": []
+    }
+]

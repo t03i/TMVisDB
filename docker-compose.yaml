@@ -50,7 +50,8 @@ services:
       - ./backend/data/tmvis.db:/data/tmvis.db:ro
 
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend.Dockerfile
       args:
         INSTALL_DEV: false
     platform: linux/amd64

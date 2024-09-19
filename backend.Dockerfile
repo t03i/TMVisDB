@@ -13,16 +13,17 @@ WORKDIR /app
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    --mount=type=bind,source=backend/uv.lock,target=uv.lock \
+    --mount=type=bind,source=backend/pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project
 
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy the project into the image
-ADD . /app/
+ADD backend/ /app/
+ADD shared/ /app/shared
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=backend/uv.lock,target=uv.lock \
     bash -c "if [ $INSTALL_DEV == 'true' ] ; then uv sync --frozen ; else uv sync --frozen --no-dev ; fi"
