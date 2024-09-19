@@ -5,10 +5,17 @@ import random
 from sqlalchemy import func, select, and_
 from sqlmodel import Session
 
-from . import utils
-from .models import Sequence, Annotation, Organism, TMInfo, ProteinInfo, ProteinFilter
+from .models import (
+    Sequence,
+    Annotation,
+    Organism,
+    TMInfo,
+    ProteinInfo,
+    ProteinFilter,
+    TaxonomyFilter,
+)
 from .core.config import settings
-from .definitions import Topology, Taxonomy
+from .definitions import Topology
 
 
 def _query_to_protein_info(query_result):
@@ -131,12 +138,11 @@ def get_proteins_by_organism(
 
 
 def get_proteins_by_lineage(
-    db: Session, taxonomy: Taxonomy, filter: ProteinFilter
+    db: Session, taxonomy: TaxonomyFilter, filter: ProteinFilter
 ) -> tuple[list[ProteinInfo], int]:
     query = filtered_query(filter)
-    super_kingdom, clade = utils.get_separated_taxonomy(taxonomy)
-    query = query.where(Organism.super_kingdom == super_kingdom)
-    if clade:
-        query = query.where(Organism.clade == clade)
+    query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)
+    if taxonomy.clade:
+        query = query.where(Organism.clade == taxonomy.clade)
 
     return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)

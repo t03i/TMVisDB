@@ -9,6 +9,7 @@ from pydantic import (
     HttpUrl,
     computed_field,
     FilePath,
+    DirectoryPath,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -48,6 +49,7 @@ class Settings(BaseSettings):
     SENTRY_DSN: HttpUrl | None = None
 
     SQLITE_DATABASE_PATH: FilePath = "data/tmvis.db"
+    SHARED_DIR_PATH: DirectoryPath = "shared/"
 
     @computed_field  # type: ignore[prop-decorator]
     @property

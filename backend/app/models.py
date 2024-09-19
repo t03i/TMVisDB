@@ -1,4 +1,4 @@
-from typing import List, Optional, Annotated
+from typing import List, Optional, Annotated, Literal
 from datetime import date
 
 from sqlmodel import (
@@ -7,9 +7,9 @@ from sqlmodel import (
     SQLModel,
     Index,
 )
-from pydantic import BaseModel, PositiveInt, Field as PD_Field
+from pydantic import BaseModel, PositiveInt, Field as PD_Field, validator
 
-from .definitions import Topology
+from .definitions import Topology, SK_CLADE_MAPPING, SUPER_KINGDOM, CLADES
 from .core.config import settings
 
 
@@ -106,6 +106,25 @@ class Annotation(PublicAnnotation, table=True):
     __table_args__ = (
         Index("ix_annotation_sequence_id_start_end", "sequence_id", "start", "end"),
     )
+
+
+class TaxonomyFilter(BaseModel):
+    super_kingdom: Literal[*SUPER_KINGDOM]
+    clade: Optional[Literal[*CLADES]] = None
+
+    @validator("super_kingdom")
+    def validate_domain(cls, v):
+        if v not in SK_CLADE_MAPPING:
+            raise ValueError(f"Invalid domain: {v}")
+        return v
+
+    @validator("clade")
+    def validate_clade(cls, v, values):
+        if v is not None:
+            domain = values.get("domain")
+            if domain and v not in SK_CLADE_MAPPING.get(domain, []):
+                raise ValueError(f"Invalid clade for domain {domain}: {v}")
+        return v
 
 
 class ProteinFilter(BaseModel):

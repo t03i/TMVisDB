@@ -1,13 +1,13 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, HTTPException, Path, Depends
 from pydantic import PositiveInt
 
 from ..deps import SessionDep
-from app.definitions import Taxonomy
-from app.models import ProteinResponse, ProteinInfo, ProteinFilter
+from app.definitions import SUPER_KINGDOM, CLADES
+from app.models import ProteinResponse, ProteinInfo, ProteinFilter, TaxonomyFilter
 from app.core.config import settings
 import app.crud as crud
 
@@ -52,13 +52,28 @@ def get_proteins_by_organism(
     return ProteinResponse(items=proteins, total_count=count)
 
 
-@router.get("/by-lineage/{lineage}/", response_model=list[ProteinInfo])
-def get_proteins_by_lineage(
+@router.get("/by-lineage/{super_kingdom}/", response_model=list[ProteinInfo])
+def get_proteins_by_super_kingdom(
     session: SessionDep,  # type: ignore
-    lineage: Taxonomy,
+    super_kingdom: Literal[*SUPER_KINGDOM],
     filter: Annotated[ProteinFilter, Depends()],
 ):
-    proteins, count = crud.get_proteins_by_lineage(session, lineage, filter)
+    taxonomy_filter = TaxonomyFilter(super_kingdom=super_kingdom)
+    proteins, count = crud.get_proteins_by_lineage(session, taxonomy_filter, filter)
+    if proteins is None:
+        raise HTTPException(status_code=404, detail="No proteins found")
+    return ProteinResponse(items=proteins, total_count=count)
+
+
+@router.get("/by-lineage/{super_kingdom}/{clade}/", response_model=list[ProteinInfo])
+def get_proteins_by_clade(
+    session: SessionDep,  # type: ignore
+    super_kingdom: Literal[*SUPER_KINGDOM],
+    clade: Literal[*CLADES],
+    filter: Annotated[ProteinFilter, Depends()],
+):
+    taxonomy_filter = TaxonomyFilter(super_kingdom=super_kingdom, clade=clade)
+    proteins, count = crud.get_proteins_by_lineage(session, taxonomy_filter, filter)
     if proteins is None:
         raise HTTPException(status_code=404, detail="No proteins found")
     return ProteinResponse(items=proteins, total_count=count)
