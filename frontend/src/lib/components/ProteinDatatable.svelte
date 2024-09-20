@@ -1,8 +1,7 @@
 <script lang="ts">
   //Import local datatable components
 
-  import { onMount } from "svelte";
-  import type { Readable } from "svelte/store";
+  import { goto } from "$app/navigation";
   import { DataHandler } from "@vincjo/datatables";
 
   import ThSort from "$lib/components/table/ThSort.svelte";
@@ -12,8 +11,16 @@
   import Pagination from "$lib/components/table/Pagination.svelte";
 
   import type { ProteinInfo, ProteinResponse } from "$lib/client/model";
+  import {
+    uniprot_entry_url,
+    uniprot_taxonomy_url,
+  } from "$lib/external/uniprot";
 
   export let data: ProteinResponse;
+
+  function handleRowClick(uniprotAccession: string) {
+    goto(`/detail/${uniprotAccession}`);
+  }
 
   $: handler = new DataHandler<ProteinInfo>(data.items, {
     rowsPerPage: 20,
@@ -59,12 +66,23 @@
     </thead>
     <tbody>
       {#each $rows as row}
-        <tr>
-          <td>{row.uniprot_id}</td>
+        <tr
+          on:click={() => handleRowClick(row.uniprot_accession)}
+          class="cursor-pointer"
+        >
+          <td
+            ><a class="anchor" href={uniprot_entry_url(row.uniprot_accession)}
+              >{row.uniprot_id}</a
+            ></td
+          >
           <td>{row.seq_length}</td>
           <td>{row.super_kingdom}</td>
           <td>{row.clade}</td>
-          <td>{row.name}</td>
+          <td
+            ><a class="anchor" href={uniprot_taxonomy_url(row.taxon_id)}
+              >{row.name}</a
+            ></td
+          >
           <td>{row.has_alpha_helix ? "Yes" : "No"}</td>
           <td>{row.has_beta_strand ? "Yes" : "No"}</td>
           <td>{row.has_signal ? "Yes" : "No"}</td>
