@@ -2,6 +2,16 @@
   import { browser } from "$app/environment";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
+  import {
+    computePosition,
+    autoUpdate,
+    offset,
+    shift,
+    flip,
+    arrow,
+  } from "@floating-ui/dom";
+  import { storePopup } from "@skeletonlabs/skeleton";
+  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   import "../app.css";
   import Footer from "$lib/components/Footer.svelte";

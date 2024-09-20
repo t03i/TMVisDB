@@ -31,6 +31,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@floating-ui/dom": "^1.6.11",
 		"@tanstack/svelte-query": "^5.56.2",
 		"@tanstack/svelte-query-devtools": "^5.56.2",
 		"axios": "^1.7.7",

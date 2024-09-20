@@ -10,6 +10,7 @@
   import Search from "$lib/components/table/Search.svelte";
   import RowCount from "$lib/components/table/RowCount.svelte";
   import Pagination from "$lib/components/table/Pagination.svelte";
+  import LoadingTable from "$lib/components/table/LoadingTable.svelte";
 
   import type { ProteinInfo, ProteinResponse } from "$lib/client/model";
   import {
@@ -18,6 +19,7 @@
   } from "$lib/external/uniprot";
 
   export let data: ProteinResponse;
+  let loading = true;
 
   function handleRowClick(uniprotAccession: string) {
     goto(`/detail/${uniprotAccession}`);
@@ -65,34 +67,38 @@
         <ThFilter {handler} filterBy="signal_count" />
       </tr>
     </thead>
-    <tbody>
-      {#each $rows as row}
-        <tr
-          on:click={() => handleRowClick(row.uniprot_accession)}
-          class="cursor-pointer"
-        >
-          <td
-            ><a class="anchor" href={uniprot_entry_url(row.uniprot_accession)}
-              >{row.uniprot_id}</a
-            ></td
+    {#if loading}
+      <LoadingTable columns={11} rows={5} />
+    {:else}
+      <tbody>
+        {#each $rows as row}
+          <tr
+            on:click={() => handleRowClick(row.uniprot_accession)}
+            class="cursor-pointer"
           >
-          <td>{row.seq_length}</td>
-          <td>{row.super_kingdom}</td>
-          <td>{row.clade}</td>
-          <td
-            ><a class="anchor" href={uniprot_taxonomy_url(row.taxon_id)}
-              >{row.name}</a
-            ></td
-          >
-          <td>{row.has_alpha_helix ? "Yes" : "No"}</td>
-          <td>{row.has_beta_strand ? "Yes" : "No"}</td>
-          <td>{row.has_signal ? "Yes" : "No"}</td>
-          <td>{row.tm_helix_count}</td>
-          <td>{row.tm_strand_count}</td>
-          <td>{row.signal_count}</td>
-        </tr>
-      {/each}
-    </tbody>
+            <td
+              ><a class="anchor" href={uniprot_entry_url(row.uniprot_accession)}
+                >{row.uniprot_id}</a
+              ></td
+            >
+            <td>{row.seq_length}</td>
+            <td>{row.super_kingdom}</td>
+            <td>{row.clade}</td>
+            <td
+              ><a class="anchor" href={uniprot_taxonomy_url(row.taxon_id)}
+                >{row.name}</a
+              ></td
+            >
+            <td>{row.has_alpha_helix ? "Yes" : "No"}</td>
+            <td>{row.has_beta_strand ? "Yes" : "No"}</td>
+            <td>{row.has_signal ? "Yes" : "No"}</td>
+            <td>{row.tm_helix_count}</td>
+            <td>{row.tm_strand_count}</td>
+            <td>{row.signal_count}</td>
+          </tr>
+        {/each}
+      </tbody>
+    {/if}
   </table>
   <!-- Footer -->
   <footer class="flex justify-between">

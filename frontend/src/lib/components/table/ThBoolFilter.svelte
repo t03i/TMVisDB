@@ -5,6 +5,8 @@
 <script lang="ts">
   import type { DataHandler } from "@vincjo/datatables";
   import { SlideToggle } from "@skeletonlabs/skeleton";
+  import { popup } from "@skeletonlabs/skeleton";
+  import type { PopupSettings } from "@skeletonlabs/skeleton";
 
   export let handler: DataHandler;
   export let filterBy: string;
@@ -29,9 +31,20 @@
       updateFilter();
     }
   }
+
+  const popupHover: PopupSettings = {
+    event: "hover",
+    target: "popupHover",
+    placement: "top",
+  };
 </script>
 
-<th class=" items-center">
+<th class="" use:popup={popupHover}>
+  <div class="card p-4 variant-filled-secondary" data-popup="popupHover">
+    <p>Enable Filter</p>
+    <div class="arrow variant-filled-secondary" />
+  </div>
+
   <SlideToggle
     name="enable-filter"
     active="bg-primary-500"
