@@ -8,11 +8,6 @@
   import config from "$lib/config";
   import taxonomyData from "$lib/assets/shared/taxonomies.json";
 
-  /** @type {import('./$types').PageData} */
-  export let taxonomy = {
-    "No-domain": ["No-kingdom"],
-  };
-
   type FilterType = "taxa" | "id";
   let filterType: FilterType;
   let filterTopology: Topology;
@@ -33,7 +28,6 @@
       filterSignalPeptide = true;
     }
   }
-  console.log(taxonomy);
 
   const dispatch = createEventDispatcher();
 
