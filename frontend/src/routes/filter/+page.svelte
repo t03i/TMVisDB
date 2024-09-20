@@ -10,13 +10,11 @@
 
   let params = Object.fromEntries($page.url.searchParams);
 
-  $: isFiltered = !!params;
+  $: isFiltered = !!params.search_for;
 
   onMount(() => {
     isHydrated = true;
     params = Object.fromEntries($page.url.searchParams);
-    console.log("isFiltered", isFiltered);
-    console.log("params", params);
   });
 </script>
 
