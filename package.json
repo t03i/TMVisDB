@@ -1,0 +1,5 @@
+{
+	"devDependencies": {
+		"@tanstack/svelte-query-devtools": "^5.56.2"
+	}
+}

@@ -7,15 +7,13 @@ export async function load() {
 
   try {
     const response = await getRandomProteins(numInitialRandom);
-    const taxonomies = await getTaxonomies();
 
     return {
       initialProteins: response.data,
-      taxonomies: taxonomies.data,
       isHydrated: false
     };
   } catch (error) {
     console.error('Error fetching initial proteins:', error);
-    return { initialProteins: [], taxonomies: {}, isHydrated: false, error: 'Failed to fetch initial proteins' };
+    return { initialProteins: [],  isHydrated: false, error: 'Failed to fetch initial proteins' };
   }
 }

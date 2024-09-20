@@ -9,7 +9,6 @@ export * from './annotationLegend';
 export * from './databaseType';
 export * from './getDbAnnotationsLegends200';
 export * from './getProteinsByCladeParams';
-export * from './getProteinsByLineageParams';
 export * from './getProteinsByOrganismParams';
 export * from './getProteinsBySuperKingdomParams';
 export * from './getTaxonomies200';
