@@ -115,15 +115,15 @@ class TaxonomyFilter(BaseModel):
     @validator("super_kingdom")
     def validate_domain(cls, v):
         if v not in SK_CLADE_MAPPING:
-            raise ValueError(f"Invalid domain: {v}")
+            raise ValueError(f"Invalid super_kingdom: {v}")
         return v
 
     @validator("clade")
     def validate_clade(cls, v, values):
         if v is not None:
-            domain = values.get("domain")
-            if domain and v not in SK_CLADE_MAPPING.get(domain, []):
-                raise ValueError(f"Invalid clade for domain {domain}: {v}")
+            super_kingdom = values.get("super_kingdom")
+            if super_kingdom and v not in SK_CLADE_MAPPING.get(super_kingdom, []):
+                raise ValueError(f"Invalid clade for {super_kingdom}: {v}")
         return v
 
 
@@ -137,7 +137,7 @@ class ProteinFilter(BaseModel):
         Optional[PositiveInt], PD_Field(default=None, le=settings.MAX_PROTEIN_LENGTH)
     ]
     page: Annotated[Optional[PositiveInt], PD_Field(default=None, ge=0)]
-    limit: PositiveInt = PD_Field(default=100, le=settings.MAX_RESULTS_LIMIT)
+    page_size: PositiveInt = PD_Field(default=100, le=settings.MAX_RESULTS_LIMIT)
 
 
 class LabelInfo(BaseModel):
