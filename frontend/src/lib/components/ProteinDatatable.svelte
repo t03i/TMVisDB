@@ -58,8 +58,8 @@
         <ThFilter {handler} filterBy="clade" />
         <ThFilter {handler} filterBy="name" />
         <ThBoolFilter {handler} filterBy="has_alpha_helix" />
-        <ThFilter {handler} filterBy="has_beta_strand" />
-        <ThFilter {handler} filterBy="has_signal" />
+        <ThBoolFilter {handler} filterBy="has_beta_strand" />
+        <ThBoolFilter {handler} filterBy="has_signal" />
         <ThFilter {handler} filterBy="tm_helix_count" />
         <ThFilter {handler} filterBy="tm_strand_count" />
         <ThFilter {handler} filterBy="signal_count" />

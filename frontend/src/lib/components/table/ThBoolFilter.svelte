@@ -8,28 +8,42 @@
 
   export let handler: DataHandler;
   export let filterBy: string;
+
   let value: boolean = true;
   let enabled: boolean = false;
+
+  function updateFilter() {
+    if (enabled) {
+      handler.filter(String(value), filterBy);
+    } else {
+      handler.filter("", filterBy);
+    }
+  }
+
+  function handleToggleChange() {
+    updateFilter();
+  }
+
+  function handleCheckboxChange() {
+    if (enabled) {
+      updateFilter();
+    }
+  }
 </script>
 
-<th>
+<th class=" items-center">
   <SlideToggle
     name="enable-filter"
     active="bg-primary-500"
     size="sm"
     bind:checked={enabled}
-    on:change={() => {
-      if (!enabled && filterBy) handler.filter("", filterBy);
-      if (filterBy) handler.filter(String(value), filterBy);
-    }}
+    on:change={handleToggleChange}
   />
   <input
     type="checkbox"
     bind:checked={value}
-    class="input"
+    class="checkbox checkbox-sm"
     disabled={!enabled}
-    on:change={() => {
-      if (filterBy) handler.filter(String(value), filterBy);
-    }}
+    on:change={handleCheckboxChange}
   />
 </th>
