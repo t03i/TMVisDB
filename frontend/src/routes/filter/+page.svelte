@@ -3,6 +3,7 @@
   import { page } from "$app/stores";
 
   import DataLoader from "$lib/components/DataLoader.svelte";
+  import ProteinDatatable from "$lib/components/ProteinDatatable.svelte";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -33,26 +34,7 @@
     {:else if error}
       <p>Error loading proteins: {error.message}</p>
     {:else if isSuccessful}
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Accession</th>
-            <th>Length</th>
-            <th>Organism</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each data.items as protein}
-            <tr>
-              <td>{protein.name}</td>
-              <td>{protein.uniprot_accession}</td>
-              <td>{protein.seq_length}</td>
-              <td>{protein.tanomoy_id}</td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+      <ProteinDatatable {data} />
     {:else}
       <p>No proteins found.</p>
     {/if}

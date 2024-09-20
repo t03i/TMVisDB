@@ -1,15 +1,25 @@
 <script lang="ts">
   //Import local datatable components
+
+  import { onMount } from "svelte";
+  import type { Readable } from "svelte/store";
+  import { DataHandler } from "@vincjo/datatables";
+
   import ThSort from "$lib/components/table/ThSort.svelte";
   import ThFilter from "$lib/components/table/ThFilter.svelte";
   import Search from "$lib/components/table/Search.svelte";
   import RowCount from "$lib/components/table/RowCount.svelte";
   import Pagination from "$lib/components/table/Pagination.svelte";
 
-  import { DataHandler } from "@vincjo/datatables";
+  import type { ProteinInfo, ProteinResponse } from "$lib/client/model";
 
-  export let handler: DataHandler;
-  const rows = handler.getRows();
+  export let data: ProteinResponse;
+
+  $: handler = new DataHandler<ProteinInfo>(data.items, {
+    rowsPerPage: 20,
+  });
+
+  $: rows = handler.getRows();
 </script>
 
 <div class=" overflow-x-auto space-y-4">
@@ -25,7 +35,7 @@
         <ThSort {handler} orderBy="seq_length">Sequence Length</ThSort>
         <ThSort {handler} orderBy="super_kingdom">Domain</ThSort>
         <ThSort {handler} orderBy="clade">Kingdom</ThSort>
-        <ThSort {handler} orderBy="organism_name">Organism</ThSort>
+        <ThSort {handler} orderBy="name">Organism</ThSort>
         <ThSort {handler} orderBy="has_alpha_helix">Alpha</ThSort>
         <ThSort {handler} orderBy="has_beta_strand">Beta</ThSort>
         <ThSort {handler} orderBy="has_signal">Signal</ThSort>
@@ -38,7 +48,7 @@
         <ThFilter {handler} filterBy="seq_length" />
         <ThFilter {handler} filterBy="super_kingdom" />
         <ThFilter {handler} filterBy="clade" />
-        <ThFilter {handler} filterBy="organism_name" />
+        <ThFilter {handler} filterBy="name" />
         <ThFilter {handler} filterBy="has_alpha_helix" />
         <ThFilter {handler} filterBy="has_beta_strand" />
         <ThFilter {handler} filterBy="has_signal" />
@@ -54,7 +64,7 @@
           <td>{row.seq_length}</td>
           <td>{row.super_kingdom}</td>
           <td>{row.clade}</td>
-          <td>{row.organism_name}</td>
+          <td>{row.name}</td>
           <td>{row.has_alpha_helix ? "Yes" : "No"}</td>
           <td>{row.has_beta_strand ? "Yes" : "No"}</td>
           <td>{row.has_signal ? "Yes" : "No"}</td>

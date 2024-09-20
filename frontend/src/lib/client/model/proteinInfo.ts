@@ -11,7 +11,7 @@ export interface ProteinInfo {
   has_alpha_helix: boolean;
   has_beta_strand: boolean;
   has_signal: boolean;
-  organism_name: string;
+  name: string;
   seq_length: number;
   sequence: string;
   signal_count: number;

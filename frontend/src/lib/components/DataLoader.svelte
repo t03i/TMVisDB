@@ -23,7 +23,6 @@
 
   let query: CreateQueryResult;
   $: {
-    console.log(initialData);
     const queryParams = {
       topology: params.topology as Topology,
       has_signal_peptide: params.peptide === "true",
