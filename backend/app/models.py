@@ -14,7 +14,7 @@ from .core.config import settings
 
 
 class PublicOrganism(SQLModel, table=False):
-    name: str
+    organism_name: str
     taxon_id: str = Field(index=True, unique=True)
     super_kingdom: str = Field(index=True)
     clade: Optional[str] = Field(index=True, nullable=True)
