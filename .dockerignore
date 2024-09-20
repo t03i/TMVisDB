@@ -12,4 +12,4 @@ backend/tools/
 */dist
 
 */node_modules
-frontend/shared/
+frontend/*/shared/
