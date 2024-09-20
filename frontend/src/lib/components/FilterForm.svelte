@@ -4,8 +4,9 @@
   import { RadioGroup, RadioItem } from "@skeletonlabs/skeleton";
   import { SlideToggle } from "@skeletonlabs/skeleton";
 
-  import config from "$lib/config";
   import { Topology } from "$lib/client/model";
+  import config from "$lib/config";
+  import taxonomyData from "$lib/assets/shared/taxonomies.json";
 
   /** @type {import('./$types').PageData} */
   export let taxonomy = {
@@ -24,6 +25,8 @@
   $: filterOrganismId = "";
   $: filterDomain = "";
   $: filterKingdom = "";
+  $: availableClades =
+    taxonomyData.find((d) => d.value === filterDomain)?.clades || [];
 
   $: {
     if (filterTopology === Topology.All) {
@@ -59,7 +62,7 @@
 </script>
 
 <form class="space-y-6" on:submit|preventDefault={handleSubmit}>
-  <RadioGroup class="flex space-x-4">
+  <RadioGroup class="space-x-4" display="flex">
     <RadioItem bind:group={filterType} name="justify" value={"taxa"}
       >Taxonomy</RadioItem
     >
@@ -74,7 +77,7 @@
         UniprotKB Organism ID
       </label>
       <input
-        class="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+        class="input py-2 px-3 leading-tight"
         id="organism_id"
         type="number"
         placeholder="Enter Organism ID"
@@ -87,26 +90,31 @@
       <label class="block text-sm font-bold mb-2" for="domain">
         Domain of Life
       </label>
-      <input
-        class="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-        id="domain"
-        type="text"
-        placeholder="Enter Domain of Life"
+      <select
+        class="select py-2 px-3 leading-tight"
         bind:value={filterDomain}
         required
-      />
+      >
+        <option value="">Select Domain</option>
+        {#each taxonomyData as { value }}
+          <option {value}> {value}</option>
+        {/each}
+      </select>
     </div>
     <div>
       <label class="block text-sm font-bold mb-2" for="kingdom">
         Kingdom
       </label>
-      <input
-        class="shadow appearance-none border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-        id="kingdom"
-        type="text"
-        placeholder="Enter Kingdom"
+      <select
+        size="4"
+        class="select py-2 px-3 leading-tight"
         bind:value={filterKingdom}
-      />
+      >
+        <option value="">All</option>
+        {#each availableClades as value}
+          <option {value}> {value}</option>
+        {/each}
+      </select>
     </div>
   {/if}
 
@@ -117,10 +125,15 @@
     <RadioGroup
       id="topology"
       rounded="rounded-container-token"
-      flexDirection="flex-col"
+      class="grid grid-cols-2 gap-4"
     >
       <RadioItem bind:group={filterTopology} name="justify" value={Topology.All}
         >Non-filtered</RadioItem
+      >
+      <RadioItem
+        bind:group={filterTopology}
+        name="justify"
+        value={Topology.Both}>Both Helix and Barrel</RadioItem
       >
       <RadioItem
         bind:group={filterTopology}
@@ -131,11 +144,6 @@
         bind:group={filterTopology}
         name="justify"
         value={Topology["Beta-strand"]}>Only Beta-Barrels</RadioItem
-      >
-      <RadioItem
-        bind:group={filterTopology}
-        name="justify"
-        value={Topology.Both}>Both Helix and Barrel</RadioItem
       >
     </RadioGroup>
   </div>
@@ -157,6 +165,7 @@
       <input
         type="number"
         name="min_length"
+        class="input"
         bind:value={filterMinLength}
         min={config.MIN_PROTEIN_LENGTH}
         max={filterMaxLength}
@@ -166,6 +175,7 @@
       <input
         type="number"
         name="max_length"
+        class="input"
         bind:value={filterMaxLength}
         min={filterMinLength}
         max={config.MAX_PROTEIN_LENGTH}
@@ -175,6 +185,6 @@
   </div>
 
   <div class="flex space-x-4">
-    <button type="submit" class="btn variant-filled-primary">Apply</button>
+    <button type="submit" class="btn variant-filled">Apply</button>
   </div>
 </form>
