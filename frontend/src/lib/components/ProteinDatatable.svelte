@@ -6,6 +6,7 @@
 
   import ThSort from "$lib/components/table/ThSort.svelte";
   import ThFilter from "$lib/components/table/ThFilter.svelte";
+  import ThBoolFilter from "$lib/components/table/ThBoolFilter.svelte";
   import Search from "$lib/components/table/Search.svelte";
   import RowCount from "$lib/components/table/RowCount.svelte";
   import Pagination from "$lib/components/table/Pagination.svelte";
@@ -56,7 +57,7 @@
         <ThFilter {handler} filterBy="super_kingdom" />
         <ThFilter {handler} filterBy="clade" />
         <ThFilter {handler} filterBy="name" />
-        <ThFilter {handler} filterBy="has_alpha_helix" />
+        <ThBoolFilter {handler} filterBy="has_alpha_helix" />
         <ThFilter {handler} filterBy="has_beta_strand" />
         <ThFilter {handler} filterBy="has_signal" />
         <ThFilter {handler} filterBy="tm_helix_count" />
