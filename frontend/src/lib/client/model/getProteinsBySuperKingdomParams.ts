@@ -6,7 +6,7 @@
  */
 import type { Topology } from './topology';
 
-export type GetProteinsByOrganismParams = {
+export type GetProteinsBySuperKingdomParams = {
 topology?: Topology | null;
 has_signal_peptide?: boolean | null;
 sequence_length_min?: number | null;
