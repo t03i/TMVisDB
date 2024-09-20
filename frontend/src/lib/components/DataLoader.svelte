@@ -42,9 +42,7 @@
       query = createGetRandomProteins(20, { query: queryOptions });
     } else if (params.search_for === "id") {
       const organismId = parseInt(params.organism_id);
-      query = createGetProteinsByOrganism(organismId, queryParams, {
-        query: queryOptions,
-      });
+      query = createGetProteinsByOrganism(organismId, queryParams);
     } else if (params.search_for === "taxa") {
       if (params.domain) {
         query = createGetProteinsByClade(
@@ -56,7 +54,6 @@
           // @ts-ignore
           params.kingdom,
           queryParams,
-          { query: queryOptions },
         );
       } else {
         query = createGetProteinsBySuperKingdom(
@@ -66,7 +63,6 @@
             | "Bacteria"
             | "unclassified sequences",
           queryParams,
-          { query: queryOptions },
         );
       }
     }

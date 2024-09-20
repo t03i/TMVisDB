@@ -1,5 +1,5 @@
 // src/routes/+page.server.js
-import { getRandomProteins, getTaxonomies } from '$lib/client/tMVis';
+import { getRandomProteins } from '$lib/client/tMVis';
 
 
 export async function load() {
