@@ -1,12 +1,12 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
-from typing import Annotated, Literal
+from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Path, Depends
 from pydantic import PositiveInt, ValidationError
 
 from ..deps import SessionDep
-from app.definitions import SUPER_KINGDOM, CLADES, SK_CLADE_MAPPING
+from app.taxonomy_enums import SUPER_KINGDOM, CLADES, SK_CLADE_MAPPING
 from app.models import ProteinResponse, ProteinInfo, ProteinFilter, TaxonomyFilter
 from app.core.config import settings
 import app.crud as crud
@@ -55,7 +55,7 @@ def get_proteins_by_organism(
 @router.get("/by-lineage/{super_kingdom}/", response_model=ProteinResponse)
 def get_proteins_by_super_kingdom(
     session: SessionDep,  # type: ignore
-    super_kingdom: Literal[*SUPER_KINGDOM],
+    super_kingdom: SUPER_KINGDOM,
     filter: Annotated[ProteinFilter, Depends()],
 ):
     try:
@@ -74,8 +74,8 @@ def get_proteins_by_super_kingdom(
 @router.get("/by-lineage/{super_kingdom}/{clade}/", response_model=ProteinResponse)
 def get_proteins_by_clade(
     session: SessionDep,  # type: ignore
-    super_kingdom: Literal[*SUPER_KINGDOM],
-    clade: Literal[*CLADES],
+    super_kingdom: SUPER_KINGDOM,
+    clade: CLADES,
     filter: Annotated[ProteinFilter, Depends()],
 ):
     try:

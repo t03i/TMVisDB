@@ -1,4 +1,4 @@
-from typing import List, Optional, Annotated, Literal
+from typing import List, Optional, Annotated
 from datetime import date
 
 from sqlmodel import (
@@ -9,7 +9,8 @@ from sqlmodel import (
 )
 from pydantic import BaseModel, PositiveInt, Field as PD_Field, validator
 
-from .definitions import Topology, SK_CLADE_MAPPING, SUPER_KINGDOM, CLADES
+from .definitions import Topology
+from .taxonomy_enums import SUPER_KINGDOM, CLADES, SK_CLADE_MAPPING
 from .core.config import settings
 
 
@@ -109,21 +110,21 @@ class Annotation(PublicAnnotation, table=True):
 
 
 class TaxonomyFilter(BaseModel):
-    super_kingdom: Literal[*SUPER_KINGDOM]
-    clade: Optional[Literal[*CLADES]] = None
-
-    @validator("super_kingdom")
-    def validate_domain(cls, v):
-        if v not in SK_CLADE_MAPPING:
-            raise ValueError(f"Invalid super_kingdom: {v}")
-        return v
+    super_kingdom: SUPER_KINGDOM
+    clade: Optional[CLADES] = None
 
     @validator("clade")
     def validate_clade(cls, v, values):
         if v is not None:
             super_kingdom = values.get("super_kingdom")
-            if super_kingdom and v not in SK_CLADE_MAPPING.get(super_kingdom, []):
-                raise ValueError(f"Invalid clade for {super_kingdom}: {v}")
+            if super_kingdom is None:
+                raise ValueError(
+                    "super_kingdom must be provided when clade is specified"
+                )
+            if v not in SK_CLADE_MAPPING.get(super_kingdom, []):
+                raise ValueError(
+                    f"Invalid clade '{v.value}' for super kingdom '{super_kingdom.value}'"
+                )
         return v
 
 
