@@ -54,7 +54,7 @@ module.exports = {
   backend: {
     output: {
       mode: "split",
-      target: "$FRONTEND_DIR/src/lib/client/tmvis.ts",
+      target: "$FRONTEND_DIR/src/lib/client/tmvisdb.ts",
       schemas: "$FRONTEND_DIR/src/lib/client/model",
       client: "svelte-query",
     },
