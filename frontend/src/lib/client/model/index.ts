@@ -6,6 +6,7 @@
  */
 
 export * from './annotationLegend';
+export * from './clade';
 export * from './databaseType';
 export * from './getDbAnnotationsLegends200';
 export * from './getProteinsByCladeParams';
@@ -20,6 +21,7 @@ export * from './proteinResponse';
 export * from './publicAnnotation';
 export * from './publicAnnotationSourceDbRef';
 export * from './publicAnnotationSourceDbUrl';
+export * from './superKingdom';
 export * from './taxonomy';
 export * from './topology';
 export * from './validationError';

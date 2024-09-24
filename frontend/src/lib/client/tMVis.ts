@@ -21,6 +21,7 @@ import type {
 } from 'axios'
 import type {
   AnnotationLegend,
+  Clade,
   DatabaseType,
   GetDbAnnotationsLegends200,
   GetProteinsByCladeParams,
@@ -30,7 +31,8 @@ import type {
   HTTPValidationError,
   ProteinInfo,
   ProteinResponse,
-  PublicAnnotation
+  PublicAnnotation,
+  SuperKingdom
 } from './model'
 
 type AwaitedInput<T> = PromiseLike<T> | T;
@@ -232,7 +234,7 @@ export function createGetProteinsByOrganism<TData = Awaited<ReturnType<typeof ge
  * @summary Get Proteins By Super Kingdom
  */
 export const getProteinsBySuperKingdom = (
-    superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
+    superKingdom: SuperKingdom,
     params?: GetProteinsBySuperKingdomParams, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<ProteinResponse>> => {
     
@@ -244,13 +246,13 @@ export const getProteinsBySuperKingdom = (
   }
 
 
-export const getGetProteinsBySuperKingdomQueryKey = (superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
+export const getGetProteinsBySuperKingdomQueryKey = (superKingdom: SuperKingdom,
     params?: GetProteinsBySuperKingdomParams,) => {
     return [`/api/v1/proteins/by-lineage/${superKingdom}/`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetProteinsBySuperKingdomQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = AxiosError<HTTPValidationError>>(superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
+export const getGetProteinsBySuperKingdomQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = AxiosError<HTTPValidationError>>(superKingdom: SuperKingdom,
     params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
@@ -278,7 +280,7 @@ export type GetProteinsBySuperKingdomQueryError = AxiosError<HTTPValidationError
  */
 
 export function createGetProteinsBySuperKingdom<TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = AxiosError<HTTPValidationError>>(
- superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
+ superKingdom: SuperKingdom,
     params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
@@ -299,8 +301,8 @@ export function createGetProteinsBySuperKingdom<TData = Awaited<ReturnType<typeo
  * @summary Get Proteins By Clade
  */
 export const getProteinsByClade = (
-    superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
-    clade: 'Asgard group' | 'Candidatus Hydrothermarchaeota' | 'Candidatus Thermoplasmatota' | 'DPANN group' | 'Euryarchaeota' | 'TACK group' | 'Archaea incertae sedis' | 'unclassified Archaea' | 'environmental samples' | 'Amoebozoa' | 'Ancyromonadida' | 'Apusozoa' | 'Breviatea' | 'CRuMs' | 'Cryptophyceae (cryptomonads)' | 'Discoba' | 'Glaucocystophyceae' | 'Haptista' | 'Hemimastigophora' | 'Malawimonadida' | 'Metamonada' | 'Opisthokonta' | 'Rhodelphea' | 'Rhodophyta (red algae)' | 'Sar' | 'Viridiplantae' | 'Eukaryota incertae sedis' | 'unclassified eukaryotes' | 'Acidobacteria' | 'Aquificae' | 'Atribacterota' | 'Caldiserica/Cryosericota group' | 'Calditrichaeota' | 'Candidatus Krumholzibacteriota' | 'Candidatus Tharpellota' | 'Chrysiogenetes' | 'Coleospermum' | 'Coprothermobacterota' | 'Deferribacteres' | 'Desulfobacterota' | 'Dictyoglomi' | 'Elusimicrobia' | 'FCB group' | 'Fusobacteria' | 'Myxococcota' | 'Nitrospinae/Tectomicrobia group' | 'Nitrospirae' | 'Proteobacteria' | 'PVC group' | 'Spirochaetes' | 'Synergistetes' | 'Terrabacteria group' | 'Thermodesulfobacteria' | 'Thermotogae' | 'Bacteria incertae sedis' | 'unclassified Bacteria',
+    superKingdom: SuperKingdom,
+    clade: Clade,
     params?: GetProteinsByCladeParams, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<ProteinResponse>> => {
     
@@ -312,15 +314,15 @@ export const getProteinsByClade = (
   }
 
 
-export const getGetProteinsByCladeQueryKey = (superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
-    clade: 'Asgard group' | 'Candidatus Hydrothermarchaeota' | 'Candidatus Thermoplasmatota' | 'DPANN group' | 'Euryarchaeota' | 'TACK group' | 'Archaea incertae sedis' | 'unclassified Archaea' | 'environmental samples' | 'Amoebozoa' | 'Ancyromonadida' | 'Apusozoa' | 'Breviatea' | 'CRuMs' | 'Cryptophyceae (cryptomonads)' | 'Discoba' | 'Glaucocystophyceae' | 'Haptista' | 'Hemimastigophora' | 'Malawimonadida' | 'Metamonada' | 'Opisthokonta' | 'Rhodelphea' | 'Rhodophyta (red algae)' | 'Sar' | 'Viridiplantae' | 'Eukaryota incertae sedis' | 'unclassified eukaryotes' | 'Acidobacteria' | 'Aquificae' | 'Atribacterota' | 'Caldiserica/Cryosericota group' | 'Calditrichaeota' | 'Candidatus Krumholzibacteriota' | 'Candidatus Tharpellota' | 'Chrysiogenetes' | 'Coleospermum' | 'Coprothermobacterota' | 'Deferribacteres' | 'Desulfobacterota' | 'Dictyoglomi' | 'Elusimicrobia' | 'FCB group' | 'Fusobacteria' | 'Myxococcota' | 'Nitrospinae/Tectomicrobia group' | 'Nitrospirae' | 'Proteobacteria' | 'PVC group' | 'Spirochaetes' | 'Synergistetes' | 'Terrabacteria group' | 'Thermodesulfobacteria' | 'Thermotogae' | 'Bacteria incertae sedis' | 'unclassified Bacteria',
+export const getGetProteinsByCladeQueryKey = (superKingdom: SuperKingdom,
+    clade: Clade,
     params?: GetProteinsByCladeParams,) => {
     return [`/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetProteinsByCladeQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = AxiosError<HTTPValidationError>>(superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
-    clade: 'Asgard group' | 'Candidatus Hydrothermarchaeota' | 'Candidatus Thermoplasmatota' | 'DPANN group' | 'Euryarchaeota' | 'TACK group' | 'Archaea incertae sedis' | 'unclassified Archaea' | 'environmental samples' | 'Amoebozoa' | 'Ancyromonadida' | 'Apusozoa' | 'Breviatea' | 'CRuMs' | 'Cryptophyceae (cryptomonads)' | 'Discoba' | 'Glaucocystophyceae' | 'Haptista' | 'Hemimastigophora' | 'Malawimonadida' | 'Metamonada' | 'Opisthokonta' | 'Rhodelphea' | 'Rhodophyta (red algae)' | 'Sar' | 'Viridiplantae' | 'Eukaryota incertae sedis' | 'unclassified eukaryotes' | 'Acidobacteria' | 'Aquificae' | 'Atribacterota' | 'Caldiserica/Cryosericota group' | 'Calditrichaeota' | 'Candidatus Krumholzibacteriota' | 'Candidatus Tharpellota' | 'Chrysiogenetes' | 'Coleospermum' | 'Coprothermobacterota' | 'Deferribacteres' | 'Desulfobacterota' | 'Dictyoglomi' | 'Elusimicrobia' | 'FCB group' | 'Fusobacteria' | 'Myxococcota' | 'Nitrospinae/Tectomicrobia group' | 'Nitrospirae' | 'Proteobacteria' | 'PVC group' | 'Spirochaetes' | 'Synergistetes' | 'Terrabacteria group' | 'Thermodesulfobacteria' | 'Thermotogae' | 'Bacteria incertae sedis' | 'unclassified Bacteria',
+export const getGetProteinsByCladeQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = AxiosError<HTTPValidationError>>(superKingdom: SuperKingdom,
+    clade: Clade,
     params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
@@ -348,8 +350,8 @@ export type GetProteinsByCladeQueryError = AxiosError<HTTPValidationError>
  */
 
 export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = AxiosError<HTTPValidationError>>(
- superKingdom: 'Archaea' | 'Eukaryota' | 'Bacteria' | 'unclassified sequences',
-    clade: 'Asgard group' | 'Candidatus Hydrothermarchaeota' | 'Candidatus Thermoplasmatota' | 'DPANN group' | 'Euryarchaeota' | 'TACK group' | 'Archaea incertae sedis' | 'unclassified Archaea' | 'environmental samples' | 'Amoebozoa' | 'Ancyromonadida' | 'Apusozoa' | 'Breviatea' | 'CRuMs' | 'Cryptophyceae (cryptomonads)' | 'Discoba' | 'Glaucocystophyceae' | 'Haptista' | 'Hemimastigophora' | 'Malawimonadida' | 'Metamonada' | 'Opisthokonta' | 'Rhodelphea' | 'Rhodophyta (red algae)' | 'Sar' | 'Viridiplantae' | 'Eukaryota incertae sedis' | 'unclassified eukaryotes' | 'Acidobacteria' | 'Aquificae' | 'Atribacterota' | 'Caldiserica/Cryosericota group' | 'Calditrichaeota' | 'Candidatus Krumholzibacteriota' | 'Candidatus Tharpellota' | 'Chrysiogenetes' | 'Coleospermum' | 'Coprothermobacterota' | 'Deferribacteres' | 'Desulfobacterota' | 'Dictyoglomi' | 'Elusimicrobia' | 'FCB group' | 'Fusobacteria' | 'Myxococcota' | 'Nitrospinae/Tectomicrobia group' | 'Nitrospirae' | 'Proteobacteria' | 'PVC group' | 'Spirochaetes' | 'Synergistetes' | 'Terrabacteria group' | 'Thermodesulfobacteria' | 'Thermotogae' | 'Bacteria incertae sedis' | 'unclassified Bacteria',
+ superKingdom: SuperKingdom,
+    clade: Clade,
     params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
