@@ -1,9 +1,9 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import Optional
 
-from .definitions import DatabaseType, SK_CLADE_MAPPING
+from .definitions import DatabaseType
+from .taxonomy_enums import SK_CLADE_MAPPING
 from .models import AnnotationLegend, LabelInfo
 
 
@@ -64,5 +64,5 @@ def get_database_legend(database: DatabaseType) -> AnnotationLegend:
     return legends.get(database, None)
 
 
-def get_all_taxonomies() -> dict[str, Optional[list[str]]]:
+def get_all_taxonomies() -> SK_CLADE_MAPPING:
     return SK_CLADE_MAPPING

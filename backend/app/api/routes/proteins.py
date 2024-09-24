@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Path, Depends
 from pydantic import PositiveInt, ValidationError
 
 from ..deps import SessionDep
-from app.taxonomy_enums import SUPER_KINGDOM, CLADES, SK_CLADE_MAPPING
+from app.taxonomy_enums import SuperKingdom, Clade, SK_CLADE_MAPPING
 from app.models import ProteinResponse, ProteinInfo, ProteinFilter, TaxonomyFilter
 from app.core.config import settings
 import app.crud as crud
@@ -55,7 +55,7 @@ def get_proteins_by_organism(
 @router.get("/by-lineage/{super_kingdom}/", response_model=ProteinResponse)
 def get_proteins_by_super_kingdom(
     session: SessionDep,  # type: ignore
-    super_kingdom: SUPER_KINGDOM,
+    super_kingdom: SuperKingdom,
     filter: Annotated[ProteinFilter, Depends()],
 ):
     try:
@@ -63,7 +63,7 @@ def get_proteins_by_super_kingdom(
     except ValidationError:
         raise HTTPException(
             status_code=422,
-            detail=f"Invalid super_kingdom. Must be one of: {', '.join(SUPER_KINGDOM)}",
+            detail=f"Invalid super_kingdom. Must be one of: {', '.join(SuperKingdom)}",
         )
     proteins, count = crud.get_proteins_by_lineage(session, taxonomy_filter, filter)
     if proteins is None:
@@ -74,8 +74,8 @@ def get_proteins_by_super_kingdom(
 @router.get("/by-lineage/{super_kingdom}/{clade}/", response_model=ProteinResponse)
 def get_proteins_by_clade(
     session: SessionDep,  # type: ignore
-    super_kingdom: SUPER_KINGDOM,
-    clade: CLADES,
+    super_kingdom: SuperKingdom,
+    clade: Clade,
     filter: Annotated[ProteinFilter, Depends()],
 ):
     try:
@@ -85,7 +85,7 @@ def get_proteins_by_clade(
         error_locs = set(error["loc"][0] for error in e.errors())
         if "super_kingdom" in error_locs:
             error_messages.append(
-                f"Invalid super_kingdom. Must be one of: {', '.join(SUPER_KINGDOM)}"
+                f"Invalid super_kingdom. Must be one of: {', '.join(SuperKingdom)}"
             )
         if "clade" in error_locs:
             error_messages.append(

@@ -10,7 +10,7 @@ from sqlmodel import (
 from pydantic import BaseModel, PositiveInt, Field as PD_Field, validator
 
 from .definitions import Topology
-from .taxonomy_enums import SUPER_KINGDOM, CLADES, SK_CLADE_MAPPING
+from .taxonomy_enums import SuperKingdom, Clade, SK_CLADE_MAPPING
 from .core.config import settings
 
 
@@ -110,8 +110,8 @@ class Annotation(PublicAnnotation, table=True):
 
 
 class TaxonomyFilter(BaseModel):
-    super_kingdom: SUPER_KINGDOM
-    clade: Optional[CLADES] = None
+    super_kingdom: SuperKingdom
+    clade: Optional[Clade] = None
 
     @validator("clade")
     def validate_clade(cls, v, values):
