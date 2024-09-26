@@ -5,9 +5,6 @@
 
   $: startRow = (currentPage - 1) * pageSize + 1;
   $: endRow = Math.min(currentPage * pageSize, totalItems);
-  $: if (currentPage) {
-    console.log(currentPage, pageSize, totalItems);
-  }
 </script>
 
 <aside class="text-sm leading-8 mr-6">

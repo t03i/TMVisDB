@@ -27,6 +27,7 @@
   {params}
   initialData={{ data: data.initialProteins }}
   pageSize={itemsPerPage}
+  {currentPage}
   let:data={proteinResponse}
   let:isSuccessful
   let:isLoading
@@ -49,7 +50,7 @@
             slot="footer"
             {currentPage}
             pageSize={itemsPerPage}
-            totalItems={proteinResponse.total_count}
+            totalItems={200}
             onSetPage={(page) => (currentPage = page)}
           />
         </DataTable>
