@@ -73,8 +73,9 @@
     {:else}
       <button
         type="button"
-        class="hover:variant-soft-primary"
-        class:active={currentPage === page}
+        class:hover:variant-soft-primary={currentPage !== page}
+        class:hover:variant-filled-primary={currentPage === page}
+        class:variant-filled-primary={currentPage === page}
         on:click={() => onSetPage(page)}
       >
         {page}
