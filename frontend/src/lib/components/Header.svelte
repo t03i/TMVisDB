@@ -12,7 +12,7 @@
   gridColumns="grid-cols-3"
   slotDefault="place-self-center"
   slotTrail="place-content-end"
-  class="sticky shadow-lg top-0"
+  class="sticky shadow-lg top-0 z-10"
 >
   <svelte:fragment slot="lead">(icon)</svelte:fragment>
   <h1 class="h1">

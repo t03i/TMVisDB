@@ -78,8 +78,9 @@ def filtered_query(filter: ProteinFilter):
 def get_paginated_proteins_with_count(
     db: Session, base_query, page_size: int, page: int | None
 ):
-    count_query = select(func.count()).select_from(base_query.subquery())
-    total_count = db.execute(count_query).scalar()
+    # count_query = select(func.count()).select_from(base_query.subquery())
+    # total_count = db.execute(count_query).scalar()
+    total_count = page_size
 
     query = base_query.limit(page_size)
 

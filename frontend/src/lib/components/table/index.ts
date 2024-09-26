@@ -3,9 +3,10 @@
 
 export { default as DataTable } from './DataTable.svelte';
 export { default as LoadingTable } from './LoadingTable.svelte';
+export { default as TableFooter } from './TableFooter.svelte'
 
 export interface TableHeader<T> {
-    key: keyof T;
+    key: string;
     title: string;
     sortable: boolean;
     filterable: boolean;

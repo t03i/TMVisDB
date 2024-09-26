@@ -1,14 +1,20 @@
 <script lang="ts">
-  import type { DataHandler } from "@vincjo/datatables";
-  export let handler: DataHandler;
-  const rowCount = handler.getRowCount();
+  export let currentPage: number;
+  export let pageSize: number;
+  export let totalItems: number;
+
+  $: startRow = (currentPage - 1) * pageSize + 1;
+  $: endRow = Math.min(currentPage * pageSize, totalItems);
+  $: if (currentPage) {
+    console.log(currentPage, pageSize, totalItems);
+  }
 </script>
 
 <aside class="text-sm leading-8 mr-6">
-  {#if $rowCount.total > 0}
-    <b>{$rowCount.start}</b>
-    - <b>{$rowCount.end}</b>
-    / <b>{$rowCount.total}</b>
+  {#if totalItems > 0}
+    <b>{startRow}</b>
+    - <b>{endRow}</b>
+    / <b>{totalItems}</b>
   {:else}
     No entries found
   {/if}

@@ -27,21 +27,6 @@
     AxiosError<HTTPValidationError>
   > | null = null;
 
-  function wrapInitialData(
-    data: ProteinResponse | null,
-  ): AxiosResponse<ProteinResponse> | undefined {
-    if (data) {
-      return {
-        data,
-        status: 200,
-        statusText: "OK",
-        headers: {},
-        config: {} as any,
-      };
-    }
-    return undefined;
-  }
-
   // Define query parameters
   $: queryParams = {
     topology: params.topology as Topology,
@@ -57,7 +42,6 @@
       !initialData || params.search_for !== undefined;
 
     if (!params.search_for) {
-      let wrappedData = wrapInitialData(initialData);
       query = createGetRandomProteins(20, {
         query: {
           initialData: initialData,

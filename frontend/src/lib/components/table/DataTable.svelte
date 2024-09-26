@@ -9,8 +9,6 @@
   import ThFilter from "$lib/components/table/ThFilter.svelte";
   import ThBoolFilter from "$lib/components/table/ThBoolFilter.svelte";
   import Search from "$lib/components/table/Search.svelte";
-  import RowCount from "$lib/components/table/RowCount.svelte";
-  import Pagination from "$lib/components/table/Pagination.svelte";
 
   import type { TableHeader } from "$lib/components/table";
 
@@ -23,7 +21,6 @@
   let rows: Readable<any[]>;
 
   onMount(() => {
-    console.log(data);
     handler = new DataHandler([], {
       rowsPerPage,
     });
@@ -31,7 +28,6 @@
   });
 
   $: if (handler && data) {
-    console.log("Data set in handler", data);
     handler.setRows(data);
   }
 </script>
@@ -70,9 +66,6 @@
         {/each}
       </tbody>
     </table>
-    <footer class="flex justify-between">
-      <RowCount {handler} />
-      <Pagination {handler} />
-    </footer>
+    <slot name="footer"></slot>
   </div>
 {/if}

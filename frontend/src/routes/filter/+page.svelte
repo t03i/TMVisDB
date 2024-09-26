@@ -5,7 +5,7 @@
   import DataLoader from "$lib/components/DataLoader.svelte";
   import FilterForm from "$lib/components/FilterForm.svelte";
   import LoadingCard from "$lib/components/LoadingCard.svelte";
-  import { DataTable, LoadingTable } from "$lib/components/table";
+  import { DataTable, LoadingTable, TableFooter } from "$lib/components/table";
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
 
@@ -16,6 +16,7 @@
   const itemsPerPage = 20;
 
   $: params = Object.fromEntries($page.url.searchParams);
+  $: currentPage = params.page ? parseInt(params.page) : 1;
 
   function handleRowClick(row: ProteinInfo) {
     goto(`/detail/${row.uniprot_accession}`);
@@ -43,7 +44,15 @@
           data={proteinResponse.items}
           headers={proteinTableHeaders}
           onRowClick={handleRowClick}
-        />
+        >
+          <TableFooter
+            slot="footer"
+            {currentPage}
+            pageSize={itemsPerPage}
+            totalItems={proteinResponse.total_count}
+            onSetPage={(page) => (currentPage = page)}
+          />
+        </DataTable>
       {:else if isLoading}
         <LoadingTable headers={proteinTableHeaders} rows={itemsPerPage} />
       {:else}
