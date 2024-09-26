@@ -1,15 +1,13 @@
-<!--
- Copyright 2024 Tobias Olenyi.
- SPDX-License-Identifier: Apache-2.0
--->
+<!-- src/lib/components/LoadingTable.svelte -->
 <script lang="ts">
-  export let columns: number = 3;
+  import type { TableHeader } from "$lib/components/table";
+
+  export let headers: TableHeader<any>[];
   export let rows: number = 5;
 
   function generateRowLayout(cols: number) {
     const layout = [];
     let remainingCols = cols;
-
     while (remainingCols > 0) {
       const span = Math.min(
         Math.floor(Math.random() * remainingCols) + 1,
@@ -18,23 +16,48 @@
       layout.push(span);
       remainingCols -= span;
     }
-
     return layout;
   }
 
   $: tableLayout = Array(rows)
     .fill(null)
-    .map(() => generateRowLayout(columns));
+    .map(() => generateRowLayout(headers.length));
 </script>
 
-<tbody>
-  {#each tableLayout as row}
+<table class="table table-hover table-compact w-full table-auto">
+  <thead>
     <tr>
-      {#each row as col}
-        <td colspan={col}>
-          <div class="placeholder animate-pulse" />
-        </td>
+      {#each headers as header}
+        <th>
+          <div class="flex h-full items-center justify-start gap-x-2">
+            {header.title}
+          </div>
+        </th>
       {/each}
     </tr>
-  {/each}
-</tbody>
+    <tr>
+      {#each headers as header}
+        <th>
+          <div class="placeholder animate-pulse h-4 w-3/4 mx-auto" />
+        </th>
+      {/each}
+    </tr>
+  </thead>
+  <tbody>
+    {#each tableLayout as row}
+      <tr>
+        {#each row as col}
+          <td colspan={col}>
+            <div class="placeholder animate-pulse" />
+          </td>
+        {/each}
+      </tr>
+    {/each}
+  </tbody>
+</table>
+
+<style>
+  .placeholder {
+    @apply h-4 w-full rounded bg-gray-300;
+  }
+</style>

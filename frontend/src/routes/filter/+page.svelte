@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
 
-  import { ConicGradient } from "@skeletonlabs/skeleton";
-  import type { ConicStop } from "@skeletonlabs/skeleton";
-
   import DataLoader from "$lib/components/DataLoader.svelte";
-  import ProteinDatatable from "$lib/components/ProteinDatatable.svelte";
   import FilterForm from "$lib/components/FilterForm.svelte";
+  import LoadingCard from "$lib/components/LoadingCard.svelte";
+  import { DataTable, LoadingTable } from "$lib/components/table";
+  import { proteinTableHeaders } from "$lib/tableConfig";
+  import type { ProteinInfo } from "$lib/client/model";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -15,43 +15,42 @@
   let isHydrated = data.isHydrated;
   const itemsPerPage = 20;
 
-  const conicStops: ConicStop[] = [
-    { color: "transparent", start: 0, end: 25 },
-    { color: "rgb(var(--color-primary-500))", start: 75, end: 100 },
-  ];
-
   $: params = Object.fromEntries($page.url.searchParams);
+
+  function handleRowClick(row: ProteinInfo) {
+    goto(`/detail/${row.uniprot_accession}`);
+  }
 </script>
 
 <DataLoader
   {params}
-  initialData={data.initialProteins}
-  page_size={itemsPerPage}
-  let:data
+  initialData={{ data: data.initialProteins }}
+  pageSize={itemsPerPage}
+  let:data={proteinResponse}
   let:isSuccessful
   let:isLoading
   let:error
 >
   <div class="flex flex-row gap-4 mx-8 my-8">
-    <div class="card basis-2/12 border-r-2 p-4 h-screen relative">
-      <div class={isLoading ? "pointer-events-none" : ""}>
+    <div class="basis-2/12">
+      <LoadingCard {isLoading}>
         <FilterForm />
-      </div>
-      {#if isLoading}
-        <div
-          class="rounded-container-token absolute inset-0 bg-surface-100-800-token/50 backdrop-blur-sm flex items-center justify-center"
-        >
-          <ConicGradient stops={conicStops} spin />
-        </div>
-      {/if}
+      </LoadingCard>
     </div>
     <div class="basis-10/12 card">
-      <!--TODO handle loading state-->
-
       {#if isSuccessful}
-        <ProteinDatatable {data} />
+        <DataTable
+          data={proteinResponse.items}
+          headers={proteinTableHeaders}
+          onRowClick={handleRowClick}
+        />
+      {:else if isLoading}
+        <LoadingTable headers={proteinTableHeaders} rows={itemsPerPage} />
       {:else}
-        <p>No proteins found.</p>
+        <div class="card p-4">
+          <h2 class="text-2xl font-bold">Error</h2>
+          <p>{error.message}</p>
+        </div>
       {/if}
     </div>
   </div>
