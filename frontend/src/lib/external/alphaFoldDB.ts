@@ -1,5 +1,6 @@
-// Copyright 2024 Tobias Olenyi.
-// SPDX-License-Identifier: Apache-2.0
+// $lib/external/alphaFoldDB.ts
+
+// ... [Existing imports and interface definitions] ...
 
 import { createQuery } from '@tanstack/svelte-query';
 import type { QueryFunction } from '@tanstack/svelte-query';
@@ -7,7 +8,8 @@ import axios from 'axios';
 
 interface AlphaFoldStructure {
   sequence: string;
-  pdbFile: string;
+  structureData: string;
+  format: 'bcif' | 'mmcif' | 'pdb';
 }
 
 export const useAlphaFoldFetchStructure = (selected_id: string) => {
@@ -15,23 +17,53 @@ export const useAlphaFoldFetchStructure = (selected_id: string) => {
     const afdb_api_path = `https://www.alphafold.ebi.ac.uk/api/prediction/${selected_id}`;
 
     try {
-      const { data: afdb_json } = await axios.get(afdb_api_path);
+
+      // Fetch the prediction data
+      const predictionResponse = await axios.get(afdb_api_path);
+      const afdb_json = predictionResponse.data;
 
       if (!afdb_json || afdb_json.length === 0) {
+        console.warn(`No data found for UniProt ID: ${selected_id}`);
         return null;
       }
 
       const seq = afdb_json[0].uniprotSequence;
-      const afdb_pdb_path = afdb_json[0].pdbUrl;
-      const { data: afdb_file } = await axios.get(afdb_pdb_path, { responseType: 'text' });
+
+      // Determine the best available format
+      let structureUrl = '';
+      let format: 'cif' | 'mmcif' | 'pdb' = 'pdb';
+      let binary = false;
+
+      if (afdb_json[0].bcifUrl) {
+        structureUrl = afdb_json[0].bcifUrl;
+        format = 'cif';
+        binary=true;
+      } else
+      if (afdb_json[0].cifUrl) {
+        structureUrl = afdb_json[0].cifUrl;
+        format = 'mmcif';
+      } else if (afdb_json[0].pdbUrl) {
+        structureUrl = afdb_json[0].pdbUrl;
+        format = 'pdb';
+      } else {
+        console.warn(`No structure URL found for UniProt ID: ${selected_id}`);
+        return null;
+      }
+
+      // Fetch the structure file
+      const responseType = binary ? 'arraybuffer' : 'text';
+      const structureResponse = await axios.get(structureUrl, { responseType });
+      const structure = structureResponse.data;
 
       return {
         sequence: seq,
-        pdbFile: afdb_file,
+        structureData: structure,
+        format,
+        binary,
       };
     } catch (error) {
       console.error(`Error processing AlphaFold structure data for ${selected_id}:`, error);
-      return null;
+      throw error; // Re-throw the error to be handled by the caller or Svelte Query
     }
   };
 

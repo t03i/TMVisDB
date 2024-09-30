@@ -80,3 +80,11 @@
     <a href="https://rostlab.org" class="anchor">Rostlab</a>
   </div>
 </footer>
+
+<style>
+  iconify-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+  }
+</style>

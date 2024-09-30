@@ -2,11 +2,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-iconify-icon {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
- }
 
 .gradient-heading {
 	@apply bg-clip-text text-transparent box-decoration-clone;
