@@ -147,3 +147,29 @@ def get_proteins_by_lineage(
         query = query.where(Organism.clade == taxonomy.clade)
 
     return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
+
+
+def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
+    query = (
+        select(Sequence, TMInfo, Organism)
+        .join(TMInfo)
+        .join(Organism)
+        .where(Sequence.uniprot_accession == uniprot_accession)
+    )
+
+    result = db.execute(query).first()
+
+    if result is None:
+        return None
+
+    # Create a combined dictionary from all three Pydantic models
+    combined_dict = {
+        **result.Sequence.model_dump(),
+        **result.TMInfo.model_dump(),
+        **result.Organism.model_dump(),
+    }
+
+    # Construct ProteinInfo from the combined dictionary
+    protein_info = ProteinInfo.model_validate(combined_dict)
+
+    return protein_info
