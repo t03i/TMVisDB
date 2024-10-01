@@ -1,6 +1,6 @@
 <!-- src/lib/components/LoadingTable.svelte -->
 <script lang="ts">
-  import type { TableHeader } from "$lib/components/table";
+  import type { TableHeader } from "$lib/components/Table";
 
   export let headers: TableHeader<any>[];
   export let rows: number = 5;

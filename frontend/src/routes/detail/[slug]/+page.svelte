@@ -4,7 +4,10 @@
 
   import { StructureViewer } from "$lib/components/StructureViewer";
   import { useAlphaFoldFetchStructure } from "$lib/external/alphaFoldDB";
-  import { createGetProteinById } from "$lib/client/tmvisdb";
+  import {
+    createGetProteinAnnotations,
+    createGetProteinById,
+  } from "$lib/client/tmvisdb";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -14,11 +17,13 @@
   let sequence = "";
   let structureQuery;
   let infoQuery;
+  let annotationsQuery;
   let structureUrl = "";
 
   $: if (uniprotId) {
     structureQuery = useAlphaFoldFetchStructure(uniprotId);
     infoQuery = createGetProteinById(uniprotId);
+    annotationsQuery = createGetProteinAnnotations(uniprotId);
   }
 
   // Reactive statement to update sequence when data is available
@@ -46,15 +51,19 @@
   });
 </script>
 
-<StructureViewer
-  {structureUrl}
-  format={$structureQuery?.data?.format}
-  binary={$structureQuery?.data?.binary}
-  isLoading={$structureQuery?.isLoading}
-  error={$structureQuery?.error ? $structureQuery.error.message : null}
-  class="w-1/4 h-64"
-/>
-
-{#if sequence}
-  <p>Sequence length: {sequence.length}</p>
-{/if}
+<div class="flex flex-col md:flex-row m-5 p-3 gap-4 items-center">
+  <StructureViewer
+    {structureUrl}
+    format={$structureQuery?.data?.format}
+    binary={$structureQuery?.data?.binary}
+    isLoading={$structureQuery?.isLoading}
+    error={$structureQuery?.error ? $structureQuery.error.message : null}
+    class="card w-full md:basis-1/2 h-svh md:h-[500px]"
+  />
+  <div class="card w-full md:basis-3/4">
+    <h1 class="text-2xl font-bold">{uniprotId}</h1>
+    {#if $infoQuery}
+      <p>{$infoQuery.data?.name}</p>
+    {/if}
+  </div>
+</div>

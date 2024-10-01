@@ -3,14 +3,12 @@
   import { onMount } from "svelte";
   import { DataHandler } from "@vincjo/datatables";
   import type { Readable } from "svelte/store";
-  import { goto } from "$app/navigation";
 
-  import ThSort from "$lib/components/table/ThSort.svelte";
-  import ThFilter from "$lib/components/table/ThFilter.svelte";
-  import ThBoolFilter from "$lib/components/table/ThBoolFilter.svelte";
-  import Search from "$lib/components/table/Search.svelte";
-
-  import type { TableHeader } from "$lib/components/table";
+  import ThSort from "./ThSort.svelte";
+  import ThFilter from "./ThFilter.svelte";
+  import ThBoolFilter from "./ThBoolFilter.svelte";
+  import Search from "./Search.svelte";
+  import type { TableHeader } from "$lib/components/Table";
 
   export let data: any[];
   export let headers: TableHeader<any>[];
