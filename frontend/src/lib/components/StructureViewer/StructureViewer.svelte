@@ -35,26 +35,7 @@
 <ResourceLoader />
 <ThemeSwitcher {viewerElement} />
 <div class="molstarContainer {className}" {...$$restProps}>
-  {#if isLoading}
-    <!-- Loading state with an icon -->
-    <div class="status">
-      <!-- Loading icon -->
-      <svg viewBox="0 0 50 50" class="icon">
-        <!-- SVG content -->
-      </svg>
-      <p>Loading structure...</p>
-    </div>
-  {:else if error}
-    <!-- Error state with an icon -->
-    <div class="status error">
-      <!-- Error icon -->
-      <svg viewBox="0 0 24 24" class="icon">
-        <!-- SVG content -->
-      </svg>
-      <p>Error: {error}</p>
-    </div>
-  {:else if structureUrl}
-    <!-- Structure viewer -->
+  {#if structureUrl}
     <pdbe-molstar
       bind:this={viewerElement}
       custom-data-url={structureUrl}
@@ -66,11 +47,6 @@
       hide-controls={true}
       sequence-panel={false}
     ></pdbe-molstar>
-  {:else}
-    <!-- No data available -->
-    <div class="status">
-      <p>No structure data available.</p>
-    </div>
   {/if}
 </div>
 
