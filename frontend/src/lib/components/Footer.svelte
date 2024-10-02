@@ -2,35 +2,39 @@
  Copyright 2024 Tobias Olenyi.
  SPDX-License-Identifier: Apache-2.0
 -->
-
 <script>
+  import { AppBar } from "@skeletonlabs/skeleton";
   import "iconify-icon";
   import logo from "$lib/assets/logo_sq_light.svg";
 </script>
 
-<footer class="bg-surface-100-800-token font-small pt-4 mt-20">
-  <div class="container mx-auto">
+<footer class="bg-surface-100-800-token py-8 mt-20">
+  <div class="container mx-auto px-4">
     <div
-      class="grid grid-cols-1 md:grid-cols-4 gap-8 justify-items-center md:justify-items-start"
+      class="flex flex-col items-center md:items-start md:flex-row md:justify-between gap-8"
     >
-      <div class="text-center md:col-span-1">
-        <a href="https://rostlab.org">
-          <img src={logo} class="mx-auto object-none h-44" alt="Rostlab Logo" />
+      <div
+        class="w-full max-w-[200px] md:max-w-none flex justify-center md:justify-start"
+      >
+        <a href="https://rostlab.org" class="inline-block">
+          <img
+            src={logo}
+            class="h-32 md:h-44 object-contain"
+            alt="Rostlab Logo"
+          />
         </a>
       </div>
-
-      <div>
-        <h5 class="h5 mb-4">Links</h5>
-        <ul class="space-y-2">
+      <div class="w-full max-w-[200px] md:max-w-none">
+        <h3 class="h3 mb-4">Links</h3>
+        <ul class="space-y-1">
           <li><a href="/imprint" class="anchor">Impressum</a></li>
           <li><a href="/legal" class="anchor">ToS & Privacy Policy</a></li>
           <li><a href="/cite" class="anchor">Cite</a></li>
         </ul>
       </div>
-
-      <div>
-        <h5 class="h5 mb-4">Services</h5>
-        <ul class="space-y-2">
+      <div class="w-full max-w-[200px] md:max-w-none">
+        <h3 class="h3 mb-4">Services</h3>
+        <ul class="space-y-1">
           <li><a href="/glossary" class="anchor">Glossary</a></li>
           <li>
             <a href="https://github.com/sokrypton/ColabFold" class="anchor"
@@ -47,9 +51,8 @@
           </li>
         </ul>
       </div>
-
-      <div>
-        <h5 class="h5 mb-4">Follow Us</h5>
+      <div class="w-full max-w-[200px] md:max-w-none">
+        <h3 class="h3 mb-4">Follow Us</h3>
         <div class="flex space-x-4">
           <a href="https://x.com/rostlab" class="btn btn-sm variant-soft"
             ><iconify-icon icon="line-md:twitter-x"></iconify-icon></a
@@ -74,7 +77,6 @@
       </div>
     </div>
   </div>
-
   <div class="text-center py-3 mt-8">
     © {new Date().getFullYear()} Copyright:
     <a href="https://rostlab.org" class="anchor">Rostlab</a>
