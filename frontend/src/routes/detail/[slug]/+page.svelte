@@ -3,29 +3,29 @@
   import { StructureViewer } from "$lib/components/StructureViewer";
   import { useAlphaFoldFetchStructure } from "$lib/external/alphaFoldDB";
   import { useUniprotFetchAnnotation } from "$lib/external/uniprot";
+  import { createGetProteinById } from "$lib/client/tmvisdb";
+
   import {
-    createGetProteinAnnotations,
-    createGetProteinById,
-  } from "$lib/client/tmvisdb";
-  import { annotationsToReferences } from "$lib/annotations";
-  import ProteinDetailView from "$lib/components/ProteinDetailView.svelte";
+    ProteinDetailView,
+    ProteinDetailLoading,
+    ProteinDetailError,
+  } from "$lib/components/ProteinDetail";
   import DbReferencesView from "$lib/components/DBReferencesView.svelte";
+  import AnnotationLoader from "$lib/components/AnnotationLoader.svelte";
 
   /** @type {import('./$types').PageData} */
   export let data;
-  let uniprotId = data.slug;
+  let uniprotAcc = data.slug;
   let structureQuery;
   let sequence = "";
   let structureUrl = "";
   let infoQuery;
-  let annotationsQuery;
   let uniprotQuery;
 
-  $: if (uniprotId) {
-    structureQuery = useAlphaFoldFetchStructure(uniprotId);
-    uniprotQuery = useUniprotFetchAnnotation(uniprotId);
-    infoQuery = createGetProteinById(uniprotId);
-    annotationsQuery = createGetProteinAnnotations(uniprotId);
+  $: if (uniprotAcc) {
+    structureQuery = useAlphaFoldFetchStructure(uniprotAcc);
+    uniprotQuery = useUniprotFetchAnnotation(uniprotAcc);
+    infoQuery = createGetProteinById(uniprotAcc);
   }
 
   $: if ($structureQuery?.data) {
@@ -44,38 +44,46 @@
     }
   }
 
-  $: externalRefs = $annotationsQuery?.data?.data
-    ? annotationsToReferences($annotationsQuery.data.data)
-    : null;
-
   onDestroy(cleanup);
 </script>
 
 <div class="flex flex-col m-5 p-3 gap-4">
   <div class="flex flex-col lg:flex-row gap-4">
-    <StructureViewer
-      {structureUrl}
-      format={$structureQuery?.data?.format}
-      binary={$structureQuery?.data?.binary}
-      class="card w-full lg:w-1/2 h-[500px]"
-    />
-
-    {#if $infoQuery?.data?.data}
-      <div class="card w-full lg:w-1/2 p-6 space-y-6">
+    <div class="card w-full lg:w-1/2 h-96 lg:h-auto">
+      <StructureViewer
+        {structureUrl}
+        format={$structureQuery?.data?.format}
+        binary={$structureQuery?.data?.binary}
+        class="h-full w-full card"
+      />
+    </div>
+    <div class="card w-full lg:w-1/2 p-6 space-y-6">
+      {#if !$infoQuery?.error && $infoQuery?.data?.data}
         <ProteinDetailView proteinInfo={$infoQuery.data.data} />
-      </div>
-    {:else if $infoQuery?.isLoading}
-      <p>Loading protein information...</p>
-    {:else if $infoQuery?.error}
-      <p class="text-error-500">
-        Error loading protein information: {$infoQuery.error.message}
-      </p>
-    {/if}
+      {:else if $infoQuery?.isLoading}
+        <ProteinDetailLoading />
+      {:else if $infoQuery?.error}
+        <ProteinDetailError error={$infoQuery.error} />
+      {/if}
+    </div>
   </div>
 
   {#if $infoQuery?.data?.data}
-    <div class="card w-full p-6 space-y-6">
-      <DbReferencesView {externalRefs} />
-    </div>
+    <AnnotationLoader
+      proteinInfo={$infoQuery.data.data}
+      let:annotationQuery
+      let:annotationsBySource
+      let:dbReferences
+    >
+      {#if annotationQuery.isLoading}
+        <p>Loading annotations...</p>
+      {:else if annotationQuery.isError}
+        <p>Error loading annotations: {annotationQuery.error.message}</p>
+      {:else if dbReferences}
+        <div class="card w-full p-6 space-y-6">
+          <DbReferencesView {dbReferences} />
+        </div>
+      {/if}
+    </AnnotationLoader>
   {/if}
 </div>

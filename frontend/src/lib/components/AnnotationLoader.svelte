@@ -1,7 +1,3 @@
-<!--
- Copyright 2024 Tobias Olenyi.
- SPDX-License-Identifier: Apache-2.0
--->
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import type { PublicAnnotation } from "$lib/client/model";
@@ -13,8 +9,10 @@
     type DBReferences,
     type SourceDB,
   } from "$lib/annotations";
+  import { uniprot_entry_url } from "$lib/external/uniprot";
+  import { tmalphafold_entry_url } from "$lib/external/tmAlphaFold";
 
-  export let uniprotId: string;
+  export let proteinInfo: any;
 
   interface AnnotationSet {
     annotations: PublicAnnotation[];
@@ -25,47 +23,59 @@
     [key: string]: PublicAnnotation[];
   }
 
-  const uniprotQuery = useUniprotFetchAnnotation(uniprotId);
-  const tmAlphaFoldQuery = useTmAlphaFoldFetchAnnotation(uniprotId);
-  const tmvisdbQuery = createGetProteinAnnotations(uniprotId);
+  let uniprotQuery;
+  let tmAlphaFoldQuery;
+  let tmvisdbQuery;
 
-  export const combinedAnnotations = createQuery({
-    queryKey: ["combinedAnnotations", uniprotId],
+  $: if (proteinInfo) {
+    uniprotQuery = useUniprotFetchAnnotation(proteinInfo.uniprot_accession);
+    tmAlphaFoldQuery = useTmAlphaFoldFetchAnnotation(proteinInfo.uniprot_id);
+    tmvisdbQuery = createGetProteinAnnotations(proteinInfo.uniprot_accession);
+  }
+
+  const combinedAnnotations = createQuery({
+    queryKey: ["combinedAnnotations", proteinInfo?.uniprot_accession],
     queryFn: async (): Promise<AnnotationSet> => {
-      const [uniprotData, tmAlphaFoldData, tmvisdbData] = await Promise.all([
-        $uniprotQuery.data,
-        $tmAlphaFoldQuery.data,
-        $tmvisdbQuery.data?.data,
-      ]);
-
-      const allAnnotations: PublicAnnotation[] = [
-        ...(uniprotData?.membrane_annotations.map((a) => ({
-          ...a,
-          source_db: "UniprotKB",
-          source_db_url: `https://www.uniprot.org/uniprotkb/${uniprotId}`,
-          date_added: new Date().toISOString().split("T")[0],
-        })) || []),
-        ...(tmAlphaFoldData?.map((a) => ({
-          ...a,
-          source_db: "TMAlphaFold",
-          source_db_url: `https://tmalphafold.ttk.hu/entry/${uniprotId}`,
-          date_added: new Date().toISOString().split("T")[0],
-        })) || []),
-        ...(tmvisdbData || []),
-      ];
-
-      if (allAnnotations.length === 0) {
-        throw new Error("No annotations found in the database");
+      if (!proteinInfo) {
+        throw new Error("Protein information not found");
       }
+      const uniprotAccession = proteinInfo.uniprot_accession;
+      const uniprotId = proteinInfo.uniprot_id;
 
-      const dbReferences = annotationsToReferences(allAnnotations);
+      try {
+        // Ensure all queries have completed
+        await Promise.all([uniprotQuery, tmAlphaFoldQuery, tmvisdbQuery]);
 
-      return { annotations: allAnnotations, dbReferences };
+        const uniprotData = $uniprotQuery.data;
+        const tmAlphaFoldData = $tmAlphaFoldQuery.data;
+        const tmvisdbData = $tmvisdbQuery.data;
+
+        const allAnnotations: PublicAnnotation[] = [
+          ...(uniprotData?.membrane_annotations?.map((a) => ({
+            ...a,
+            source_db: "UniprotKB",
+            source_db_url: uniprot_entry_url(uniprotAccession),
+            date_added: new Date().toISOString().split("T")[0],
+          })) || []),
+          ...(tmAlphaFoldData?.map((a) => ({
+            ...a,
+            source_db: "TMAlphaFold",
+            source_db_url: tmalphafold_entry_url(uniprotId),
+            date_added: new Date().toISOString().split("T")[0],
+          })) || []),
+          ...(tmvisdbData?.data || []),
+        ];
+
+        if (allAnnotations.length === 0) {
+          throw new Error("No annotations found in the database");
+        }
+
+        const dbReferences = annotationsToReferences(allAnnotations);
+        return { annotations: allAnnotations, dbReferences };
+      } catch (error: any) {
+        throw new Error(`Error fetching annotations: ${error.message}`);
+      }
     },
-    enabled:
-      $uniprotQuery.isSuccess &&
-      $tmAlphaFoldQuery.isSuccess &&
-      $tmvisdbQuery.isSuccess,
   });
 
   $: annotationsBySource = $combinedAnnotations.data
