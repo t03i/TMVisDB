@@ -6,8 +6,6 @@
   export let structureUrl: string = "";
   export let format: "cif" | "mmcif" | "pdb" = "pdb";
   export let binary: boolean = false;
-  export let isLoading: boolean = false;
-  export let error: string | null = null;
   let className = "";
   export { className as class };
 
@@ -27,7 +25,7 @@
   }
 
   //Update viewer when structureUrl changes
-  $: if (structureUrl && !isLoading && !error) {
+  $: if (structureUrl) {
     updateViewer();
   }
 </script>

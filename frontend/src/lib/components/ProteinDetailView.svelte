@@ -4,86 +4,59 @@
 -->
 <script lang="ts">
   import { ProgressBar } from "@skeletonlabs/skeleton";
-  import type { ProteinInfo } from "$lib/client/tmvisdb";
+  import "iconify-icon";
+  import type { ProteinInfo } from "$lib/client/model";
   import {
     uniprot_entry_url,
     uniprot_taxonomy_url,
   } from "$lib/external/uniprot";
 
   export let proteinInfo: ProteinInfo;
-  export let tmAlphaFoldRef: { url: string; ref: string } | null = null;
-  export let membranomeRef: { url: string; ref: string } | null = null;
+
   let className = "";
   export { className as class };
 </script>
 
 <div class="display-block {className}" {...$$restProps}>
   {#if proteinInfo}
-    <h2 class="text-2xl font-bold mb-4">{proteinInfo.uniprot_id}</h2>
+    <h2 class="h2">{proteinInfo.uniprot_id}</h2>
+    <p class="text-sm">
+      UniProt Accession:
+      <a
+        href={uniprot_entry_url(proteinInfo.uniprot_accession)}
+        class="anchor"
+        target="_blank"
+        rel="noopener"
+        >{proteinInfo.uniprot_accession}
+        <iconify-icon icon="line-md:external-link"></iconify-icon>
+      </a>
+    </p>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="col-span-2">
-        <h3 class="text-lg font-semibold">DB Reference:</h3>
-        <p class="text-sm">
-          UniProt Accession: <a
-            href={uniprot_entry_url(proteinInfo.uniprot_accession)}
-            class="anchor"
-            target="_blank"
-            rel="noopener"
-            >{proteinInfo.uniprot_accession}
-          </a>
-        </p>
-        {#if tmAlphaFoldRef}
-          <p class="text-sm">
-            TMAlphaFold Reference:{" "}
-            <a
-              href={tmAlphaFoldRef.url}
-              class="anchor"
-              target="_blank"
-              rel="noopener"
-            >
-              {tmAlphaFoldRef.ref}
-            </a>
-          </p>
-        {/if}
-        {#if membranomeRef}
-          <p class="text-sm">
-            Membranome Reference:{" "}
-            <a
-              href={membranomeRef.url}
-              class="anchor"
-              target="_blank"
-              rel="noopener"
-            >
-              {membranomeRef.ref}</a
-            >
-          </p>
-        {/if}
-      </div>
-
+    <div class="grid grid-cols-2 gap-4 mt-4">
       <div>
-        <h3 class="text-lg font-semibold">Taxonomy</h3>
+        <h3 class="h3">Taxonomy</h3>
         <p class="text-sm">Super Kingdom: {proteinInfo.super_kingdom}</p>
         <p class="text-sm">Clade: {proteinInfo.clade}</p>
         <p class="text-sm">
-          Taxon Name: <a
+          Taxon Name:
+          <a
             href={uniprot_taxonomy_url(proteinInfo.taxon_id)}
             class="anchor"
             target="_blank"
             rel="noopener"
-          >
-            {proteinInfo.name} ({proteinInfo.taxon_id})</a
-          >
+            >{proteinInfo.name} ({proteinInfo.taxon_id})
+            <iconify-icon icon="line-md:external-link"></iconify-icon>
+          </a>
         </p>
       </div>
 
       <div>
-        <h3 class="text-lg font-semibold">Sequence</h3>
+        <h3 class="h3">Sequence</h3>
         <p class="text-sm">Length: {proteinInfo.seq_length}</p>
       </div>
 
       <div class="col-span-2">
-        <h3 class="text-lg font-semibold">Structure Features</h3>
+        <h3 class="h3">Structure Features</h3>
         <div class="grid grid-cols-2 gap-2">
           <div class="flex items-center">
             <span class="mr-2">Alpha Helix:</span>
@@ -119,7 +92,7 @@
       </div>
 
       <div class="col-span-2">
-        <h3 class="text-lg font-semibold">Detailed Counts</h3>
+        <h3 class="h3">Detailed Counts</h3>
         <div class="grid grid-cols-2 gap-2">
           <div>
             <p class="text-sm">
