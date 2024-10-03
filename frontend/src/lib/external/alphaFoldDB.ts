@@ -1,26 +1,21 @@
 // $lib/external/alphaFoldDB.ts
-
-// ... [Existing imports and interface definitions] ...
-
-import { createQuery } from '@tanstack/svelte-query';
-import type { QueryFunction } from '@tanstack/svelte-query';
-import axios from 'axios';
+import { createQuery, type CreateQueryResult, type QueryFunction } from '@tanstack/svelte-query';
+import axios, { AxiosError } from 'axios';
 
 export interface AlphaFoldStructure {
   sequence: string;
-  structureData: string;
+  structureData: ArrayBuffer | string;
   format: 'cif' | 'mmcif' | 'pdb';
   binary: boolean;
 }
 
-export const createGetAlphaFoldStructure = (selected_id: string) => {
-  const queryFn: QueryFunction<AlphaFoldStructure | null> = async () => {
+export const createGetAlphaFoldStructure = (selected_id: string): CreateQueryResult<AlphaFoldStructure | null, AxiosError> => {
+  const queryFn: QueryFunction<AlphaFoldStructure | null, [string, string], AxiosError> = async ({ signal }) => {
     const afdb_api_path = `https://www.alphafold.ebi.ac.uk/api/prediction/${selected_id}`;
 
     try {
-
       // Fetch the prediction data
-      const predictionResponse = await axios.get(afdb_api_path);
+      const predictionResponse = await axios.get(afdb_api_path, { signal });
       const afdb_json = predictionResponse.data;
 
       if (!afdb_json || afdb_json.length === 0) {
@@ -38,9 +33,8 @@ export const createGetAlphaFoldStructure = (selected_id: string) => {
       if (afdb_json[0].bcifUrl) {
         structureUrl = afdb_json[0].bcifUrl;
         format = 'cif';
-        binary=true;
-      } else
-      if (afdb_json[0].cifUrl) {
+        binary = true;
+      } else if (afdb_json[0].cifUrl) {
         structureUrl = afdb_json[0].cifUrl;
         format = 'mmcif';
       } else if (afdb_json[0].pdbUrl) {
@@ -53,7 +47,7 @@ export const createGetAlphaFoldStructure = (selected_id: string) => {
 
       // Fetch the structure file
       const responseType = binary ? 'arraybuffer' : 'text';
-      const structureResponse = await axios.get(structureUrl, { responseType });
+      const structureResponse = await axios.get(structureUrl, { responseType, signal });
       const structure = structureResponse.data;
 
       return {
@@ -63,8 +57,17 @@ export const createGetAlphaFoldStructure = (selected_id: string) => {
         binary,
       };
     } catch (error) {
-      console.error(`Error processing AlphaFold structure data for ${selected_id}:`, error);
-      throw error; // Re-throw the error to be handled by the caller or Svelte Query
+      if (axios.isAxiosError(error)) {
+        throw error;
+      } else {
+        throw new AxiosError(
+          'An unexpected error occurred while fetching AlphaFold data',
+          'UNKNOWN_ERROR',
+          undefined,
+          undefined,
+          undefined
+        );
+      }
     }
   };
 

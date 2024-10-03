@@ -1,9 +1,9 @@
 // Copyright 2024 Tobias Olenyi.
 // SPDX-License-Identifier: Apache-2.0
 
-import { createQuery } from '@tanstack/svelte-query';
+import { createQuery, type CreateQueryResult } from '@tanstack/svelte-query';
 import type { QueryFunction } from '@tanstack/svelte-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import type { AnnotationData, PublicAnnotation } from '$lib/client/model';
 
 export enum UniprotACCType {
@@ -35,7 +35,6 @@ const uniprot_query_url = (selected_id: string, input_type: UniprotACCType): str
     [UniprotACCType.UNIPROT_ID]: `id:${selected_id}`,
     [UniprotACCType.UNKNOWN]: selected_id,
   };
-
   return `https://rest.uniprot.org/uniprotkb/search?query=${query_prefix[input_type]} AND active:true&fields=id,accession,length,ft_transmem&format=json&size=1`;
 };
 
@@ -51,7 +50,6 @@ const uniprot_parse_response = (body: any, selected_id: string): UniprotAnnotati
   if (body && body.results && body.results.length > 0) {
     const result = body.results[0];
     const annotations: PublicAnnotation[] = [];
-
     for (const entry of result.features || []) {
       if (entry.type === "Transmembrane") {
         const label = entry.description.includes("Beta") ? "BS" : "AH";
@@ -67,7 +65,6 @@ const uniprot_parse_response = (body: any, selected_id: string): UniprotAnnotati
         });
       }
     }
-
     return {
       accession: result.primaryAccession,
       name: result.uniProtkbId,
@@ -78,12 +75,26 @@ const uniprot_parse_response = (body: any, selected_id: string): UniprotAnnotati
   return null;
 };
 
-export const createGetUniprotAnnotation = (selected_id: string) => {
-  const queryFn: QueryFunction<UniprotAnnotationData | null> = async () => {
-    const input_type = uniprot_get_input_type(selected_id);
-    const url = uniprot_query_url(selected_id, input_type);
-    const { data } = await axios.get(url);
-    return uniprot_parse_response(data, selected_id);
+export const createGetUniprotAnnotation = (selected_id: string): CreateQueryResult<UniprotAnnotationData | null, AxiosError> => {
+  const queryFn: QueryFunction<UniprotAnnotationData | null, [string, string], AxiosError> = async ({ signal }) => {
+    try {
+      const input_type = uniprot_get_input_type(selected_id);
+      const url = uniprot_query_url(selected_id, input_type);
+      const { data } = await axios.get(url, { signal });
+      return uniprot_parse_response(data, selected_id);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw error;
+      } else {
+        throw new AxiosError(
+          'An unexpected error occurred while fetching UniProt data',
+          'UNKNOWN_ERROR',
+          undefined,
+          undefined,
+          undefined
+        );
+      }
+    }
   };
 
   return createQuery({

@@ -1,37 +1,51 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { StructureViewer } from "$lib/components/StructureViewer";
-  import { useAlphaFoldFetchStructure } from "$lib/external/alphaFoldDB";
-  import { useUniprotFetchAnnotation } from "$lib/external/uniprot";
-  import { createGetProteinById } from "$lib/client/tmvisdb";
+  import type { CreateQueryResult } from "@tanstack/svelte-query";
 
+  import {
+    createGetAlphaFoldStructure,
+    type AlphaFoldStructure,
+  } from "$lib/external/alphaFoldDB";
+  import {
+    createGetUniprotAnnotation,
+    type UniprotAnnotationData,
+  } from "$lib/external/uniprot";
+  import { createGetProteinById } from "$lib/client/tmvisdb";
+  import type { ProteinInfo } from "$lib/client/model";
   import {
     ProteinDetailView,
     ProteinDetailLoading,
     ProteinDetailError,
   } from "$lib/components/ProteinDetail";
-  import DbReferencesView from "$lib/components/DBReferencesView.svelte";
+  import {
+    DBReferencesView,
+    DBReferencesLoading,
+  } from "$lib/components/DBReferences";
   import AnnotationLoader from "$lib/components/AnnotationLoader.svelte";
-  import StructureViewerError from "$lib/components/StructureViewer/StructureViewerError.svelte";
-  import StructureViewerLoading from "$lib/components/StructureViewer/StructureViewerLoading.svelte";
+  import {
+    StructureViewer,
+    StructureViewerError,
+    StructureViewerLoading,
+  } from "$lib/components/StructureViewer";
+  import type { AxiosError } from "axios";
 
   /** @type {import('./$types').PageData} */
-  export let data;
-  let uniprotAcc = data.slug;
-  let structureQuery;
-  let sequence = "";
-  let structureUrl = "";
-  let infoQuery;
-  let uniprotQuery;
+  export let data: { slug: string };
+
+  $: uniprotAcc = data.slug;
+  let structureQuery: CreateQueryResult<AlphaFoldStructure | null, AxiosError>;
+  let structureUrl: string = "";
+  let infoQuery: CreateQueryResult<{ data: ProteinInfo }, AxiosError>;
+  let uniprotQuery: CreateQueryResult<UniprotAnnotationData | null, AxiosError>;
+  let annotationQuery: CreateQueryResult<unknown, AxiosError>;
 
   $: if (uniprotAcc) {
-    structureQuery = useAlphaFoldFetchStructure(uniprotAcc);
-    uniprotQuery = useUniprotFetchAnnotation(uniprotAcc);
+    structureQuery = createGetAlphaFoldStructure(uniprotAcc);
+    uniprotQuery = createGetUniprotAnnotation(uniprotAcc);
     infoQuery = createGetProteinById(uniprotAcc);
   }
 
   $: if ($structureQuery?.data) {
-    sequence = $structureQuery.data.sequence;
     const blob = new Blob([$structureQuery.data.structureData], {
       type: $structureQuery.data.binary
         ? "application/octet-stream"
@@ -81,21 +95,16 @@
   </div>
 
   {#if $infoQuery?.data?.data}
-    <AnnotationLoader
-      proteinInfo={$infoQuery.data.data}
-      let:annotationQuery
-      let:annotationsBySource
-      let:dbReferences
-    >
-      {#if annotationQuery.isLoading}
-        <p>Loading annotations...</p>
-      {:else if annotationQuery.isError}
-        <p>Error loading annotations: {annotationQuery.error.message}</p>
-      {:else if dbReferences}
-        <div class="card w-full p-6 space-y-6">
-          <DbReferencesView {dbReferences} />
-        </div>
-      {/if}
+    <AnnotationLoader proteinInfo={$infoQuery.data.data} bind:annotationQuery>
+      <div class="card w-full p-6 space-y-6">
+        {#if annotationQuery?.isLoading}
+          <DBReferencesLoading />
+        {:else if annotationQuery?.isError}
+          <p>Error loading annotations: {annotationQuery.error.message}</p>
+        {:else if dbReferences}
+          <DBReferencesView {dbReferences} />
+        {/if}
+      </div>
     </AnnotationLoader>
   {/if}
 </div>
