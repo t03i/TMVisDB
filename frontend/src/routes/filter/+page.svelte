@@ -3,8 +3,7 @@
   import { page } from "$app/stores";
 
   import DataLoader from "$lib/components/DataLoader.svelte";
-  import FilterForm from "$lib/components/FilterForm.svelte";
-  import LoadingCard from "$lib/components/LoadingCard.svelte";
+  import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
   import { DataTable, LoadingTable, TableFooter } from "$lib/components/Table";
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
