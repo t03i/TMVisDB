@@ -57,11 +57,27 @@ module.exports = {
       target: "$FRONTEND_DIR/src/lib/client/tmvisdb.ts",
       schemas: "$FRONTEND_DIR/src/lib/client/model",
       client: "svelte-query",
+      override: {
+        mutator: {
+          path: "$FRONTEND_DIR/src/lib/client/dataMutator.ts",
+          name: "dataMutator",
+        },
+      },
     },
     input: {
       target: "$BUILD_DIR/openapi.json",
     },
   },
+};
+EOF
+
+# Generate custom mutator
+echo "Generating custom mutator..."
+cat > "$FRONTEND_DIR/src/lib/client/dataMutator.ts" << EOF
+import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
+
+export const customMutator = <T>(config: AxiosRequestConfig): Promise<T> => {
+  return axios(config).then((response) => response.data);
 };
 EOF
 

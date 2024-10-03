@@ -13,12 +13,6 @@ import type {
   QueryFunction,
   QueryKey
 } from '@tanstack/svelte-query'
-import axios from 'axios'
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
 import type {
   AnnotationData,
   AnnotationLegend,
@@ -34,6 +28,7 @@ import type {
   ProteinResponse,
   SuperKingdom
 } from './model'
+import { customMutator } from './dataMutator';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -45,30 +40,33 @@ type AwaitedInput<T> = PromiseLike<T> | T;
  * @summary Get Random Proteins
  */
 export const getRandomProteins = (
-    numSequences: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ProteinResponse>> => {
-    
-    return axios.get(
-      `/api/v1/proteins/random/${numSequences}/`,options
-    );
-  }
-
+    numSequences: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/random/${numSequences}/`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetRandomProteinsQueryKey = (numSequences: number,) => {
     return [`/api/v1/proteins/random/${numSequences}/`] as const;
     }
 
     
-export const getGetRandomProteinsQueryOptions = <TData = Awaited<ReturnType<typeof getRandomProteins>>, TError = AxiosError<HTTPValidationError>>(numSequences: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetRandomProteinsQueryOptions = <TData = Awaited<ReturnType<typeof getRandomProteins>>, TError = HTTPValidationError>(numSequences: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetRandomProteinsQueryKey(numSequences);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRandomProteins>>> = ({ signal }) => getRandomProteins(numSequences, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRandomProteins>>> = ({ signal }) => getRandomProteins(numSequences, signal);
 
       
 
@@ -78,15 +76,15 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetRandomProteinsQueryResult = NonNullable<Awaited<ReturnType<typeof getRandomProteins>>>
-export type GetRandomProteinsQueryError = AxiosError<HTTPValidationError>
+export type GetRandomProteinsQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Random Proteins
  */
 
-export function createGetRandomProteins<TData = Awaited<ReturnType<typeof getRandomProteins>>, TError = AxiosError<HTTPValidationError>>(
- numSequences: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData>, axios?: AxiosRequestConfig}
+export function createGetRandomProteins<TData = Awaited<ReturnType<typeof getRandomProteins>>, TError = HTTPValidationError>(
+ numSequences: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -106,30 +104,33 @@ export function createGetRandomProteins<TData = Awaited<ReturnType<typeof getRan
  * @summary Get Protein By Id
  */
 export const getProteinById = (
-    uniprotAccession: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ProteinInfo>> => {
-    
-    return axios.get(
-      `/api/v1/proteins/${uniprotAccession}`,options
-    );
-  }
-
+    uniprotAccession: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<ProteinInfo>(
+      {url: `/api/v1/proteins/${uniprotAccession}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetProteinByIdQueryKey = (uniprotAccession: string,) => {
     return [`/api/v1/proteins/${uniprotAccession}`] as const;
     }
 
     
-export const getGetProteinByIdQueryOptions = <TData = Awaited<ReturnType<typeof getProteinById>>, TError = AxiosError<HTTPValidationError>>(uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetProteinByIdQueryOptions = <TData = Awaited<ReturnType<typeof getProteinById>>, TError = HTTPValidationError>(uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetProteinByIdQueryKey(uniprotAccession);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinById>>> = ({ signal }) => getProteinById(uniprotAccession, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinById>>> = ({ signal }) => getProteinById(uniprotAccession, signal);
 
       
 
@@ -139,15 +140,15 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetProteinByIdQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinById>>>
-export type GetProteinByIdQueryError = AxiosError<HTTPValidationError>
+export type GetProteinByIdQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Protein By Id
  */
 
-export function createGetProteinById<TData = Awaited<ReturnType<typeof getProteinById>>, TError = AxiosError<HTTPValidationError>>(
- uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData>, axios?: AxiosRequestConfig}
+export function createGetProteinById<TData = Awaited<ReturnType<typeof getProteinById>>, TError = HTTPValidationError>(
+ uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -168,16 +169,18 @@ export function createGetProteinById<TData = Awaited<ReturnType<typeof getProtei
  */
 export const getProteinsByOrganism = (
     organismId: number,
-    params?: GetProteinsByOrganismParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ProteinResponse>> => {
-    
-    return axios.get(
-      `/api/v1/proteins/by-organism/${organismId}/`,{
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
-
+    params?: GetProteinsByOrganismParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/by-organism/${organismId}/`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
 export const getGetProteinsByOrganismQueryKey = (organismId: number,
     params?: GetProteinsByOrganismParams,) => {
@@ -185,17 +188,17 @@ export const getGetProteinsByOrganismQueryKey = (organismId: number,
     }
 
     
-export const getGetProteinsByOrganismQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByOrganism>>, TError = AxiosError<HTTPValidationError>>(organismId: number,
-    params?: GetProteinsByOrganismParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetProteinsByOrganismQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByOrganism>>, TError = HTTPValidationError>(organismId: number,
+    params?: GetProteinsByOrganismParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetProteinsByOrganismQueryKey(organismId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByOrganism>>> = ({ signal }) => getProteinsByOrganism(organismId,params, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByOrganism>>> = ({ signal }) => getProteinsByOrganism(organismId,params, signal);
 
       
 
@@ -205,16 +208,16 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetProteinsByOrganismQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsByOrganism>>>
-export type GetProteinsByOrganismQueryError = AxiosError<HTTPValidationError>
+export type GetProteinsByOrganismQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Proteins By Organism
  */
 
-export function createGetProteinsByOrganism<TData = Awaited<ReturnType<typeof getProteinsByOrganism>>, TError = AxiosError<HTTPValidationError>>(
+export function createGetProteinsByOrganism<TData = Awaited<ReturnType<typeof getProteinsByOrganism>>, TError = HTTPValidationError>(
  organismId: number,
-    params?: GetProteinsByOrganismParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData>, axios?: AxiosRequestConfig}
+    params?: GetProteinsByOrganismParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -235,16 +238,18 @@ export function createGetProteinsByOrganism<TData = Awaited<ReturnType<typeof ge
  */
 export const getProteinsBySuperKingdom = (
     superKingdom: SuperKingdom,
-    params?: GetProteinsBySuperKingdomParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ProteinResponse>> => {
-    
-    return axios.get(
-      `/api/v1/proteins/by-lineage/${superKingdom}/`,{
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
-
+    params?: GetProteinsBySuperKingdomParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/by-lineage/${superKingdom}/`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
 export const getGetProteinsBySuperKingdomQueryKey = (superKingdom: SuperKingdom,
     params?: GetProteinsBySuperKingdomParams,) => {
@@ -252,17 +257,17 @@ export const getGetProteinsBySuperKingdomQueryKey = (superKingdom: SuperKingdom,
     }
 
     
-export const getGetProteinsBySuperKingdomQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = AxiosError<HTTPValidationError>>(superKingdom: SuperKingdom,
-    params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetProteinsBySuperKingdomQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = HTTPValidationError>(superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetProteinsBySuperKingdomQueryKey(superKingdom,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>> = ({ signal }) => getProteinsBySuperKingdom(superKingdom,params, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>> = ({ signal }) => getProteinsBySuperKingdom(superKingdom,params, signal);
 
       
 
@@ -272,16 +277,16 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetProteinsBySuperKingdomQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>>
-export type GetProteinsBySuperKingdomQueryError = AxiosError<HTTPValidationError>
+export type GetProteinsBySuperKingdomQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Proteins By Super Kingdom
  */
 
-export function createGetProteinsBySuperKingdom<TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = AxiosError<HTTPValidationError>>(
+export function createGetProteinsBySuperKingdom<TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = HTTPValidationError>(
  superKingdom: SuperKingdom,
-    params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, axios?: AxiosRequestConfig}
+    params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -303,16 +308,18 @@ export function createGetProteinsBySuperKingdom<TData = Awaited<ReturnType<typeo
 export const getProteinsByClade = (
     superKingdom: SuperKingdom,
     clade: Clade,
-    params?: GetProteinsByCladeParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ProteinResponse>> => {
-    
-    return axios.get(
-      `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`,{
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
-
+    params?: GetProteinsByCladeParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
 export const getGetProteinsByCladeQueryKey = (superKingdom: SuperKingdom,
     clade: Clade,
@@ -321,18 +328,18 @@ export const getGetProteinsByCladeQueryKey = (superKingdom: SuperKingdom,
     }
 
     
-export const getGetProteinsByCladeQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = AxiosError<HTTPValidationError>>(superKingdom: SuperKingdom,
+export const getGetProteinsByCladeQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = HTTPValidationError>(superKingdom: SuperKingdom,
     clade: Clade,
-    params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, axios?: AxiosRequestConfig}
+    params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetProteinsByCladeQueryKey(superKingdom,clade,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByClade>>> = ({ signal }) => getProteinsByClade(superKingdom,clade,params, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByClade>>> = ({ signal }) => getProteinsByClade(superKingdom,clade,params, signal);
 
       
 
@@ -342,17 +349,17 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetProteinsByCladeQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsByClade>>>
-export type GetProteinsByCladeQueryError = AxiosError<HTTPValidationError>
+export type GetProteinsByCladeQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Proteins By Clade
  */
 
-export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = AxiosError<HTTPValidationError>>(
+export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = HTTPValidationError>(
  superKingdom: SuperKingdom,
     clade: Clade,
-    params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, axios?: AxiosRequestConfig}
+    params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -372,30 +379,33 @@ export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getPr
  * @summary Get Protein Annotations
  */
 export const getProteinAnnotations = (
-    uniprotId: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AnnotationData>> => {
-    
-    return axios.get(
-      `/api/v1/annotations/${uniprotId}`,options
-    );
-  }
-
+    uniprotId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<AnnotationData>(
+      {url: `/api/v1/annotations/${uniprotId}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetProteinAnnotationsQueryKey = (uniprotId: string,) => {
     return [`/api/v1/annotations/${uniprotId}`] as const;
     }
 
     
-export const getGetProteinAnnotationsQueryOptions = <TData = Awaited<ReturnType<typeof getProteinAnnotations>>, TError = AxiosError<HTTPValidationError>>(uniprotId: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetProteinAnnotationsQueryOptions = <TData = Awaited<ReturnType<typeof getProteinAnnotations>>, TError = HTTPValidationError>(uniprotId: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetProteinAnnotationsQueryKey(uniprotId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinAnnotations>>> = ({ signal }) => getProteinAnnotations(uniprotId, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinAnnotations>>> = ({ signal }) => getProteinAnnotations(uniprotId, signal);
 
       
 
@@ -405,15 +415,15 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetProteinAnnotationsQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinAnnotations>>>
-export type GetProteinAnnotationsQueryError = AxiosError<HTTPValidationError>
+export type GetProteinAnnotationsQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Protein Annotations
  */
 
-export function createGetProteinAnnotations<TData = Awaited<ReturnType<typeof getProteinAnnotations>>, TError = AxiosError<HTTPValidationError>>(
- uniprotId: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData>, axios?: AxiosRequestConfig}
+export function createGetProteinAnnotations<TData = Awaited<ReturnType<typeof getProteinAnnotations>>, TError = HTTPValidationError>(
+ uniprotId: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -433,30 +443,33 @@ export function createGetProteinAnnotations<TData = Awaited<ReturnType<typeof ge
  * @summary Get Db Annotations Legends
  */
 export const getDbAnnotationsLegends = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<GetDbAnnotationsLegends200>> => {
     
-    return axios.get(
-      `/api/v1/info/legends/`,options
-    );
-  }
-
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<GetDbAnnotationsLegends200>(
+      {url: `/api/v1/info/legends/`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetDbAnnotationsLegendsQueryKey = () => {
     return [`/api/v1/info/legends/`] as const;
     }
 
     
-export const getGetDbAnnotationsLegendsQueryOptions = <TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError = AxiosError<unknown>>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetDbAnnotationsLegendsQueryOptions = <TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError = unknown>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetDbAnnotationsLegendsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDbAnnotationsLegends>>> = ({ signal }) => getDbAnnotationsLegends({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDbAnnotationsLegends>>> = ({ signal }) => getDbAnnotationsLegends(signal);
 
       
 
@@ -466,15 +479,15 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetDbAnnotationsLegendsQueryResult = NonNullable<Awaited<ReturnType<typeof getDbAnnotationsLegends>>>
-export type GetDbAnnotationsLegendsQueryError = AxiosError<unknown>
+export type GetDbAnnotationsLegendsQueryError = unknown
 
 
 /**
  * @summary Get Db Annotations Legends
  */
 
-export function createGetDbAnnotationsLegends<TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError = AxiosError<unknown>>(
-  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData>, axios?: AxiosRequestConfig}
+export function createGetDbAnnotationsLegends<TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError = unknown>(
+  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -494,30 +507,33 @@ export function createGetDbAnnotationsLegends<TData = Awaited<ReturnType<typeof 
  * @summary Get Annotation Legend For Db
  */
 export const getAnnotationLegendForDb = (
-    dbName: DatabaseType, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AnnotationLegend>> => {
-    
-    return axios.get(
-      `/api/v1/info/legend/${dbName}`,options
-    );
-  }
-
+    dbName: DatabaseType,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<AnnotationLegend>(
+      {url: `/api/v1/info/legend/${dbName}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetAnnotationLegendForDbQueryKey = (dbName: DatabaseType,) => {
     return [`/api/v1/info/legend/${dbName}`] as const;
     }
 
     
-export const getGetAnnotationLegendForDbQueryOptions = <TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError = AxiosError<HTTPValidationError>>(dbName: DatabaseType, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetAnnotationLegendForDbQueryOptions = <TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError = HTTPValidationError>(dbName: DatabaseType, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetAnnotationLegendForDbQueryKey(dbName);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAnnotationLegendForDb>>> = ({ signal }) => getAnnotationLegendForDb(dbName, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAnnotationLegendForDb>>> = ({ signal }) => getAnnotationLegendForDb(dbName, signal);
 
       
 
@@ -527,15 +543,15 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetAnnotationLegendForDbQueryResult = NonNullable<Awaited<ReturnType<typeof getAnnotationLegendForDb>>>
-export type GetAnnotationLegendForDbQueryError = AxiosError<HTTPValidationError>
+export type GetAnnotationLegendForDbQueryError = HTTPValidationError
 
 
 /**
  * @summary Get Annotation Legend For Db
  */
 
-export function createGetAnnotationLegendForDb<TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError = AxiosError<HTTPValidationError>>(
- dbName: DatabaseType, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData>, axios?: AxiosRequestConfig}
+export function createGetAnnotationLegendForDb<TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError = HTTPValidationError>(
+ dbName: DatabaseType, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
@@ -555,30 +571,33 @@ export function createGetAnnotationLegendForDb<TData = Awaited<ReturnType<typeof
  * @summary Get Taxonomies
  */
 export const getTaxonomies = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<GetTaxonomies200>> => {
     
-    return axios.get(
-      `/api/v1/info/taxonomies/`,options
-    );
-  }
-
+ signal?: AbortSignal
+) => {
+      
+      
+      return customMutator<GetTaxonomies200>(
+      {url: `/api/v1/info/taxonomies/`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetTaxonomiesQueryKey = () => {
     return [`/api/v1/info/taxonomies/`] as const;
     }
 
     
-export const getGetTaxonomiesQueryOptions = <TData = Awaited<ReturnType<typeof getTaxonomies>>, TError = AxiosError<unknown>>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetTaxonomiesQueryOptions = <TData = Awaited<ReturnType<typeof getTaxonomies>>, TError = unknown>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData>, }
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetTaxonomiesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTaxonomies>>> = ({ signal }) => getTaxonomies({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTaxonomies>>> = ({ signal }) => getTaxonomies(signal);
 
       
 
@@ -588,15 +607,15 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type GetTaxonomiesQueryResult = NonNullable<Awaited<ReturnType<typeof getTaxonomies>>>
-export type GetTaxonomiesQueryError = AxiosError<unknown>
+export type GetTaxonomiesQueryError = unknown
 
 
 /**
  * @summary Get Taxonomies
  */
 
-export function createGetTaxonomies<TData = Awaited<ReturnType<typeof getTaxonomies>>, TError = AxiosError<unknown>>(
-  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData>, axios?: AxiosRequestConfig}
+export function createGetTaxonomies<TData = Awaited<ReturnType<typeof getTaxonomies>>, TError = unknown>(
+  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData>, }
 
   ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
