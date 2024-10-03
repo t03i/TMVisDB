@@ -9,23 +9,19 @@
   import type {
     Topology,
     ProteinResponse,
-    HTTPValidationError,
     SuperKingdom,
     Clade,
   } from "$lib/client/model";
 
-  import type { AxiosError, AxiosResponse } from "axios";
+  import type { AxiosError } from "axios";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
   export let params: Record<string, string>;
-  export let initialData: ProteinResponse | null = null;
+  export let initialData: ProteinResponse | undefined = undefined;
   export let pageSize: number = 20;
   export let currentPage: number = 1;
 
-  let query: CreateQueryResult<
-    AxiosResponse<ProteinResponse>,
-    AxiosError<HTTPValidationError>
-  > | null = null;
+  let query: CreateQueryResult<ProteinResponse, AxiosError> | null = null;
 
   // Define query parameters
   $: queryParams = {
@@ -85,8 +81,8 @@
 
 <!-- Slot Props -->
 <slot
-  isSuccessful={$query?.isSuccess}
-  isLoading={$query?.isLoading}
-  error={$query?.error}
-  data={$query?.data?.data}
+  isSuccessful={$query ? $query?.isSuccess : false}
+  isLoading={$query ? $query?.isLoading : false}
+  error={$query ? $query?.error : null}
+  data={$query ? $query?.data : undefined}
 />

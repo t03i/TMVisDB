@@ -24,7 +24,7 @@
 
 <DataLoader
   {params}
-  initialData={{ data: data.initialProteins }}
+  initialData={data.initialProteins}
   pageSize={itemsPerPage}
   {currentPage}
   let:data={proteinResponse}
