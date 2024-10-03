@@ -35,7 +35,7 @@
   $: uniprotAcc = data.slug;
   let structureQuery: CreateQueryResult<AlphaFoldStructure | null, AxiosError>;
   let structureUrl: string = "";
-  let infoQuery: CreateQueryResult<{ data: ProteinInfo }, AxiosError>;
+  let infoQuery: CreateQueryResult<ProteinInfo, AxiosError>;
   let uniprotQuery: CreateQueryResult<UniprotAnnotationData | null, AxiosError>;
   let annotationQuery: CreateQueryResult<unknown, AxiosError>;
 
@@ -84,8 +84,8 @@
       {/if}
     </div>
     <div class="card w-full lg:w-1/2 p-6 h-full">
-      {#if !$infoQuery?.error && $infoQuery?.data?.data}
-        <ProteinDetailView proteinInfo={$infoQuery.data.data} />
+      {#if !$infoQuery?.error && $infoQuery?.data}
+        <ProteinDetailView proteinInfo={$infoQuery.data} />
       {:else if $infoQuery?.isLoading}
         <ProteinDetailLoading />
       {:else if $infoQuery?.error}
