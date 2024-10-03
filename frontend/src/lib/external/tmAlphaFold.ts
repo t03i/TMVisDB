@@ -35,7 +35,7 @@ const tmalphafold_parse_response = (body: any, up_name: string): AnnotationData 
   return annotations.length > 0 ? {annotations: annotations} : null;
 };
 
-export const CreateGetTMAlphaFoldAnnotation = (up_name: string) => {
+export const createGetTMAlphaFoldAnnotation = (up_name: string) => {
   const queryFn: QueryFunction<AnnotationData | null> = async () => {
     const url = tmalphafold_query_url(up_name);
     const { data } = await axios.get(url);

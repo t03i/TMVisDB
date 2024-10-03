@@ -11,6 +11,8 @@
     type UniprotAnnotationData,
   } from "$lib/external/uniprot";
   import { createGetProteinById } from "$lib/client/tmvisdb";
+  import type { AnnotationSet } from "$lib/annotations";
+
   import type { ProteinInfo } from "$lib/client/model";
   import {
     ProteinDetailView,
@@ -37,7 +39,7 @@
   let structureUrl: string = "";
   let infoQuery: CreateQueryResult<ProteinInfo, AxiosError>;
   let uniprotQuery: CreateQueryResult<UniprotAnnotationData | null, AxiosError>;
-  let annotationQuery: CreateQueryResult<unknown, AxiosError>;
+  let annotationsQuery: CreateQueryResult<AnnotationSet, Error>;
 
   $: if (uniprotAcc) {
     structureQuery = createGetAlphaFoldStructure(uniprotAcc);
@@ -94,16 +96,17 @@
     </div>
   </div>
 
-  {#if $infoQuery?.data?.data}
-    <AnnotationLoader proteinInfo={$infoQuery.data.data} bind:annotationQuery>
+  {#if $infoQuery?.data}
+    <AnnotationLoader proteinInfo={$infoQuery.data} bind:annotationsQuery>
       <div class="card w-full p-6 space-y-6">
-        {#if annotationQuery?.isLoading}
+        {#if $annotationsQuery?.isLoading}
           <DBReferencesLoading />
-        {:else if annotationQuery?.isError}
-          <p>Error loading annotations: {annotationQuery.error.message}</p>
-        {:else if dbReferences}
-          <DBReferencesView {dbReferences} />
-        {/if}
+        {:else if $annotationsQuery?.isError}
+          <p>Error loading annotations: {$annotationsQuery.error.message}</p>
+        {:else if $annotationsQuery?.isSuccess}
+          <DBReferencesView
+            dbReferences={$annotationsQuery.data.dbReferences}
+          />{/if}
       </div>
     </AnnotationLoader>
   {/if}

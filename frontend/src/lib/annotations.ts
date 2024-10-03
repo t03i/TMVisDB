@@ -1,5 +1,5 @@
-import { createQuery, type CreateQueryResult } from "@tanstack/svelte-query";
-import type { PublicAnnotation, AnnotationData } from "$lib/client/model";
+import { createQuery, type CreateQueryResult, type QueryFunction } from "@tanstack/svelte-query";
+import type { PublicAnnotation, AnnotationData, HTTPValidationError } from "$lib/client/model";
 import type { AxiosError } from "axios";
 
 export const SOURCE_DATABASES = [
@@ -40,37 +40,39 @@ export function annotationsToReferences(annotations: PublicAnnotation[]): DBRefe
   return references;
 }
 
-type AnnotationQuery = CreateQueryResult<AnnotationData | null, AxiosError>;
+type AnnotationQuery = CreateQueryResult<AnnotationData | null, AxiosError | Error| HTTPValidationError>;
 
-export function createCombinedAnnotationsQuery(proteinInfo: any, queries: AnnotationQuery[]) {
-  return createQuery({
+export const createCombinedAnnotationsQuery = (
+  proteinInfo: { uniprot_accession: string } | null,
+  queries: AnnotationQuery[]
+): CreateQueryResult<AnnotationSet, Error> => {
+  const queryFn: QueryFunction<AnnotationSet> = async () => {
+    if (!proteinInfo) {
+      throw new Error("Protein information not found");
+    }
+    try {
+      // Wait for all queries to complete
+      await Promise.all(queries);
+
+      const allAnnotations: PublicAnnotation[] = queries.flatMap(query =>
+        query.data?.annotations ?? []
+      );
+
+      if (allAnnotations.length === 0) {
+        throw new Error("No annotations found in the database");
+      }
+
+      const dbReferences = annotationsToReferences(allAnnotations);
+      return { annotations: allAnnotations, dbReferences };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Error fetching annotations: ${errorMessage}`);
+    }
+  };
+
+  return createQuery<AnnotationSet, Error>({
     queryKey: ["combinedAnnotations", proteinInfo?.uniprot_accession],
-    queryFn: async (): Promise<AnnotationSet> => {
-      if (!proteinInfo) {
-        throw new Error("Protein information not found");
-      }
-
-      try {
-        // Ensure all queries have completed
-        await Promise.all(queries);
-
-        const allAnnotations: PublicAnnotation[] = queries.flatMap(query =>
-          query.data?.annotations ?? []
-        );
-
-        if (allAnnotations.length === 0) {
-          throw new Error("No annotations found in the database");
-        }
-
-        const dbReferences = annotationsToReferences(allAnnotations);
-
-        return { annotations: allAnnotations, dbReferences };
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        throw new Error(`Error fetching annotations: ${errorMessage}`);
-      }
-    },
-    enabled: !!proteinInfo ,
+    queryFn,
+    enabled: !!proteinInfo,
   });
-
-}
+};
