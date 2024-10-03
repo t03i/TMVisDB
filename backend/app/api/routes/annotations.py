@@ -8,7 +8,7 @@ import app.crud as crud
 router = APIRouter()
 
 
-@router.get("/{uniprot_id}", response_model=list[PublicAnnotation])
+@router.get("/{uniprot_id}", response_model=AnnotationData)
 def get_protein_annotations(session: SessionDep, uniprot_id: str):  # type: ignore
     annotations = crud.get_membrane_annotation_for_id(session, uniprot_id)
     if annotations is None:

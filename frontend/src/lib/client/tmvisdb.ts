@@ -20,6 +20,7 @@ import type {
   AxiosResponse
 } from 'axios'
 import type {
+  AnnotationData,
   AnnotationLegend,
   Clade,
   DatabaseType,
@@ -31,7 +32,6 @@ import type {
   HTTPValidationError,
   ProteinInfo,
   ProteinResponse,
-  PublicAnnotation,
   SuperKingdom
 } from './model'
 
@@ -373,7 +373,7 @@ export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getPr
  */
 export const getProteinAnnotations = (
     uniprotId: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<PublicAnnotation[]>> => {
+ ): Promise<AxiosResponse<AnnotationData>> => {
     
     return axios.get(
       `/api/v1/annotations/${uniprotId}`,options

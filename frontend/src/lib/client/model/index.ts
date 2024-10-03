@@ -5,6 +5,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './annotationData';
 export * from './annotationLegend';
 export * from './clade';
 export * from './databaseType';
