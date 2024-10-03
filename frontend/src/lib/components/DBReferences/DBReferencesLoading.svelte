@@ -19,7 +19,7 @@
     {#each SOURCE_DATABASES as dbName}
       <div class="flex mt-1 items-center">
         <span class="mr-2">{dbName} Annotation:</span>
-        <span class="placeholder-circle w-16" />
+        <span class="placeholder-circle animate-pulse w-3" />
       </div>
     {/each}
   </div>
