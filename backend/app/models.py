@@ -109,6 +109,10 @@ class Annotation(PublicAnnotation, table=True):
     )
 
 
+class AnnotationData(BaseModel):
+    annotations: List[PublicAnnotation]
+
+
 class TaxonomyFilter(BaseModel):
     super_kingdom: SuperKingdom
     clade: Optional[Clade] = None
