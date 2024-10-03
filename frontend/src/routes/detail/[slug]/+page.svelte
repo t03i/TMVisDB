@@ -53,9 +53,13 @@
   <div class="flex flex-col lg:flex-row gap-4 h-lvh lg:h-1/2">
     <div class="card w-full lg:w-1/2 h-full">
       {#if $structureQuery?.isLoading}
-        <StructureViewerLoading />
+        <div class="h-full w-full p-6">
+          <StructureViewerLoading />
+        </div>
       {:else if $structureQuery?.error}
-        <StructureViewerError error={$structureQuery?.error} />
+        <div class="h-full w-full p-6">
+          <StructureViewerError error={$structureQuery?.error} />
+        </div>
       {:else if structureUrl}
         <StructureViewer
           {structureUrl}
@@ -65,7 +69,7 @@
         />
       {/if}
     </div>
-    <div class="card w-full lg:w-1/2 p-6 space-y-6">
+    <div class="card w-full lg:w-1/2 p-6 h-full">
       {#if !$infoQuery?.error && $infoQuery?.data?.data}
         <ProteinDetailView proteinInfo={$infoQuery.data.data} />
       {:else if $infoQuery?.isLoading}

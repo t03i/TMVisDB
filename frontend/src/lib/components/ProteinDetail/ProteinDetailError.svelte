@@ -20,11 +20,11 @@
   <div class="flex flex-col items-center justify-center p-4 rounded-lg mb-5">
     <div class="h-1/3 flex items-end justify-center">
       {#if is404Error}
-        <p class="text-error-500 text-6xl leading-none">🤔</p>
+        <p class="text-error-500 text-[150pt] leading-none">🤔</p>
       {:else}
         <iconify-icon
           icon="line-md:close-circle"
-          class="text-error-500 text-6xl"
+          class="text-error-500 text-[150pt]"
         />
       {/if}
     </div>

@@ -34,9 +34,9 @@
 >
   <div class="flex flex-row gap-4 mx-8 my-8">
     <div class="basis-2/12">
-      <LoadingCard {isLoading}>
+      <FilterFormLoading {isLoading}>
         <FilterForm />
-      </LoadingCard>
+      </FilterFormLoading>
     </div>
     <div class="basis-10/12 card">
       {#if isSuccessful}

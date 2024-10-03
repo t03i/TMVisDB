@@ -9,7 +9,7 @@
 </script>
 
 <div
-  class="flex justify-center items-center h-1/3 {className}"
+  class="flex justify-center items-center h-full {className}"
   {...$$restProps}
 >
   <ProgressRadial
@@ -18,5 +18,6 @@
     meter="stroke-primary-500"
     track="stroke-primary-500/30"
     strokeLinecap="butt"
+    class="justify-self-center ali"
   />
 </div>
