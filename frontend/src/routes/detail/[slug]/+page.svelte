@@ -12,6 +12,8 @@
   } from "$lib/components/ProteinDetail";
   import DbReferencesView from "$lib/components/DBReferencesView.svelte";
   import AnnotationLoader from "$lib/components/AnnotationLoader.svelte";
+  import StructureViewerError from "$lib/components/StructureViewer/StructureViewerError.svelte";
+  import StructureViewerLoading from "$lib/components/StructureViewer/StructureViewerLoading.svelte";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -47,15 +49,21 @@
   onDestroy(cleanup);
 </script>
 
-<div class="flex flex-col m-5 p-3 gap-4">
-  <div class="flex flex-col lg:flex-row gap-4">
-    <div class="card w-full lg:w-1/2 h-96 lg:h-auto">
-      <StructureViewer
-        {structureUrl}
-        format={$structureQuery?.data?.format}
-        binary={$structureQuery?.data?.binary}
-        class="h-full w-full card"
-      />
+<div class="flex flex-col m-5 p-3 gap-4 h-full lg:h-lvh">
+  <div class="flex flex-col lg:flex-row gap-4 h-lvh lg:h-1/2">
+    <div class="card w-full lg:w-1/2 h-full">
+      {#if $structureQuery?.isLoading}
+        <StructureViewerLoading />
+      {:else if $structureQuery?.error}
+        <StructureViewerError error={$structureQuery?.error} />
+      {:else if structureUrl}
+        <StructureViewer
+          {structureUrl}
+          format={$structureQuery?.data?.format}
+          binary={$structureQuery?.data?.binary}
+          class="h-full w-full card"
+        />
+      {/if}
     </div>
     <div class="card w-full lg:w-1/2 p-6 space-y-6">
       {#if !$infoQuery?.error && $infoQuery?.data?.data}

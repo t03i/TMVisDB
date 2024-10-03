@@ -35,6 +35,7 @@
 <div class="molstarContainer {className}" {...$$restProps}>
   {#if structureUrl}
     <pdbe-molstar
+      style="height: 100%; width: 100%;"
       bind:this={viewerElement}
       custom-data-url={structureUrl}
       custom-data-format={format}
