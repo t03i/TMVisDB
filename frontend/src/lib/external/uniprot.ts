@@ -4,6 +4,7 @@
 import { createQuery } from '@tanstack/svelte-query';
 import type { QueryFunction } from '@tanstack/svelte-query';
 import axios from 'axios';
+import type { AnnotationData, PublicAnnotation } from '$lib/client/model';
 
 export enum UniprotACCType {
   UNIPROT_ID = 0,
@@ -11,17 +12,10 @@ export enum UniprotACCType {
   UNKNOWN = -1,
 }
 
-interface ResidueAnnotation {
-  start: number;
-  end: number;
-  label: string;
-}
-
-interface UniprotResponse {
+export interface UniprotAnnotationData extends AnnotationData {
   accession: string;
   name: string;
   sequence_length: number;
-  membrane_annotations: ResidueAnnotation[];
 }
 
 const uniprot_get_input_type = (selected_id: string): UniprotACCType => {
@@ -53,17 +47,24 @@ export const uniprot_taxonomy_url = (taxon_id: string): string => {
   return `https://www.uniprot.org/taxonomy/${taxon_id}`;
 };
 
-const uniprot_parse_response = (body: any): UniprotResponse | null => {
+const uniprot_parse_response = (body: any, selected_id: string): UniprotAnnotationData | null => {
   if (body && body.results && body.results.length > 0) {
     const result = body.results[0];
-    const annotations: ResidueAnnotation[] = [];
+    const annotations: PublicAnnotation[] = [];
 
     for (const entry of result.features || []) {
       if (entry.type === "Transmembrane") {
         const label = entry.description.includes("Beta") ? "BS" : "AH";
         const pos_start = parseInt(entry.location.start.value);
         const pos_end = parseInt(entry.location.end.value);
-        annotations.push({ start: pos_start, end: pos_end, label });
+        annotations.push({
+          start: pos_start,
+          end: pos_end,
+          label,
+          source_db: "UniProtKB",
+          source_db_url: uniprot_entry_url(selected_id),
+          date_added: new Date().toISOString().split('T')[0],
+        });
       }
     }
 
@@ -71,18 +72,18 @@ const uniprot_parse_response = (body: any): UniprotResponse | null => {
       accession: result.primaryAccession,
       name: result.uniProtkbId,
       sequence_length: result.sequence.length,
-      membrane_annotations: annotations,
+      annotations: annotations,
     };
   }
   return null;
 };
 
-export const useUniprotFetchAnnotation = (selected_id: string) => {
-  const queryFn: QueryFunction<UniprotResponse | null> = async () => {
+export const createGetUniprotAnnotation = (selected_id: string) => {
+  const queryFn: QueryFunction<UniprotAnnotationData | null> = async () => {
     const input_type = uniprot_get_input_type(selected_id);
     const url = uniprot_query_url(selected_id, input_type);
     const { data } = await axios.get(url);
-    return uniprot_parse_response(data);
+    return uniprot_parse_response(data, selected_id);
   };
 
   return createQuery({

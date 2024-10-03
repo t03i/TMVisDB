@@ -6,13 +6,14 @@ import { createQuery } from '@tanstack/svelte-query';
 import type { QueryFunction } from '@tanstack/svelte-query';
 import axios from 'axios';
 
-interface AlphaFoldStructure {
+export interface AlphaFoldStructure {
   sequence: string;
   structureData: string;
-  format: 'bcif' | 'mmcif' | 'pdb';
+  format: 'cif' | 'mmcif' | 'pdb';
+  binary: boolean;
 }
 
-export const useAlphaFoldFetchStructure = (selected_id: string) => {
+export const createGetAlphaFoldStructure = (selected_id: string) => {
   const queryFn: QueryFunction<AlphaFoldStructure | null> = async () => {
     const afdb_api_path = `https://www.alphafold.ebi.ac.uk/api/prediction/${selected_id}`;
 

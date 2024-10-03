@@ -1,7 +1,5 @@
-// Copyright 2024 Tobias Olenyi.
-// SPDX-License-Identifier: Apache-2.0
-import { createQuery, type  DefinedCreateQueryResult } from "@tanstack/svelte-query";
-import type { PublicAnnotation } from "$lib/client/model";
+import { createQuery, type CreateQueryResult } from "@tanstack/svelte-query";
+import type { PublicAnnotation, AnnotationData } from "$lib/client/model";
 import type { AxiosError } from "axios";
 
 export const SOURCE_DATABASES = [
@@ -39,11 +37,10 @@ export function annotationsToReferences(annotations: PublicAnnotation[]): DBRefe
       };
     }
   }
-  console.log(references, annotations);
   return references;
 }
 
-type AnnotationQuery = DefinedCreateQueryResult<PublicAnnotation[] | null, AxiosError>;
+type AnnotationQuery = CreateQueryResult<AnnotationData | null, AxiosError>;
 
 export function createCombinedAnnotationsQuery(proteinInfo: any, queries: AnnotationQuery[]) {
   return createQuery({
@@ -58,7 +55,7 @@ export function createCombinedAnnotationsQuery(proteinInfo: any, queries: Annota
         await Promise.all(queries);
 
         const allAnnotations: PublicAnnotation[] = queries.flatMap(query =>
-          query.data ? query.data.filter((annotation): annotation is PublicAnnotation => annotation !== null) : []
+          query.data?.annotations ?? []
         );
 
         if (allAnnotations.length === 0) {
@@ -66,11 +63,14 @@ export function createCombinedAnnotationsQuery(proteinInfo: any, queries: Annota
         }
 
         const dbReferences = annotationsToReferences(allAnnotations);
+
         return { annotations: allAnnotations, dbReferences };
-      } catch (error: any) {
-        throw new Error(`Error fetching annotations: ${error.message}`);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        throw new Error(`Error fetching annotations: ${errorMessage}`);
       }
     },
-    enabled: !!proteinInfo,
+    enabled: !!proteinInfo ,
   });
+
 }
