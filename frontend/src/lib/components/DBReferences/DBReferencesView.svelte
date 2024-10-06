@@ -7,9 +7,11 @@
 
 <div {...$$restProps}>
   <h3 class="h3 no-wrap">Annotation Sources</h3>
-  <div class="flex flex-col lg:flex-row gap-4 justify-items-start">
+  <div
+    class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4 justify-items-start"
+  >
     {#each SOURCE_DATABASES as dbName}
-      <div class="flex mt-1">
+      <div class="flex item mt-1">
         <span class="mr-2">{dbName}</span>
         {#if dbReferences && dbReferences[dbName]}
           <span class="badge variant-filled-success">
