@@ -18,7 +18,7 @@
   <div class="flex flex-col lg:flex-row gap-4 justify-items-start mt-4">
     {#each SOURCE_DATABASES as dbName}
       <div class="flex mt-1 items-center">
-        <span class="mr-2">{dbName} Annotation:</span>
+        <span class="mr-2">{dbName}</span>
         <span class="placeholder-circle animate-pulse w-3" />
       </div>
     {/each}

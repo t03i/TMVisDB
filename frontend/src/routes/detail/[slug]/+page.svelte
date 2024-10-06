@@ -3,6 +3,8 @@
   import type { CreateQueryResult } from "@tanstack/svelte-query";
   import type { AxiosError } from "axios";
 
+  //TODO clean technical debt of quick and dirty
+
   import {
     createGetAlphaFoldStructure,
     type AlphaFoldStructure,
@@ -14,10 +16,13 @@
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import { createGetTMAlphaFoldAnnotation } from "$lib/external/tmAlphaFold";
   import { createGetProteinAnnotations } from "$lib/client/tmvisdb";
-  import { annotationsToReferences } from "$lib/annotations";
-  import type { AnnotationSet, DBReferences } from "$lib/annotations";
+  import {
+    annotationsToReferences,
+    annotationsToTracks,
+  } from "$lib/annotations";
+  import type { TrackData, DBReferences } from "$lib/annotations";
 
-  import type { ProteinInfo } from "$lib/client/model";
+  import type { ProteinInfo, PublicAnnotation } from "$lib/client/model";
   import {
     ProteinDetailView,
     ProteinDetailLoading,
@@ -36,7 +41,6 @@
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
-  export const ssr = false;
 
   $: uniprotAcc = data.slug;
   let structureQuery: CreateQueryResult<AlphaFoldStructure | null, AxiosError>;
@@ -46,6 +50,7 @@
   let tmAlphaFoldQuery: CreateQueryResult<any, any>;
   let tmvisdbQuery: CreateQueryResult<any, any>;
   let dbReferences: DBReferences = {};
+  let trackData: TrackData | undefined = undefined;
   let annotationsLoading = false;
 
   $: if (uniprotAcc) {
@@ -71,12 +76,13 @@
     $tmvisdbQuery?.isFetching;
 
   $: if ($infoQuery?.data && !annotationsLoading) {
-    let annotations = [
+    let annotations: PublicAnnotation[] = [
       ...($uniprotQuery?.data?.annotations ?? []),
       ...($tmAlphaFoldQuery?.data?.annotations ?? []),
       ...($tmvisdbQuery?.data?.annotations ?? []),
     ];
     dbReferences = annotationsToReferences(annotations);
+    trackData = annotationsToTracks(annotations);
   }
 
   $: if ($structureQuery?.data) {
@@ -134,7 +140,13 @@
         <DBReferencesLoading />
       {:else if dbReferences && Object.keys(dbReferences).length > 0}
         <DBReferencesView {dbReferences} />
-        <FeatureViewer sequence={$structureQuery.data?.sequence} />
+      {/if}
+    </div>
+    <div class="card w-full p-6 space-y-6">
+      {#if annotationsLoading}
+        Create Loading component
+      {:else if dbReferences && $structureQuery.data?.sequence && trackData}
+        <FeatureViewer sequence={$structureQuery.data?.sequence} {trackData} />
       {/if}
     </div>
   {/if}
