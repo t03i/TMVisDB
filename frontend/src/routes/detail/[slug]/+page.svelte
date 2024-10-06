@@ -32,16 +32,17 @@
     StructureViewerError,
     StructureViewerLoading,
   } from "$lib/components/StructureViewer";
+  import FeatureViewer from "$lib/components/FeatureViewer.svelte";
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
+  export const ssr = false;
 
   $: uniprotAcc = data.slug;
   let structureQuery: CreateQueryResult<AlphaFoldStructure | null, AxiosError>;
   let structureUrl: string = "";
   let infoQuery: CreateQueryResult<ProteinInfo, AxiosError>;
   let uniprotQuery: CreateQueryResult<UniprotAnnotationData | null, AxiosError>;
-  let annotationsQuery: CreateQueryResult<AnnotationSet, Error>;
   let tmAlphaFoldQuery: CreateQueryResult<any, any>;
   let tmvisdbQuery: CreateQueryResult<any, any>;
   let dbReferences: DBReferences = {};
@@ -133,6 +134,7 @@
         <DBReferencesLoading />
       {:else if dbReferences && Object.keys(dbReferences).length > 0}
         <DBReferencesView {dbReferences} />
+        <FeatureViewer sequence={$structureQuery.data?.sequence} />
       {/if}
     </div>
   {/if}
