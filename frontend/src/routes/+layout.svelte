@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { page } from "$app/stores";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { SvelteQueryDevtools } from "@tanstack/svelte-query-devtools";
   import {
@@ -12,7 +13,7 @@
   } from "@floating-ui/dom";
   import { storePopup } from "@skeletonlabs/skeleton";
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
-
+  import { AppRail, AppRailAnchor } from "@skeletonlabs/skeleton";
   import "../app.css";
   import Footer from "$lib/components/Footer.svelte";
   import Header from "$lib/components/Header.svelte";
@@ -29,9 +30,32 @@
   });
 </script>
 
-<Header />
-<QueryClientProvider client={queryClient}>
-  <slot />
-  <SvelteQueryDevtools />
-</QueryClientProvider>
-<Footer />
+<div class="flex flex-col h-screen">
+  <Header />
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Navigation sidebar -->
+    <nav class="w-16 border-r flex-shrink-0">
+      <AppRail>
+        <AppRailAnchor href="/" selected={$page.url.pathname === "/"}
+          >(icon)</AppRailAnchor
+        >
+        <AppRailAnchor
+          href="/filter"
+          selected={$page.url.pathname === "/filter"}>(icon)</AppRailAnchor
+        >
+      </AppRail>
+    </nav>
+    <!-- Main content area -->
+    <div class="flex flex-col flex-1 overflow-auto">
+      <main class="flex-1 p-4">
+        <QueryClientProvider client={queryClient}>
+          <slot />
+          {#if browser}
+            <SvelteQueryDevtools />
+          {/if}
+        </QueryClientProvider>
+      </main>
+      <Footer />
+    </div>
+  </div>
+</div>

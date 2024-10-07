@@ -86,7 +86,7 @@
 
         {#each Object.entries(trackData) as [sourceDB, features], index}
           <div
-            class="font-mono text-normal justify-self-end leading-none hidden lg:block"
+            class="font-mono text-base justify-self-end leading-none hidden lg:block"
           >
             {sourceDB}
           </div>
@@ -131,7 +131,9 @@
           ></nightingale-sequence>
         </div>
       </div>
-      <div class="text-mono mt-5 justify-self-start lg:col-span-2">
+      <div
+        class="text-mono text-[8pt] lg:text-base mt-5 justify-self-start lg:col-span-2"
+      >
         {$tooltipContent}
       </div>
     </nightingale-manager>
