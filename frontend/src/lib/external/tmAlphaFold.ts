@@ -41,6 +41,8 @@ export const getTMAlphaFoldAnnotation = async (up_name: string, signal: AbortSig
     return tmalphafold_parse_response(data, up_name);
   };
 
+
+  // TODO better solution for queryClient
 export const createGetTMAlphaFoldAnnotation = (up_name: string, queryClient) => {
 
   return createQuery({
