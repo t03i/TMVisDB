@@ -1,14 +1,11 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
+  import { writable } from "svelte/store";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
   import type { AxiosError } from "axios";
 
   //TODO clean technical debt of quick and dirty
 
-  import {
-    createGetAlphaFoldStructure,
-    type AlphaFoldStructure,
-  } from "$lib/external/alphaFoldDB";
   import {
     createGetUniprotAnnotation,
     type UniprotAnnotationData,
@@ -21,6 +18,8 @@
     annotationsToTracks,
   } from "$lib/annotations";
   import type { TrackData, DBReferences } from "$lib/annotations";
+
+  import { createStructureStore } from "$lib/stores/StructureStore";
 
   import type { ProteinInfo, PublicAnnotation } from "$lib/client/model";
   import {
@@ -42,9 +41,12 @@
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
 
-  $: uniprotAcc = data.slug;
-  let structureQuery: CreateQueryResult<AlphaFoldStructure | null, AxiosError>;
-  let structureUrl: string = "";
+  const {
+    query: structureQuery,
+    structureUrl,
+    cleanup: structureCleanup,
+  } = createStructureStore(data.slug);
+
   let infoQuery: CreateQueryResult<ProteinInfo, AxiosError>;
   let uniprotQuery: CreateQueryResult<UniprotAnnotationData | null, AxiosError>;
   let tmAlphaFoldQuery: CreateQueryResult<any, any>;
@@ -53,58 +55,42 @@
   let trackData: TrackData | undefined = undefined;
   let annotationsLoading = false;
 
-  $: if (uniprotAcc) {
-    structureQuery = createGetAlphaFoldStructure(uniprotAcc);
-    infoQuery = createGetProteinById(uniprotAcc);
-  }
+  // $: if (uniprotAcc) {
+  //   infoQuery = createGetProteinById(uniprotAcc);
+  // }
 
-  $: if ($infoQuery?.data) {
-    uniprotQuery = createGetUniprotAnnotation(
-      $infoQuery.data.uniprot_accession,
-    );
-    tmAlphaFoldQuery = createGetTMAlphaFoldAnnotation(
-      $infoQuery.data.uniprot_id,
-    );
-    tmvisdbQuery = createGetProteinAnnotations(
-      $infoQuery.data.uniprot_accession,
-    );
-  }
+  // $: if ($infoQuery?.data) {
+  //   uniprotQuery = createGetUniprotAnnotation(
+  //     $infoQuery.data.uniprot_accession,
+  //   );
+  //   tmAlphaFoldQuery = createGetTMAlphaFoldAnnotation(
+  //     $infoQuery.data.uniprot_id,
+  //   );
+  //   tmvisdbQuery = createGetProteinAnnotations(
+  //     $infoQuery.data.uniprot_accession,
+  //   );
+  // }
 
-  $: annotationsLoading =
-    $uniprotQuery?.isFetching ||
-    $tmAlphaFoldQuery?.isFetching ||
-    $tmvisdbQuery?.isFetching;
+  // $: annotationsLoading =
+  //   $uniprotQuery?.isFetching ||
+  //   $tmAlphaFoldQuery?.isFetching ||
+  //   $tmvisdbQuery?.isFetching;
 
-  $: if ($infoQuery?.data && !annotationsLoading) {
-    let annotations: PublicAnnotation[] = [
-      ...($uniprotQuery?.data?.annotations ?? []),
-      ...($tmAlphaFoldQuery?.data?.annotations ?? []),
-      ...($tmvisdbQuery?.data?.annotations ?? []),
-    ];
-    dbReferences = annotationsToReferences(annotations);
-    trackData = annotationsToTracks(annotations);
-  }
+  // $: if ($infoQuery?.data && !annotationsLoading) {
+  //   let annotations: PublicAnnotation[] = [
+  //     ...($uniprotQuery?.data?.annotations ?? []),
+  //     ...($tmAlphaFoldQuery?.data?.annotations ?? []),
+  //     ...($tmvisdbQuery?.data?.annotations ?? []),
+  //   ];
+  //   dbReferences = annotationsToReferences(annotations);
+  //   trackData = annotationsToTracks(annotations);
+  // }
 
-  $: if ($structureQuery?.data) {
-    const blob = new Blob([$structureQuery.data.structureData], {
-      type: $structureQuery.data.binary
-        ? "application/octet-stream"
-        : "text/plain",
-    });
-    structureUrl = URL.createObjectURL(blob);
-  }
-
-  function cleanup() {
-    if (structureUrl && structureUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(structureUrl);
-    }
-  }
-
-  onDestroy(cleanup);
+  onDestroy(structureCleanup);
 </script>
 
 <div class="flex flex-col m-5 p-3 gap-4 h-full lg:h-lvh">
-  <div class="flex flex-col lg:flex-row gap-4 h-lvh lg:h-1/2 lg:min-h-[425px]">
+  <div class="flex flex-col lg:flex-row gap-4 h-lvh lg:h-1/2 min-h-[450px]">
     <div class="card w-full lg:w-1/2 h-full">
       {#if $structureQuery?.isLoading}
         <div class="h-full w-full p-6">
@@ -114,12 +100,12 @@
         <div class="h-full w-full p-6">
           <StructureViewerError error={$structureQuery?.error} />
         </div>
-      {:else if structureUrl}
+      {:else if $structureUrl}
         <StructureViewer
-          {structureUrl}
+          structureUrl={$structureUrl}
           format={$structureQuery?.data?.format}
           binary={$structureQuery?.data?.binary}
-          class="h-full w-full card"
+          class="h-full w-full card min-h-[200px]"
         />
       {/if}
     </div>
@@ -136,6 +122,7 @@
 
   {#if $infoQuery?.data}
     <div class="card w-full p-6 space-y-6">
+      <h3 class="h3 no-wrap">Annotation Sources</h3>
       {#if annotationsLoading}
         <DBReferencesLoading />
       {:else if dbReferences && Object.keys(dbReferences).length > 0}
@@ -143,10 +130,15 @@
       {/if}
     </div>
     <div class="card w-full p-6 space-y-6">
+      <h3 class="h3 no-wrap">Annotations</h3>
       {#if annotationsLoading}
         Create Loading component
       {:else if dbReferences && $structureQuery.data?.sequence && trackData}
-        <FeatureViewer sequence={$structureQuery.data?.sequence} {trackData} />
+        <FeatureViewer
+          sequence={$structureQuery.data?.sequence}
+          {trackData}
+          featureEventHandler={highlightHandler}
+        />
       {/if}
     </div>
   {/if}
