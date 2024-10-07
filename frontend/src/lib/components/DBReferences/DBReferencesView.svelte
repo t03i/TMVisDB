@@ -6,7 +6,6 @@
 </script>
 
 <div {...$$restProps}>
-  <h3 class="h3 no-wrap">Annotation Sources</h3>
   <div
     class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4 justify-items-start"
   >
