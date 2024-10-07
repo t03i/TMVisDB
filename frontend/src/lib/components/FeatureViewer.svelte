@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { modeCurrent } from "@skeletonlabs/skeleton";
+  import { onMount, afterUpdate } from "svelte";
   import "@nightingale-elements/nightingale-manager";
   import "@nightingale-elements/nightingale-navigation";
   import "@nightingale-elements/nightingale-sequence";
@@ -9,6 +8,7 @@
 
   export let sequence: string;
   export let trackData: TrackData;
+  export let featureEventHandler: (event: CustomEvent) => void = () => {};
   export let displayStart: number = 1;
   export let displayEnd: number = sequence.length;
   export let highlightColor: string = "rgba(var(--color-secondary-500)/0.3)";
@@ -25,31 +25,17 @@
 
   let managerElement: any;
 
-  onMount(() => {
+  function updateTracks() {
     Object.entries(trackData).forEach(([sourceDB, features]) => {
       const track = trackElements[sourceDB as SourceDB];
       if (track) {
         track.data = features;
       }
     });
-
-    managerElement = document.getElementById("manager");
-    applyThemeStyles();
-  });
-
-  function applyThemeStyles() {
-    if (!managerElement) return;
-
-    const brushElements = managerElement.querySelectorAll(".brush .selection");
-
-    brushElements.forEach((brush: SVGRectElement) => {
-      brush.style.fill = modeCurrent ? "#555555" : "#777777";
-      brush.style.stroke = modeCurrent ? "#888888" : "#ffffff";
-    });
   }
 
-  modeCurrent.subscribe((value) => {
-    applyThemeStyles();
+  afterUpdate(() => {
+    updateTracks();
   });
 
   $: componentWidth = Math.ceil(length * 100) / 100;
@@ -57,27 +43,62 @@
 
 {#if sequence && trackData}
   <div class="w-full max-w-7xl mx-auto p-5 h-full nightingale-container">
-    <nightingale-manager id="manager">
-      <div class="flex flex-col w-full">
-        <div class="leading-none">
-          <nightingale-navigation
-            id="navigation"
-            {length}
-            width={componentWidth}
-            display-start={displayStart}
-            display-end={displayEnd}
-            highlight-color={highlightColor}
-            margin-color={marginColor}
-            min-width={minWidth}
-            {height}
-            show-highlight
-          ></nightingale-navigation>
-        </div>
-        {#each Object.entries(trackData) as [sourceDB, features], index}
-          <div class="leading-none">
-            <nightingale-track
-              bind:this={trackElements[sourceDB]}
-              id={"track-" + sourceDB}
+    <div class="grid grid-cols-[auto,1fr] gap-1">
+      <div
+        class="hidden lg:flex gap-0 lg:flex-col card lg:pt-0 m-0 justify-between h-[85px] my-[22px] items-end"
+      >
+        {#each Object.keys(trackData) as sourceDB}
+          <div class="font-mono text-xs align-center whitespace-nowrap">
+            {sourceDB}
+          </div>
+        {/each}
+      </div>
+
+      <nightingale-manager id="manager" class="col-span-2 lg:col-span-1">
+        <div class="flex flex-col w-full">
+          <div class="leading-none relative">
+            <nightingale-navigation
+              id="navigation"
+              {length}
+              width={componentWidth}
+              display-start={displayStart}
+              display-end={displayEnd}
+              highlight-color={highlightColor}
+              margin-color={marginColor}
+              min-width={minWidth}
+              {height}
+              show-highlight
+            >
+            </nightingale-navigation>
+          </div>
+          {#each Object.entries(trackData) as [sourceDB, features], index}
+            <div class="leading-none relative">
+              <div
+                class="font-mono text-[8pt] absolute variant-glass-surface z-1 lg:hidden"
+              >
+                {sourceDB}
+              </div>
+              <nightingale-track
+                bind:this={trackElements[sourceDB]}
+                id={"track-" + sourceDB}
+                {length}
+                on:change={featureEventHandler}
+                width={componentWidth}
+                display-start={displayStart}
+                display-end={displayEnd}
+                highlight-color={highlightColor}
+                margin-color={marginColor}
+                min-width={minWidth}
+                {height}
+                highlight-event="onmouseover"
+                use-ctrl-to-zoom
+              ></nightingale-track>
+            </div>
+          {/each}
+          <div class="leading-none relative">
+            <nightingale-sequence
+              id="sequence"
+              {sequence}
               {length}
               width={componentWidth}
               display-start={displayStart}
@@ -88,27 +109,11 @@
               {height}
               highlight-event="onmouseover"
               use-ctrl-to-zoom
-            ></nightingale-track>
+            ></nightingale-sequence>
           </div>
-        {/each}
-        <div class="leading-none">
-          <nightingale-sequence
-            id="sequence"
-            {sequence}
-            {length}
-            width={componentWidth}
-            display-start={displayStart}
-            display-end={displayEnd}
-            highlight-color={highlightColor}
-            margin-color={marginColor}
-            min-width={minWidth}
-            {height}
-            highlight-event="onmouseover"
-            use-ctrl-to-zoom
-          ></nightingale-sequence>
         </div>
-      </div>
-    </nightingale-manager>
+      </nightingale-manager>
+    </div>
   </div>
 {/if}
 

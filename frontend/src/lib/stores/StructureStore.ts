@@ -1,4 +1,4 @@
-import { derived, writable, readable, type Readable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { createGetAlphaFoldStructure, type AlphaFoldStructure} from '$lib/external/alphaFoldDB';
 import type { CreateQueryResult } from '@tanstack/svelte-query';
 

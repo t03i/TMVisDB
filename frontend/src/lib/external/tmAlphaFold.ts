@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createQuery } from '@tanstack/svelte-query';
-import type { QueryFunction } from '@tanstack/svelte-query';
+import { type Readable } from 'svelte/store';
 import axios from 'axios';
 import type { PublicAnnotation, AnnotationData } from '$lib/client/model';
 
@@ -14,7 +14,7 @@ export const tmalphafold_entry_url = (up_name: string): string => {
   return `https://tmalphafold.ttk.hu/entry/${up_name}`;
 };
 
-const tmalphafold_parse_response = (body: any, up_name: string): AnnotationData | null => {
+const tmalphafold_parse_response = (body: any, up_name: string): AnnotationData  => {
   const annotations: PublicAnnotation[] = [];
 
   if (body && "CHAIN" in body) {
@@ -32,18 +32,20 @@ const tmalphafold_parse_response = (body: any, up_name: string): AnnotationData 
     }
   }
 
-  return annotations.length > 0 ? {annotations: annotations} : null;
+  return {annotations: annotations};
 };
 
-export const createGetTMAlphaFoldAnnotation = (up_name: string) => {
-  const queryFn: QueryFunction<AnnotationData | null> = async () => {
+export const getTMAlphaFoldAnnotation = async (up_name: string, signal: AbortSignal) => {
     const url = tmalphafold_query_url(up_name);
     const { data } = await axios.get(url);
     return tmalphafold_parse_response(data, up_name);
   };
 
+export const createGetTMAlphaFoldAnnotation = (up_name: string, queryClient) => {
+
   return createQuery({
     queryKey: ['tmAlphaFoldAnnotation', up_name],
-    queryFn,
-  });
+    queryFn: ({signal}) => getTMAlphaFoldAnnotation(up_name, signal),
+    enabled: !!up_name
+  }, queryClient);
 };

@@ -28,6 +28,18 @@
   $: if (structureUrl) {
     updateViewer();
   }
+
+  export function highlightResidues(
+    residues: string[],
+    color: { r: number; g: number; b: number },
+  ) {
+    if (viewerElement && viewerElement.viewerInstance) {
+      viewerElement.viewerInstance.visual.select({
+        data: residues,
+        addedColor: { r: 255, g: 112, b: 3 },
+      });
+    }
+  }
 </script>
 
 <ResourceLoader />

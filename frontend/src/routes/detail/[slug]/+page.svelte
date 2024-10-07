@@ -1,90 +1,54 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import { writable } from "svelte/store";
+  import { onDestroy, onMount } from "svelte";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
-  import type { AxiosError } from "axios";
-
-  //TODO clean technical debt of quick and dirty
-
-  import {
-    createGetUniprotAnnotation,
-    type UniprotAnnotationData,
-  } from "$lib/external/uniprot";
-  import { createGetProteinById } from "$lib/client/tmvisdb";
-  import { createGetTMAlphaFoldAnnotation } from "$lib/external/tmAlphaFold";
-  import { createGetProteinAnnotations } from "$lib/client/tmvisdb";
-  import {
-    annotationsToReferences,
-    annotationsToTracks,
-  } from "$lib/annotations";
-  import type { TrackData, DBReferences } from "$lib/annotations";
 
   import { createStructureStore } from "$lib/stores/StructureStore";
+  import { createAnnotationStore } from "$lib/stores/AnnotationStore";
+  import { createGetProteinById } from "$lib/client/tmvisdb";
+  import type { ProteinInfo } from "$lib/client/model";
 
-  import type { ProteinInfo, PublicAnnotation } from "$lib/client/model";
   import {
     ProteinDetailView,
     ProteinDetailLoading,
     ProteinDetailError,
   } from "$lib/components/ProteinDetail";
+
   import {
     DBReferencesView,
     DBReferencesLoading,
   } from "$lib/components/DBReferences";
+
   import {
     StructureViewer,
     StructureViewerError,
     StructureViewerLoading,
   } from "$lib/components/StructureViewer";
+
   import FeatureViewer from "$lib/components/FeatureViewer.svelte";
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
 
+  const uniprotAcc = data.slug;
+
   const {
     query: structureQuery,
     structureUrl,
     cleanup: structureCleanup,
-  } = createStructureStore(data.slug);
+  } = createStructureStore(uniprotAcc);
 
-  let infoQuery: CreateQueryResult<ProteinInfo, AxiosError>;
-  let uniprotQuery: CreateQueryResult<UniprotAnnotationData | null, AxiosError>;
-  let tmAlphaFoldQuery: CreateQueryResult<any, any>;
-  let tmvisdbQuery: CreateQueryResult<any, any>;
-  let dbReferences: DBReferences = {};
-  let trackData: TrackData | undefined = undefined;
-  let annotationsLoading = false;
+  const infoQuery = createGetProteinById(
+    uniprotAcc,
+  ) as unknown as CreateQueryResult<ProteinInfo>;
 
-  // $: if (uniprotAcc) {
-  //   infoQuery = createGetProteinById(uniprotAcc);
-  // }
-
-  // $: if ($infoQuery?.data) {
-  //   uniprotQuery = createGetUniprotAnnotation(
-  //     $infoQuery.data.uniprot_accession,
-  //   );
-  //   tmAlphaFoldQuery = createGetTMAlphaFoldAnnotation(
-  //     $infoQuery.data.uniprot_id,
-  //   );
-  //   tmvisdbQuery = createGetProteinAnnotations(
-  //     $infoQuery.data.uniprot_accession,
-  //   );
-  // }
-
-  // $: annotationsLoading =
-  //   $uniprotQuery?.isFetching ||
-  //   $tmAlphaFoldQuery?.isFetching ||
-  //   $tmvisdbQuery?.isFetching;
-
-  // $: if ($infoQuery?.data && !annotationsLoading) {
-  //   let annotations: PublicAnnotation[] = [
-  //     ...($uniprotQuery?.data?.annotations ?? []),
-  //     ...($tmAlphaFoldQuery?.data?.annotations ?? []),
-  //     ...($tmvisdbQuery?.data?.annotations ?? []),
-  //   ];
-  //   dbReferences = annotationsToReferences(annotations);
-  //   trackData = annotationsToTracks(annotations);
-  // }
+  const {
+    uniprotQuery,
+    tmvisdbQuery,
+    tmAlphaFoldQuery,
+    isFetching: annotationsIsFetching,
+    annotationDBReferences,
+    annotationTracks,
+  } = createAnnotationStore(uniprotAcc, infoQuery);
 
   onDestroy(structureCleanup);
 </script>
@@ -120,26 +84,23 @@
     </div>
   </div>
 
-  {#if $infoQuery?.data}
-    <div class="card w-full p-6 space-y-6">
-      <h3 class="h3 no-wrap">Annotation Sources</h3>
-      {#if annotationsLoading}
-        <DBReferencesLoading />
-      {:else if dbReferences && Object.keys(dbReferences).length > 0}
-        <DBReferencesView {dbReferences} />
-      {/if}
-    </div>
-    <div class="card w-full p-6 space-y-6">
-      <h3 class="h3 no-wrap">Annotations</h3>
-      {#if annotationsLoading}
-        Create Loading component
-      {:else if dbReferences && $structureQuery.data?.sequence && trackData}
-        <FeatureViewer
-          sequence={$structureQuery.data?.sequence}
-          {trackData}
-          featureEventHandler={highlightHandler}
-        />
-      {/if}
-    </div>
-  {/if}
+  <div class="card w-full p-6 space-y-6">
+    <h3 class="h3 no-wrap">Annotation Sources</h3>
+    {#if $annotationsIsFetching}
+      <DBReferencesLoading />
+    {:else if $annotationDBReferences && Object.keys($annotationDBReferences).length > 0}
+      <DBReferencesView dbReferences={$annotationDBReferences} />
+    {/if}
+  </div>
+  <div class="card w-full p-6 space-y-6">
+    <h3 class="h3 no-wrap">Annotations</h3>
+    {#if $annotationsIsFetching}
+      Create Loading component
+    {:else if $structureQuery.data?.sequence && $annotationTracks}
+      <FeatureViewer
+        sequence={$structureQuery.data?.sequence}
+        trackData={$annotationTracks}
+      />
+    {/if}
+  </div>
 </div>
