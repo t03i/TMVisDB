@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { onMount, afterUpdate } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
+  import { spring } from "svelte/motion";
+
   import "@nightingale-elements/nightingale-manager";
   import "@nightingale-elements/nightingale-navigation";
   import "@nightingale-elements/nightingale-sequence";
   import "@nightingale-elements/nightingale-track";
   import type { TrackData, SourceDB } from "$lib/annotations";
+  import { writable } from "svelte/store";
 
   export let sequence: string;
   export let trackData: TrackData;
@@ -14,7 +17,7 @@
   export let highlightColor: string = "rgba(var(--color-secondary-500)/0.3)";
   export let marginColor: string = "rgba(0, 0, 0, 0)";
   export let minWidth: number = 10;
-  export let height: number = 500;
+  export let height: number = 50;
 
   const length = sequence.length;
 
@@ -22,8 +25,6 @@
     SourceDB,
     HTMLElement | null
   >;
-
-  let managerElement: any;
 
   function updateTracks() {
     Object.entries(trackData).forEach(([sourceDB, features]) => {
@@ -37,6 +38,27 @@
   afterUpdate(() => {
     updateTracks();
   });
+
+  let tooltipContent = writable("");
+
+  // TODO: this causes highlight to break; need to fix
+  function handleFeatureEvent(event: CustomEvent) {
+    const { detail } = event;
+    switch (detail.eventType) {
+      case "mouseover":
+        const { feature, target, parentEvent } = detail;
+        if (feature) {
+          tooltipContent.set(
+            `${feature.tooltipContent}, Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
+          );
+        }
+        break;
+      case "mouseout":
+        tooltipContent.set("");
+        break;
+    }
+    featureEventHandler(event);
+  }
 
   $: componentWidth = Math.ceil(length * 100) / 100;
 </script>
@@ -78,7 +100,7 @@
               bind:this={trackElements[sourceDB]}
               id={"track-" + sourceDB}
               {length}
-              on:change={featureEventHandler}
+              on:change={handleFeatureEvent}
               width={componentWidth}
               display-start={displayStart}
               display-end={displayEnd}
@@ -108,6 +130,9 @@
             use-ctrl-to-zoom
           ></nightingale-sequence>
         </div>
+      </div>
+      <div class="text-mono mt-5 justify-self-start lg:col-span-2">
+        {$tooltipContent}
       </div>
     </nightingale-manager>
   </div>

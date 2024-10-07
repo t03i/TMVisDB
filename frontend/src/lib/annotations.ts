@@ -85,7 +85,7 @@ function annotationToNightingaleFeature(annotation: PublicAnnotation): Feature {
         ]
       }
     ],
-    tooltipContent: `${annotation.label}`,
+    tooltipContent: `${annotation.source_db} - ${annotation.label}`,
   };
 }
 
