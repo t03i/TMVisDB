@@ -1,0 +1,141 @@
+{
+    "tmbed": {
+        "name": "TMbed",
+        "fullName": "TMvis Prediction",
+        "description": "Transmembrane topology predictions by TMbed",
+        "labels": {
+            "H": {
+                "description": "Alpha-helix (IN-->OUT)",
+                "color_dark": "#006400",
+                "color_light": "#90EE90"
+            },
+            "h": {
+                "description": "Alpha-helix (OUT-->IN)",
+                "color_dark": "#228B22",
+                "color_light": "#98FB98"
+            },
+            "B": {
+                "description": "Beta-strand (IN-->OUT)",
+                "color_dark": "#00008B",
+                "color_light": "#ADD8E6"
+            },
+            "b": {
+                "description": "Beta-strand (OUT-->IN)",
+                "color_dark": "#0000CD",
+                "color_light": "#E6E6FA"
+            },
+            "i": {
+                "description": "Inside",
+                "color_dark": "#A9A9A9",
+                "color_light": "#D3D3D3"
+            },
+            "o": {
+                "description": "Outside",
+                "color_dark": "#808080",
+                "color_light": "#F5F5F5"
+            },
+            "S": {
+                "description": "Signal peptide",
+                "color_dark": "#FF1493",
+                "color_light": "#FFC0CB"
+            },
+            ".": {
+                "description": "Non-membrane",
+                "color_dark": "#FF1493",
+                "color_light": "#FFC0CB"
+            }
+        }
+    },
+    "topdb": {
+        "name": "TopDB",
+        "fullName": "TopDB Annotation",
+        "description": "Experimentally determined topology from TopDB",
+        "labels": {
+            "H": {
+                "description": "Alpha-helix",
+                "color_dark": "#006400",
+                "color_light": "#90EE90"
+            },
+            "B": {
+                "description": "Beta-strand",
+                "color_dark": "#00008B",
+                "color_light": "#ADD8E6"
+            },
+            "I": {
+                "description": "Inside",
+                "color_dark": "#A9A9A9",
+                "color_light": "#D3D3D3"
+            },
+            "O": {
+                "description": "Outside",
+                "color_dark": "#808080",
+                "color_light": "#F5F5F5"
+            }
+        }
+    },
+    "membranome": {
+        "name": "Membranome",
+        "fullName": "Membranome Annotation",
+        "description": "Annotations from the Membranome database",
+        "labels": {
+            "TM": {
+                "description": "Transmembrane region",
+                "color_dark": "#8B4513",
+                "color_light": "#DEB887"
+            },
+            "I": {
+                "description": "Inside",
+                "color_dark": "#A9A9A9",
+                "color_light": "#D3D3D3"
+            },
+            "O": {
+                "description": "Outside",
+                "color_dark": "#808080",
+                "color_light": "#F5F5F5"
+            }
+        }
+    },
+    "uniprot": {
+        "fullName": "UniProt Annotation",
+        "description": "Annotations from UniProtKB",
+        "labels": {
+            "TM": {
+                "description": "Transmembrane region",
+                "color_dark": "#8B4513",
+                "color_light": "#DEB887"
+            },
+            "I": {
+                "description": "Intracellular",
+                "color_dark": "#A9A9A9",
+                "color_light": "#D3D3D3"
+            },
+            "E": {
+                "description": "Extracellular",
+                "color_dark": "#808080",
+                "color_light": "#F5F5F5"
+            }
+        }
+    },
+    "tmalphafold": {
+        "name": "TMAlphaFold",
+        "fullName": "TmAlphaFold Annotation",
+        "description": "Annotations from TmAlphaFold database",
+        "labels": {
+            "TM": {
+                "description": "Transmembrane region",
+                "color_dark": "#8B4513",
+                "color_light": "#DEB887"
+            },
+            "I": {
+                "description": "Inside",
+                "color_dark": "#A9A9A9",
+                "color_light": "#D3D3D3"
+            },
+            "O": {
+                "description": "Outside",
+                "color_dark": "#808080",
+                "color_light": "#F5F5F5"
+            }
+        }
+    }
+}

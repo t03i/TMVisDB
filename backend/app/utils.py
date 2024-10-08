@@ -1,68 +1,58 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
 
+import json
+from typing import Dict, Any
 
 from .definitions import DatabaseType
 from .taxonomy_enums import SK_CLADE_MAPPING
 from .models import AnnotationLegend, LabelInfo
+from app.core.config import settings
+
+
+def load_legend_data() -> Dict[str, Any]:
+    legend_path = settings.SHARED_DIR_PATH / "legend.json"
+    with open(legend_path, "r") as f:
+        return json.load(f)
+
+
+LEGEND_DATA = load_legend_data()
 
 
 def get_database_legend(database: DatabaseType) -> AnnotationLegend:
-    legends: dict[str, AnnotationLegend] = {
-        DatabaseType.tmvis: AnnotationLegend(
-            name="TMvis Prediction",
-            description="Transmembrane topology predictions by TMbed",
-            labels=[
-                LabelInfo(label="H", description="Alpha-helix (IN-->OUT)"),
-                LabelInfo(label="h", description="Alpha-helix (OUT-->IN)"),
-                LabelInfo(label="B", description="Beta-strand (IN-->OUT)"),
-                LabelInfo(label="b", description="Beta-strand (OUT-->IN)"),
-                LabelInfo(label="i", description="Inside"),
-                LabelInfo(label="o", description="Outside"),
-                LabelInfo(label="S", description="Signal peptide"),
-            ],
-        ),
-        DatabaseType.topdb: AnnotationLegend(
-            name="TopDB Annotation",
-            description="Experimentally determined topology from TopDB",
-            labels=[
-                LabelInfo(label="H", description="Alpha-helix"),
-                LabelInfo(label="B", description="Beta-strand"),
-                LabelInfo(label="I", description="Inside"),
-                LabelInfo(label="O", description="Outside"),
-            ],
-        ),
-        DatabaseType.membranome: AnnotationLegend(
-            name="Membranome Annotation",
-            description="Annotations from the Membranome database",
-            labels=[
-                LabelInfo(label="TM", description="Transmembrane region"),
-                LabelInfo(label="I", description="Inside"),
-                LabelInfo(label="O", description="Outside"),
-            ],
-        ),
-        DatabaseType.uniprot: AnnotationLegend(
-            name="UniProt Annotation",
-            description="Annotations from UniProtKB",
-            labels=[
-                LabelInfo(label="TM", description="Transmembrane region"),
-                LabelInfo(label="I", description="Intracellular"),
-                LabelInfo(label="E", description="Extracellular"),
-            ],
-        ),
-        DatabaseType.tmalphafold: AnnotationLegend(
-            name="TmAlphaFold Annotation",
-            description="Annotations from TmAlphaFold database",
-            labels=[
-                LabelInfo(label="TM", description="Transmembrane region"),
-                LabelInfo(label="I", description="Inside"),
-                LabelInfo(label="O", description="Outside"),
-            ],
-        ),
-    }
+    db_name = database.value
+    if db_name not in LEGEND_DATA:
+        return None
 
-    return legends.get(database, None)
+    db_legend = LEGEND_DATA[db_name]
+    return AnnotationLegend(
+        name=db_legend.get("fullName", db_legend.get("name", "")),
+        description=db_legend["description"],
+        labels=[
+            LabelInfo(label=label, description=info["description"])
+            for label, info in db_legend["labels"].items()
+        ],
+    )
 
 
 def get_all_taxonomies() -> SK_CLADE_MAPPING:
     return SK_CLADE_MAPPING
+
+
+def get_label_colors(database: DatabaseType, label: str) -> Dict[str, str]:
+    db_name = database.value
+    if db_name not in LEGEND_DATA or label not in LEGEND_DATA[db_name]["labels"]:
+        return {}
+
+    label_info = LEGEND_DATA[db_name]["labels"][label]
+    return {
+        "color_dark": label_info["color_dark"],
+        "color_light": label_info["color_light"],
+    }
+
+
+def get_all_database_legends() -> Dict[str, AnnotationLegend]:
+    return {
+        db_name: get_database_legend(DatabaseType(db_name))
+        for db_name in LEGEND_DATA.keys()
+    }

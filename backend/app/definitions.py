@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class DatabaseType(str, Enum):
-    tmvis = "tmvis"
+    tmbed = "tmbed"
     topdb = "topdb"
     membranome = "membranome"
     uniprot = "uniprot"
