@@ -10,7 +10,7 @@
   export let isLoading: boolean;
 </script>
 
-<div class="card border-r-2 p-4 h-screen relative">
+<div class="p-4 relative">
   <div class={isLoading ? "pointer-events-none" : ""}>
     <slot></slot>
   </div>

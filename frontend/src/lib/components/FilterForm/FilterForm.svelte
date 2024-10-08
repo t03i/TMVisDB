@@ -115,147 +115,147 @@
   }
 </script>
 
-<form class="space-y-6" on:submit|preventDefault={handleSubmit}>
-  <!-- Filter Type Radio Group -->
-  <fieldset>
-    <legend class="text-sm font-bold">Search By</legend>
-    <RadioGroup class="flex space-x-4">
-      <RadioItem name="filter-1" bind:group={filters.filterType} value="taxa"
-        >Taxonomy</RadioItem
-      >
-      <RadioItem name="filter-2" bind:group={filters.filterType} value="id"
-        >Organism ID</RadioItem
-      >
-    </RadioGroup>
-  </fieldset>
-
-  {#if filters.filterType === "id"}
-    <!-- Organism ID Input -->
-    <div>
-      <label for="organism_id" class="text-sm font-bold"
-        >UniProtKB Organism ID</label
-      >
-      <input
-        id="organism_id"
-        type="number"
-        class="input py-2 px-3 leading-tight"
-        placeholder="Enter Organism ID"
-        bind:value={filters.filterOrganismId}
-        required
-      />
-    </div>
-  {:else}
-    <!-- Domain Selection -->
-    <div>
-      <label for="domain" class="text-sm font-bold">Domain of Life</label>
-      <select
-        id="domain"
-        class="select py-2 px-3 leading-tight"
-        bind:value={filters.filterDomain}
-        required
-      >
-        <option value="" disabled selected>Select Domain</option>
-        {#each taxonomyData as { value }}
-          <option {value}>{value}</option>
-        {/each}
-      </select>
+<form
+  class="flex-col flex items-center gap-4 p-4 w-full"
+  on:submit|preventDefault={handleSubmit}
+>
+  <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4">
+    <!-- Filter Type Radio Group -->
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-bold">Filter By:</span>
+      <RadioGroup class="flex space-x-2">
+        <RadioItem name="filter-1" bind:group={filters.filterType} value="taxa"
+          >Taxonomy</RadioItem
+        >
+        <RadioItem name="filter-2" bind:group={filters.filterType} value="id"
+          >Organism ID</RadioItem
+        >
+      </RadioGroup>
     </div>
 
-    <!-- Kingdom Selection -->
-    <div>
-      <label for="kingdom" class="text-sm font-bold">Kingdom</label>
-      <select
-        id="kingdom"
-        size="4"
-        class="select py-2 px-3 leading-tight"
-        bind:value={filters.filterKingdom}
-      >
-        <option value="">All</option>
-        {#each availableClades as value}
-          <option {value}>{value}</option>
-        {/each}
-      </select>
-    </div>
-  {/if}
+    {#if filters.filterType === "id"}
+      <!-- Organism ID Input -->
+      <div class="flex items-center gap-2">
+        <label for="organism_id" class="text-sm font-bold"
+          >UniProtKB Organism ID:</label
+        >
+        <input
+          id="organism_id"
+          type="number"
+          class="input py-1 px-2 leading-tight w-32"
+          placeholder="Organism ID"
+          bind:value={filters.filterOrganismId}
+          required
+        />
+      </div>
+    {:else}
+      <!-- Domain Selection -->
+      <div class="flex items-center gap-2">
+        <label for="domain" class="text-sm font-bold">Domain:</label>
+        <select
+          id="domain"
+          class="select py-1 px-2 leading-tight w-40"
+          bind:value={filters.filterDomain}
+          required
+        >
+          <option value="" disabled selected>Select Domain</option>
+          {#each taxonomyData as { value }}
+            <option {value}>{value}</option>
+          {/each}
+        </select>
+      </div>
+      <!-- Kingdom Selection -->
+      <div class="flex items-center gap-2">
+        <label for="kingdom" class="text-sm font-bold">Kingdom:</label>
+        <select
+          id="kingdom"
+          class="select py-1 px-2 leading-tight w-40"
+          bind:value={filters.filterKingdom}
+        >
+          <option value="">All</option>
+          {#each availableClades as value}
+            <option {value}>{value}</option>
+          {/each}
+        </select>
+      </div>
+    {/if}
+  </div>
 
-  <!-- Structural Topology Radio Group -->
-  <div>
-    <fieldset>
-      <legend class="text-sm font-bold">Structural Topology</legend>
-      <RadioGroup class="grid grid-cols-2 gap-4">
+  <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4">
+    <!-- Structural Topology Radio Group -->
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-bold">Topology:</span>
+      <RadioGroup class="flex flex-col md:flex-row space-x-2">
         <RadioItem
           name="topology-1"
           bind:group={filters.filterTopology}
-          value={Topology.All}>Non-filtered</RadioItem
+          value={Topology.All}>All</RadioItem
         >
         <RadioItem
           name="topology-2"
           bind:group={filters.filterTopology}
-          value={Topology.Both}>Both Helix and Barrel</RadioItem
+          value={Topology.Both}>Both</RadioItem
         >
         <RadioItem
           name="topology-3"
           bind:group={filters.filterTopology}
-          value={Topology["Alpha-helix"]}>Only Alpha-Helices</RadioItem
+          value={Topology["Alpha-helix"]}>α-Helix</RadioItem
         >
         <RadioItem
           name="topology-4"
           bind:group={filters.filterTopology}
-          value={Topology["Beta-strand"]}>Only Beta-Barrels</RadioItem
+          value={Topology["Beta-strand"]}>β-Barrel</RadioItem
         >
       </RadioGroup>
-    </fieldset>
-  </div>
+    </div>
 
-  <!-- Signal Peptide Slide Toggle -->
-  <div class="flex items-center space-x-2">
-    <SlideToggle
-      name="signal-peptide"
-      bind:checked={filters.filterSignalPeptide}
-      disabled={filters.filterTopology === Topology.All}
-    >
-      Show sequences with signal peptides
-    </SlideToggle>
-  </div>
+    <!-- Signal Peptide Slide Toggle -->
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-bold">Signal Peptide:</span>
+      <SlideToggle
+        name="signal-peptide"
+        bind:checked={filters.filterSignalPeptide}
+        disabled={filters.filterTopology === Topology.All}
+      ></SlideToggle>
+    </div>
 
-  <!-- Sequence Length Range Inputs -->
-  <div>
-    <label class="text-sm font-bold" for="input-range"
-      >Sequence Length Range</label
-    >
-    <div class="flex items-center space-x-4" id="input-range">
+    <!-- Sequence Length Range Inputs -->
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-bold">Length:</span>
       <input
         type="number"
-        class="input"
+        class="input py-1 px-2 w-20"
         bind:value={filters.filterMinLength}
         min={config.MIN_PROTEIN_LENGTH}
         max={filters.filterMaxLength}
-        placeholder="Min Length"
+        placeholder="Min"
       />
-      <span>to</span>
+      <span>-</span>
       <input
         type="number"
-        class="input"
+        class="input py-1 px-2 w-20"
         bind:value={filters.filterMaxLength}
         min={filters.filterMinLength}
         max={config.MAX_PROTEIN_LENGTH}
-        placeholder="Max Length"
+        placeholder="Max"
       />
     </div>
   </div>
 
   <!-- Form Actions -->
-  <div class="space-x-4">
-    <button type="submit" class="btn variant-filled" disabled={!canApplyFilter}
-      >Apply</button
+  <div class="flex gap-2">
+    <button
+      type="submit"
+      class="btn variant-filled-success"
+      disabled={!canApplyFilter}>Apply</button
     >
     <button
       type="button"
       on:click={handleReset}
-      class="btn variant-soft"
+      class="btn variant-soft-warning"
       disabled={!canReset}
     >
-      Reset (Random)
+      Reset
     </button>
   </div>
 </form>

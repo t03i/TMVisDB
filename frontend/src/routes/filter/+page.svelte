@@ -32,13 +32,13 @@
   let:isLoading
   let:error
 >
-  <div class="flex flex-row gap-4 mx-8 my-8">
-    <div class="basis-2/12">
+  <div class="flex flex-col gap-4 mx-8 my-8">
+    <div class="card">
       <FilterFormLoading {isLoading}>
         <FilterForm />
       </FilterFormLoading>
     </div>
-    <div class="basis-10/12 card">
+    <div class="card">
       {#if isSuccessful}
         <DataTable
           data={proteinResponse.items}
