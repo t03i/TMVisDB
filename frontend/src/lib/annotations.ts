@@ -1,17 +1,12 @@
 import type { PublicAnnotation } from "$lib/client/model";
 import type { Feature, Shapes } from "@nightingale-elements/nightingale-track";
+import legendData from '$lib/assets/shared/legend.json';
 
-export const SOURCE_DATABASES = [
-  "UniprotKB",
-  "TMAlphaFold",
-  "TopDB",
-  "Membranome",
-  "TMbed"
-] as const;
-
+export const SOURCE_DATABASES = Object.keys(legendData) as (keyof typeof legendData)[];
 export type SourceDB = typeof SOURCE_DATABASES[number];
 
 export type DBReference = {
+  db_key: SourceDB;
   url: string;
   reference: string;
 }
@@ -25,39 +20,71 @@ export interface AnnotationSet {
 
 export type TrackData = Record<SourceDB, Feature[]>;
 
-function toDBString(db: SourceDB): string {
-  return db.toLowerCase();
-}
+// Pre-compute the mapping of legend keys to display names
+export const KEY_TO_DISPLAY_NAME: Record<string, string> = Object.fromEntries(
+  SOURCE_DATABASES.map(key => [key, legendData[key].name || key])
+);
+
+// Create a Set of valid database keys for faster lookups
+const VALID_DB_KEYS = new Set(SOURCE_DATABASES);
 
 export function annotationsToReferences(annotations: PublicAnnotation[]): DBReferences {
   if (!annotations) return {};
+
   const references: DBReferences = {};
-  for (const dbName of SOURCE_DATABASES) {
-    const db_entry = annotations.find(
-      (a) => a.source_db.toLowerCase() === dbName.toLowerCase()
-    );
-    if (db_entry) {
-      references[dbName] = {
-        url: db_entry.source_db_url || '',
-        reference: db_entry.source_db_ref || ''
-      };
+
+  for (const annotation of annotations) {
+    const sourceDB = annotation.source_db as SourceDB;
+
+    if (VALID_DB_KEYS.has(sourceDB)) {
+
+      if (!references[sourceDB]) {
+        references[sourceDB] = {
+          db_key: sourceDB,
+          url: annotation.source_db_url || '',
+          reference: annotation.source_db_ref || ''
+        };
+      }
     }
   }
+
   return references;
 }
 
+export type DBReferenceViewItem = {
+  displayName: string;
+  url?: string;
+  isPresent: boolean;
+};
+
+export function getDBReferenceViewItems(dbReferences: DBReferences): DBReferenceViewItem[] {
+  return Object.entries(KEY_TO_DISPLAY_NAME).map(([key, displayName]) => {
+    const reference = dbReferences[key as SourceDB] ?? null;
+    return {
+      displayName,
+      url: reference?.url,
+      isPresent: !!reference
+    };
+  });
+}
+
+export function getEmptyDBReferenceViewItems(): DBReferenceViewItem[] {
+  return Object.values(KEY_TO_DISPLAY_NAME).map(displayName => ({
+    displayName,
+    isPresent: false
+  }));
+}
+
+
 function annotationsToDBMap(annotations: PublicAnnotation[]): Record<SourceDB, PublicAnnotation[]> {
 
-    // Create a reverse mapping for quick lookups
-    const dbMapping: Record<string, SourceDB> = Object.fromEntries(
-      SOURCE_DATABASES.map(db => [toDBString(db), db])
-    );
 
     const tracks: Partial<Record<SourceDB, PublicAnnotation[]>> = {};
 
     for (const annotation of annotations) {
-      const sourceDB = dbMapping[annotation.source_db.toLowerCase()];
-      if (sourceDB) {
+
+      const sourceDB = annotation.source_db.toLowerCase() as SourceDB;
+      if (sourceDB in SOURCE_DATABASES){
         if (!tracks[sourceDB]) {
           tracks[sourceDB] = [];
         }

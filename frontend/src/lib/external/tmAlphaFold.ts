@@ -24,7 +24,7 @@ const tmalphafold_parse_response = (body: any, up_name: string): AnnotationData 
           start: parseInt(entry._attributes.seq_beg),
           end: parseInt(entry._attributes.seq_end),
           label: "AH",
-          source_db: "TMAlphaFold",
+          source_db: "tmalphafold",
           source_db_url: tmalphafold_entry_url(up_name),
           date_added: new Date().toISOString().split('T')[0],
         });

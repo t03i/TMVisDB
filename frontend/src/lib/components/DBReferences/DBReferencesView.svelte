@@ -1,26 +1,21 @@
 <script lang="ts">
-  import type { DBReferences } from "$lib/annotations";
-  import { SOURCE_DATABASES } from "$lib/annotations";
+  import { type DBReferences, getDBReferenceViewItems } from "$lib/annotations";
 
   export let dbReferences: DBReferences;
+  $: viewItems = getDBReferenceViewItems(dbReferences);
 </script>
 
 <div {...$$restProps}>
   <div
     class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4 justify-items-start"
   >
-    {#each SOURCE_DATABASES as dbName}
+    {#each viewItems as item}
       <div class="flex item mt-1">
-        <span class="mr-2">{dbName}</span>
-        {#if dbReferences && dbReferences[dbName]}
+        <span class="mr-2">{item.displayName}</span>
+        {#if item.isPresent}
           <span class="badge variant-filled-success">
-            {#if dbReferences[dbName].url}
-              <a
-                href={dbReferences[dbName].url}
-                class="ml-1"
-                target="_blank"
-                rel="noopener"
-              >
+            {#if item.url}
+              <a href={item.url} class="ml-1" target="_blank" rel="noopener">
                 Yes
                 <iconify-icon icon="line-md:external-link"></iconify-icon>
               </a>

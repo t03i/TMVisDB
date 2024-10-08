@@ -96,6 +96,7 @@
         }
     },
     "uniprot": {
+        "name": "UniProtKB",
         "fullName": "UniProt Annotation",
         "description": "Annotations from UniProtKB",
         "labels": {

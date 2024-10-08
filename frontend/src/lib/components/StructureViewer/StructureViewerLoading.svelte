@@ -18,6 +18,6 @@
     meter="stroke-primary-500"
     track="stroke-primary-500/30"
     strokeLinecap="butt"
-    class="justify-self-center ali"
+    class="justify-self-center "
   />
 </div>

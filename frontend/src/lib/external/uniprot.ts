@@ -59,7 +59,7 @@ const uniprot_parse_response = (body: any, selected_id: string): UniprotAnnotati
           start: pos_start,
           end: pos_end,
           label,
-          source_db: "UniProtKB",
+          source_db: "uniprot",
           source_db_url: uniprot_entry_url(selected_id),
           date_added: new Date().toISOString().split('T')[0],
         });
