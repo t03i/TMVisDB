@@ -1,13 +1,16 @@
 <script lang="ts">
   import { afterUpdate, onMount } from "svelte";
-  import { spring } from "svelte/motion";
+  import { writable } from "svelte/store";
 
   import "@nightingale-elements/nightingale-manager";
   import "@nightingale-elements/nightingale-navigation";
   import "@nightingale-elements/nightingale-sequence";
   import "@nightingale-elements/nightingale-track";
-  import type { TrackData, SourceDB } from "$lib/annotations";
-  import { writable } from "svelte/store";
+  import {
+    KEY_TO_DISPLAY_NAME,
+    type TrackData,
+    type SourceDB,
+  } from "$lib/annotations";
 
   export let sequence: string;
   export let trackData: TrackData;
@@ -49,7 +52,7 @@
         const { feature, target, parentEvent } = detail;
         if (feature) {
           tooltipContent.set(
-            `${feature.tooltipContent}, Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
+            `${KEY_TO_DISPLAY_NAME[feature.sourceDB]} - ${feature.tooltipContent}, Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
           );
         }
         break;
@@ -88,13 +91,13 @@
           <div
             class="font-mono text-base justify-self-end leading-none hidden lg:block"
           >
-            {sourceDB}
+            {KEY_TO_DISPLAY_NAME[sourceDB]}
           </div>
           <div class="leading-none relative">
             <div
               class="font-mono text-[8pt] absolute variant-glass-surface z-1 lg:hidden"
             >
-              {sourceDB}
+              {KEY_TO_DISPLAY_NAME[sourceDB]}
             </div>
             <nightingale-track
               bind:this={trackElements[sourceDB]}

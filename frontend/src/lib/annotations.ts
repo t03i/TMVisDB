@@ -82,17 +82,15 @@ function annotationsToDBMap(annotations: PublicAnnotation[]): Record<SourceDB, P
     const tracks: Partial<Record<SourceDB, PublicAnnotation[]>> = {};
 
     for (const annotation of annotations) {
-
       const sourceDB = annotation.source_db.toLowerCase() as SourceDB;
-      if (sourceDB in SOURCE_DATABASES){
+      if (SOURCE_DATABASES.includes(sourceDB)) {
         if (!tracks[sourceDB]) {
           tracks[sourceDB] = [];
         }
         tracks[sourceDB]!.push(annotation);
       }
     }
-
-      return tracks as Record<SourceDB, PublicAnnotation[]>;
+    return tracks as Record<SourceDB, PublicAnnotation[]>;
 }
 
 
@@ -113,6 +111,7 @@ function annotationToNightingaleFeature(annotation: PublicAnnotation): Feature {
       }
     ],
     tooltipContent: `${annotation.source_db} - ${annotation.label}`,
+    sourceDB: annotation.source_db
   };
 }
 
