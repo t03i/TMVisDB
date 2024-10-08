@@ -38,7 +38,7 @@
         <FilterForm />
       </FilterFormLoading>
     </div>
-    <div class="card">
+    <div class="card p-2">
       {#if isSuccessful}
         <DataTable
           data={proteinResponse.items}
