@@ -3,7 +3,6 @@
  SPDX-License-Identifier: Apache-2.0
 -->
 <script>
-  import { AppBar } from "@skeletonlabs/skeleton";
   import "iconify-icon";
   import logo from "$lib/assets/logo_sq_light.svg";
 </script>

@@ -12,8 +12,10 @@
     arrow,
   } from "@floating-ui/dom";
   import { storePopup } from "@skeletonlabs/skeleton";
-  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
   import { AppRail, AppRailAnchor } from "@skeletonlabs/skeleton";
+  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+  import "iconify-icon";
+
   import "../app.css";
   import Footer from "$lib/components/Footer.svelte";
   import Header from "$lib/components/Header.svelte";
@@ -37,11 +39,20 @@
     <nav class="w-16 border-r flex-shrink-0">
       <AppRail>
         <AppRailAnchor href="/" selected={$page.url.pathname === "/"}
-          >(icon)</AppRailAnchor
+          ><iconify-icon icon="mdi:home" height="2em"
+          ></iconify-icon></AppRailAnchor
         >
         <AppRailAnchor
           href="/filter"
-          selected={$page.url.pathname === "/filter"}>(icon)</AppRailAnchor
+          selected={$page.url.pathname === "/filter"}
+          ><iconify-icon icon="mdi:database" height="2em"
+          ></iconify-icon></AppRailAnchor
+        >
+        <AppRailAnchor
+          href="/search"
+          selected={$page.url.pathname === "/search"}
+          ><iconify-icon icon="mdi:search" height="2em"
+          ></iconify-icon></AppRailAnchor
         >
       </AppRail>
     </nav>
