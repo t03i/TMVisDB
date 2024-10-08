@@ -1,6 +1,7 @@
 <script lang="ts">
   import { afterUpdate, onMount } from "svelte";
   import { writable } from "svelte/store";
+  import { modeCurrent } from "@skeletonlabs/skeleton";
 
   import "@nightingale-elements/nightingale-manager";
   import "@nightingale-elements/nightingale-navigation";
@@ -8,6 +9,7 @@
   import "@nightingale-elements/nightingale-track";
   import {
     KEY_TO_DISPLAY_NAME,
+    AnnotationStyleManager,
     type TrackData,
     type SourceDB,
   } from "$lib/annotations";
@@ -24,6 +26,7 @@
 
   const length = sequence.length;
 
+  let rootContainer: HTMLElement;
   let trackElements: Record<SourceDB, HTMLElement | null> = {} as Record<
     SourceDB,
     HTMLElement | null
@@ -37,6 +40,17 @@
       }
     });
   }
+
+  onMount(() => {
+    const annotationStyleManager = new AnnotationStyleManager(
+      rootContainer,
+      modeCurrent ? "light" : "dark",
+    );
+    const unsubscribe = modeCurrent.subscribe((mode) => {
+      annotationStyleManager.setTheme(mode ? "light" : "dark");
+    });
+    return unsubscribe;
+  });
 
   afterUpdate(() => {
     updateTracks();
@@ -52,7 +66,7 @@
         const { feature, target, parentEvent } = detail;
         if (feature) {
           tooltipContent.set(
-            `${KEY_TO_DISPLAY_NAME[feature.sourceDB]} - ${feature.tooltipContent}, Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
+            `${KEY_TO_DISPLAY_NAME[feature.sourceDB]}: ${feature.tooltipContent} (${feature.type}), Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
           );
         }
         break;
@@ -67,7 +81,7 @@
 </script>
 
 {#if sequence && trackData}
-  <div class="w-full max-w-7xl mx-auto p-5 h-full">
+  <div bind:this={rootContainer} class="w-full max-w-7xl mx-auto p-5 h-full">
     <nightingale-manager id="manager" class="col-span-2 lg:col-span-1">
       <div class="grid grid-cols-1 gap-x-2 lg:grid-cols-[1fr,11fr] w-full">
         <div class="text-mono leading-none justify-self-end"></div>
@@ -135,7 +149,7 @@
         </div>
       </div>
       <div
-        class="text-mono text-[8pt] lg:text-base mt-5 justify-self-start lg:col-span-2"
+        class="text-mono text-[8pt] lg:text-base leading-1 mt-5 justify-self-start lg:col-span-2"
       >
         {$tooltipContent}
       </div>

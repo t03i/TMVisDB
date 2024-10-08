@@ -6,43 +6,43 @@
         "labels": {
             "H": {
                 "description": "Alpha-helix (IN-->OUT)",
-                "color_dark": "#006400",
-                "color_light": "#90EE90"
+                "color_dark": "rgba(var(--color-primary-400))",
+                "color_light": "rgba(var(--color-primary-500))"
             },
             "h": {
                 "description": "Alpha-helix (OUT-->IN)",
-                "color_dark": "#228B22",
-                "color_light": "#98FB98"
+                "color_dark": "rgba(var(--color-primary-300))",
+                "color_light": "rgba(var(--color-primary-600))"
             },
             "B": {
                 "description": "Beta-strand (IN-->OUT)",
-                "color_dark": "#00008B",
-                "color_light": "#ADD8E6"
+                "color_dark": "rgba(var(--color-secondary-400))",
+                "color_light": "rgba(var(--color-secondary-500))"
             },
             "b": {
                 "description": "Beta-strand (OUT-->IN)",
-                "color_dark": "#0000CD",
-                "color_light": "#E6E6FA"
+                "color_dark": "rgba(var(--color-secondary-300))",
+                "color_light": "rgba(var(--color-secondary-600))"
             },
             "i": {
                 "description": "Inside",
-                "color_dark": "#A9A9A9",
-                "color_light": "#D3D3D3"
+                "color_light": "rgba(var(--color-surface-300))",
+                "color_dark": "rgba(var(--color-surface-600))"
             },
             "o": {
                 "description": "Outside",
-                "color_dark": "#808080",
-                "color_light": "#F5F5F5"
+                "color_light": "rgba(var(--color-surface-200))",
+                "color_dark": "rgba(var(--color-surface-700))"
             },
             "S": {
                 "description": "Signal peptide",
-                "color_dark": "#FF1493",
-                "color_light": "#FFC0CB"
+                "color_dark": "rgba(var(--color-tertiary-500))",
+                "color_light": "rgba(var(--color-tertiary-500))"
             },
             ".": {
                 "description": "Non-membrane",
-                "color_dark": "#FF1493",
-                "color_light": "#FFC0CB"
+                "color_light": "rgba(var(--color-surface-100))",
+                "color_dark": "rgba(var(--color-surface-800))"
             }
         }
     },
@@ -51,25 +51,20 @@
         "fullName": "TopDB Annotation",
         "description": "Experimentally determined topology from TopDB",
         "labels": {
-            "H": {
-                "description": "Alpha-helix",
-                "color_dark": "#006400",
-                "color_light": "#90EE90"
-            },
-            "B": {
-                "description": "Beta-strand",
-                "color_dark": "#00008B",
-                "color_light": "#ADD8E6"
+            "M": {
+                "description": "Membrane Region",
+                "color_dark": "rgba(var(--color-primary-400))",
+                "color_light": "rgba(var(--color-primary-500))"
             },
             "I": {
                 "description": "Inside",
-                "color_dark": "#A9A9A9",
-                "color_light": "#D3D3D3"
+                "color_light": "rgba(var(--color-surface-300))",
+                "color_dark": "rgba(var(--color-surface-600))"
             },
             "O": {
                 "description": "Outside",
-                "color_dark": "#808080",
-                "color_light": "#F5F5F5"
+                "color_light": "rgba(var(--color-surface-200))",
+                "color_dark": "rgba(var(--color-surface-700))"
             }
         }
     },
@@ -79,19 +74,19 @@
         "description": "Annotations from the Membranome database",
         "labels": {
             "TM": {
-                "description": "Transmembrane region",
-                "color_dark": "#8B4513",
-                "color_light": "#DEB887"
+                "description": "Membrane region",
+                "color_dark": "rgba(var(--color-primary-400))",
+                "color_light": "rgba(var(--color-primary-500))"
             },
             "I": {
                 "description": "Inside",
-                "color_dark": "#A9A9A9",
-                "color_light": "#D3D3D3"
+                "color_light": "rgba(var(--color-surface-300))",
+                "color_dark": "rgba(var(--color-surface-600))"
             },
             "O": {
                 "description": "Outside",
-                "color_dark": "#808080",
-                "color_light": "#F5F5F5"
+                "color_light": "rgba(var(--color-surface-200))",
+                "color_dark": "rgba(var(--color-surface-700))"
             }
         }
     },
@@ -100,20 +95,10 @@
         "fullName": "UniProt Annotation",
         "description": "Annotations from UniProtKB",
         "labels": {
-            "TM": {
-                "description": "Transmembrane region",
-                "color_dark": "#8B4513",
-                "color_light": "#DEB887"
-            },
-            "I": {
-                "description": "Intracellular",
-                "color_dark": "#A9A9A9",
-                "color_light": "#D3D3D3"
-            },
-            "E": {
-                "description": "Extracellular",
-                "color_dark": "#808080",
-                "color_light": "#F5F5F5"
+            "AH": {
+                "description": "Alpha-Helix",
+                "color_dark": "rgba(var(--color-primary-400))",
+                "color_light": "rgba(var(--color-primary-500))"
             }
         }
     },
@@ -122,20 +107,10 @@
         "fullName": "TmAlphaFold Annotation",
         "description": "Annotations from TmAlphaFold database",
         "labels": {
-            "TM": {
-                "description": "Transmembrane region",
-                "color_dark": "#8B4513",
-                "color_light": "#DEB887"
-            },
-            "I": {
-                "description": "Inside",
-                "color_dark": "#A9A9A9",
-                "color_light": "#D3D3D3"
-            },
-            "O": {
-                "description": "Outside",
-                "color_dark": "#808080",
-                "color_light": "#F5F5F5"
+            "AH": {
+                "description": "Alpha-Helix",
+                "color_dark": "rgba(var(--color-primary-400))",
+                "color_light": "rgba(var(--color-primary-500))"
             }
         }
     }

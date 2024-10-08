@@ -93,38 +93,39 @@ function annotationsToDBMap(annotations: PublicAnnotation[]): Record<SourceDB, P
     return tracks as Record<SourceDB, PublicAnnotation[]>;
 }
 
-
-function annotationToNightingaleFeature(annotation: PublicAnnotation): Feature {
-  return {
-    accession: annotation.source_db_ref || annotation.source_db,
-    type: annotation.label,
-    color: getColorForAnnotation(annotation),
-    shape: getShapeForAnnotation(annotation),
-    locations: [
-      {
-        fragments: [
-          {
-            start: annotation.start,
-            end: annotation.end
-          }
-        ]
-      }
-    ],
-    tooltipContent: `${annotation.source_db} - ${annotation.label}`,
-    sourceDB: annotation.source_db
-  };
+function dbLabelToCSSVar(sourceDB: SourceDB, labelType: string): string {
+  let label = labelType.toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/\./g, 'dot')
+    .replace(/[^a-z0-9-]/g, '');
+  return `--nightingale-${sourceDB}-${label}`;
 }
 
-// These functions need to be implemented based on your color and shape mapping logic
-function getColorForAnnotation(annotation: PublicAnnotation): string {
-  // Implement color logic here
-  return 'gray'; // Default color
-}
+function annotationToNightingaleFeature(annotation: PublicAnnotation): Feature | null {
+    const sourceDB = annotation.source_db.toLowerCase() as SourceDB;
+    const label = annotation.label;
+    const labelDescription = legendData[sourceDB]?.labels[label]?.description || 'Unknown';
 
-function getShapeForAnnotation(annotation: PublicAnnotation): Shapes {
-  // Implement shape logic here
-  return 'rectangle'; // Default shape
-}
+    return {
+      accession: `${sourceDB}-${label}-${annotation.start}-${annotation.end}`,
+      type: annotation.label,
+      color: `var(${dbLabelToCSSVar(sourceDB, label)}, rgba(0, 0, 0, 0))`,
+      shape: 'rectangle',
+      locations: [
+        {
+          fragments: [
+            {
+              start: annotation.start,
+              end: annotation.end
+            }
+          ]
+        }
+      ],
+      tooltipContent: `${labelDescription}`,
+      sourceDB: annotation.source_db,
+    };
+  }
+
 
 export function annotationsToTracks(annotations: PublicAnnotation[]): TrackData {
   if (!annotations || annotations.length === 0) {
@@ -135,8 +136,59 @@ export function annotationsToTracks(annotations: PublicAnnotation[]): TrackData 
   const tracks: TrackData = {} as TrackData;
 
   for (const [sourceDB, dbAnnotations] of Object.entries(annotationsByDB)) {
-    tracks[sourceDB as SourceDB] = dbAnnotations.map(annotationToNightingaleFeature);
+    tracks[sourceDB as SourceDB] = dbAnnotations
+      .map(annotationToNightingaleFeature)
+      .filter((feature): feature is Feature => feature !== null);
+  }
+  return tracks;
+}
+
+
+export class AnnotationStyleManager{
+  private styles: Map<string, string> = new Map();
+  private theme: 'light' | 'dark' = 'light';
+  private element: HTMLElement;
+
+  constructor(element: HTMLElement, theme? : 'light' | 'dark'){
+    this.element = element;
+    this.theme = theme || 'light';
+    this.generateCSSVars();
+    this.refresh();
   }
 
-  return tracks;
+  private generateCSSVars(){
+    for (const sourceDB of SOURCE_DATABASES) {
+      const labels = legendData[sourceDB].labels;
+      for (const label of Object.keys(labels)) {
+        this.styles.set(`${dbLabelToCSSVar(sourceDB, label)}-dark`, labels[label].color_dark);
+        this.styles.set(`${dbLabelToCSSVar(sourceDB, label)}-light`, labels[label].color_light);
+      }
+    }
+    this.updatePointers();
+  }
+
+  private updatePointers(){
+    for (const sourceDB of SOURCE_DATABASES) {
+      const labels = legendData[sourceDB].labels;
+      for (const label of Object.keys(labels)) {
+        this.styles.set(`${dbLabelToCSSVar(sourceDB, label)}`, `var(${dbLabelToCSSVar(sourceDB, label)}-${this.theme})`);
+      }
+    }
+  }
+
+
+  private refresh() {
+    let values = [];
+    for (let [key, value] of this.styles) {
+      values.push(`${key}:${value}`);
+    }
+    this.element.style.cssText = values.join(';');
+  }
+
+  public setTheme(theme: 'light' | 'dark'){
+    this.theme = theme;
+    this.updatePointers();
+    this.refresh();
+  }
+
 }
