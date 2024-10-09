@@ -4,7 +4,7 @@
 -->
 
 <script>
-  import { emojis } from "$lib/status_emojis";
+  import { emojis } from "$lib/statusEmojis";
   import { page } from "$app/stores";
 </script>
 
