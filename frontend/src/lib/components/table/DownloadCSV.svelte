@@ -55,8 +55,6 @@
   }
 
   function handleDownload() {
-    console.log("data", data);
-    console.log("headers", headers);
     const csv = convertToCSV(data, headers);
     const filename = filenameFromFilter();
     downloadCSV(csv, filename);
@@ -64,5 +62,5 @@
 </script>
 
 <button on:click={handleDownload} class="btn">
-  <iconify-icon icon="material-symbols:download"></iconify-icon>
+  <iconify-icon icon="material-symbols:download" height="1.5em"></iconify-icon>
 </button>
