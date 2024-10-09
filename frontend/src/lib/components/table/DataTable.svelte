@@ -8,12 +8,18 @@
   import ThFilter from "./ThFilter.svelte";
   import ThBoolFilter from "./ThBoolFilter.svelte";
   import Search from "./Search.svelte";
+  import TableFooter from "./TableFooter.svelte";
   import type { TableHeader } from "$lib/components/Table";
+  import DownloadCsv from "./DownloadCSV.svelte";
 
   export let data: any[];
   export let headers: TableHeader<any>[];
   export let rowsPerPage: number = 20;
+  export let currentPage: number;
+  export let pageSize: number;
+  export let totalItems: number;
   export let onRowClick: (row: any) => void = () => {};
+  export let onSetPage: (page: number) => void;
 
   let handler: DataHandler<any>;
   let rows: Readable<any[]>;
@@ -34,6 +40,7 @@
   <div class="overflow-x-auto space-y-4">
     <header class="flex justify-between gap-4">
       <Search {handler} />
+      <DownloadCsv {data} {headers} {currentPage} />
     </header>
     <table class="table table-hover table-compact w-full table-auto">
       <thead>
@@ -64,6 +71,6 @@
         {/each}
       </tbody>
     </table>
-    <slot name="footer"></slot>
+    <TableFooter {currentPage} {onSetPage} {pageSize} {totalItems} />
   </div>
 {/if}

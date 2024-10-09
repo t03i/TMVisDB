@@ -4,7 +4,7 @@
 
   import DataLoader from "$lib/components/DataLoader.svelte";
   import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
-  import { DataTable, LoadingTable, TableFooter } from "$lib/components/Table";
+  import { DataTable, LoadingTable } from "$lib/components/Table";
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
 
@@ -40,19 +40,16 @@
     </div>
     <div class="card p-2">
       {#if isSuccessful}
+        <!--FIXME page size-->
         <DataTable
           data={proteinResponse.items}
           headers={proteinTableHeaders}
           onRowClick={handleRowClick}
-        >
-          <TableFooter
-            slot="footer"
-            {currentPage}
-            pageSize={itemsPerPage}
-            totalItems={200}
-            onSetPage={(page) => (currentPage = page)}
-          />
-        </DataTable>
+          {currentPage}
+          pageSize={itemsPerPage}
+          totalItems={200}
+          onSetPage={(page) => (currentPage = page)}
+        ></DataTable>
       {:else if isLoading}
         <LoadingTable headers={proteinTableHeaders} rows={itemsPerPage} />
       {:else}
