@@ -24,7 +24,10 @@
     StructureViewerLoading,
   } from "$lib/components/StructureViewer";
 
-  import FeatureViewer from "$lib/components/FeatureViewer.svelte";
+  import {
+    FeatureViewer,
+    FeatureViewerLoading,
+  } from "$lib/components/FeatureViewer";
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
@@ -95,7 +98,7 @@
   <div class="card w-full p-6 space-y-6">
     <h3 class="h3 no-wrap">Annotations</h3>
     {#if $annotationsIsFetching}
-      Create Loading component
+      <FeatureViewerLoading />
     {:else if $structureQuery.data?.sequence && $annotationTracks}
       <FeatureViewer
         sequence={$structureQuery.data?.sequence}
