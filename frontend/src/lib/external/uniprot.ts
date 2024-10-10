@@ -7,22 +7,27 @@ import axios, { AxiosError } from 'axios';
 import type { AnnotationData, PublicAnnotation } from '$lib/client/model';
 
 export enum UniprotACCType {
-  UNIPROT_ID = 0,
+  UNIPROT_ACCESSION = 0,
   UNIPROT_NAME = 1,
   UNKNOWN = -1,
 }
 
+export const UniprotACCTypeNameMap: Record<UniprotACCType, string | null> = {
+  [UniprotACCType.UNIPROT_ACCESSION]: 'UniProt Accession',
+  [UniprotACCType.UNIPROT_NAME]: 'UniProt Name',
+  [UniprotACCType.UNKNOWN]: null,
+};
 export interface UniprotAnnotationData extends AnnotationData {
   accession: string;
   name: string;
   sequence_length: number;
 }
 
-const uniprot_get_input_type = (selected_id: string): UniprotACCType => {
+export const uniprot_get_input_type = (selected_id: string): UniprotACCType => {
   const test_str = selected_id.toUpperCase();
-  if (/^[A-Z0-9]{3,20}_[A-Z0-9]{3,20}$/.test(test_str)) {
-    return UniprotACCType.UNIPROT_ID;
-  } else if (/^[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2}$/.test(test_str)) {
+  if (/^[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2}$/.test(test_str))  {
+    return UniprotACCType.UNIPROT_ACCESSION;
+  } else if (/^[A-Z0-9]{3,20}_[A-Z0-9]{3,20}$/.test(test_str)) {
     return UniprotACCType.UNIPROT_NAME;
   } else {
     return UniprotACCType.UNKNOWN;
@@ -32,7 +37,7 @@ const uniprot_get_input_type = (selected_id: string): UniprotACCType => {
 const uniprot_query_url = (selected_id: string, input_type: UniprotACCType): string => {
   const query_prefix = {
     [UniprotACCType.UNIPROT_NAME]: `accession:${selected_id}`,
-    [UniprotACCType.UNIPROT_ID]: `id:${selected_id}`,
+    [UniprotACCType.UNIPROT_ACCESSION]: `id:${selected_id}`,
     [UniprotACCType.UNKNOWN]: selected_id,
   };
   return `https://rest.uniprot.org/uniprotkb/search?query=${query_prefix[input_type]} AND active:true&fields=id,accession,length,ft_transmem&format=json&size=1`;

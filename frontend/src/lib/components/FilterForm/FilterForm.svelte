@@ -123,7 +123,7 @@
     <!-- Filter Type Radio Group -->
     <div class="flex items-center gap-2">
       <span class="text-sm font-bold">Filter By:</span>
-      <RadioGroup class="flex space-x-2">
+      <RadioGroup class="flex-col md:flex-row space-x-2">
         <RadioItem name="filter-1" bind:group={filters.filterType} value="taxa"
           >Taxonomy</RadioItem
         >
