@@ -25,12 +25,14 @@
 
   // Define query parameters
   $: queryParams = {
-    topology: params.topology as Topology,
-    has_signal_peptide: params.peptide === "true",
-    sequence_length_min: parseInt(params.min),
-    sequence_length_max: parseInt(params.max),
     page_size: pageSize,
     page: currentPage,
+    ...(params.topology && { topology: params.topology as Topology }),
+    ...(params.has_signal_peptide && {
+      has_signal_peptide: params.peptide === "true",
+    }),
+    ...(params.min && { sequence_length_min: parseInt(params.min) }),
+    ...(params.max && { sequence_length_max: parseInt(params.max) }),
   };
 
   $: {

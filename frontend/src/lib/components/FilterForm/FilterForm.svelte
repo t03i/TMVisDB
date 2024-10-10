@@ -51,19 +51,22 @@
   function handleSubmit(event: Event) {
     event.preventDefault();
 
-    const params: Record<string, string> = {
-      search_for: filters.filterType,
-      topology: filters.filterTopology,
-      peptide: String(filters.filterSignalPeptide),
-      min: String(filters.filterMinLength),
-      max: String(filters.filterMaxLength),
-    };
+    const params: Record<string, string> = {};
 
-    if (filters.filterType === "id") {
-      params.organism_id = filters.filterOrganismId;
-    } else {
-      params.domain = filters.filterDomain;
-      params.kingdom = filters.filterKingdom;
+    Object.entries(filters).forEach(([key, value]) => {
+      const defaultValue = defaultFilters[key];
+      if (value !== defaultValue) {
+        const paramKey = key.replace("filter", "").toLowerCase();
+        params[paramKey] = String(value);
+      }
+    });
+
+    // Always include the search_for parameter
+    params.search_for = filters.filterType;
+
+    // Include signal peptide if topology is not the default value
+    if (filters.filterTopology !== defaultFilters.filterTopology) {
+      params.peptide = String(filters.filterSignalPeptide);
     }
 
     goto(`?${new URLSearchParams(params).toString()}`);
@@ -95,7 +98,7 @@
   // Check if current state matches default state
   function isDefaultState(): boolean {
     return Object.keys(defaultFilters).every(
-      (key) => filters[key] === defaultFilters[key],
+      (key) => key === "filterType" || filters[key] === defaultFilters[key],
     );
   }
 
