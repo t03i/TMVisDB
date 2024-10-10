@@ -36,8 +36,8 @@ export const uniprot_get_input_type = (selected_id: string): UniprotACCType => {
 
 const uniprot_query_url = (selected_id: string, input_type: UniprotACCType): string => {
   const query_prefix = {
-    [UniprotACCType.UNIPROT_NAME]: `accession:${selected_id}`,
-    [UniprotACCType.UNIPROT_ACCESSION]: `id:${selected_id}`,
+    [UniprotACCType.UNIPROT_ACCESSION]: `accession:${selected_id}`,
+    [UniprotACCType.UNIPROT_NAME]: `id:${selected_id}`,
     [UniprotACCType.UNKNOWN]: selected_id,
   };
   return `https://rest.uniprot.org/uniprotkb/search?query=${query_prefix[input_type]} AND active:true&fields=id,accession,length,ft_transmem&format=json&size=1`;

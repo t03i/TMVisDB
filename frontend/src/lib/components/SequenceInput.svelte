@@ -3,6 +3,8 @@
  SPDX-License-Identifier: Apache-2.0
 -->
 <script lang="ts">
+  import { goto } from "$app/navigation";
+
   import {
     uniprot_get_input_type,
     UniprotACCType,
@@ -18,9 +20,15 @@
   } else {
     input_type = UniprotACCType.UNKNOWN;
   }
+
+  function handleSubmit(event: Event) {
+    event.preventDefault();
+
+    goto(`?${new URLSearchParams({ search: identifier }).toString()}`);
+  }
 </script>
 
-<form>
+<form on:submit|preventDefault={handleSubmit}>
   <div
     class="input-group grid-cols-[auto_1fr_auto] shadow-lg bg-transparent"
     class:border-error-500-400-token={input_type == UniprotACCType.UNKNOWN}
