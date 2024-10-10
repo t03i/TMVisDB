@@ -13,6 +13,7 @@ repos:
         exclude: ^frontend/src/lib/client/.*
       - id: trailing-whitespace
         exclude: ^frontend/src/lib/client/.*
+
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: v0.2.2
     hooks:
@@ -20,18 +21,19 @@ repos:
         args:
           - --fix
       - id: ruff-format
+
   - repo: local
     hooks:
       - id: generate-client
         name: Generate API Client
         entry: scripts/generate-client.sh
         language: script
-        files: ^backend/app/.*\\.py$
+        files: ^backend/app/.*\.py$
       - id: generate-enums
         name: Generate Enums
         entry: scripts/generate-enums.sh
         language: script
-        files: ^shared/taxonomies\\.json$
+        files: ^shared/taxonomies\.json$
 
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
