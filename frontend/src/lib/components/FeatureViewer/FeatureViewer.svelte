@@ -61,6 +61,8 @@
   // TODO: this causes highlight to break; need to fix
   // Seems to not pass down the event to the track
   function handleFeatureEvent(event: CustomEvent) {
+    event.preventDefault();
+
     const { detail } = event;
     switch (detail.eventType) {
       case "mouseover":
@@ -89,7 +91,7 @@
     <nightingale-manager
       id="manager"
       class="col-span-2 lg:col-span-1"
-      on:change={handleFeatureEvent}
+      on:change|preventDefault={handleFeatureEvent}
     >
       <div class="grid grid-cols-1 gap-x-2 lg:grid-cols-[1fr,11fr] w-full">
         <div class="text-mono leading-none justify-self-end"></div>
@@ -133,7 +135,7 @@
               margin-color={marginColor}
               min-width={minWidth}
               {height}
-              highlight-event="onmouseover"
+              highlight-event="onclick"
               use-ctrl-to-zoom
             ></nightingale-track>
           </div>
@@ -151,7 +153,7 @@
             margin-color={marginColor}
             min-width={minWidth}
             {height}
-            highlight-event="onmouseover"
+            highlight-event="onclick"
             use-ctrl-to-zoom
           ></nightingale-sequence>
         </div>
