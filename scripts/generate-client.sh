@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Set the root directory
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -76,7 +77,7 @@ echo "Generating custom mutator..."
 cat > "$FRONTEND_DIR/src/lib/client/dataMutator.ts" << EOF
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
-export const customMutator = <T>(config: AxiosRequestConfig): Promise<T> => {
+export const dataMutator = <T>(config: AxiosRequestConfig): Promise<T> => {
   return axios(config).then((response) => response.data);
 };
 EOF
