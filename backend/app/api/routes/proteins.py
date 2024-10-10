@@ -7,7 +7,13 @@ from pydantic import PositiveInt, ValidationError
 
 from ..deps import SessionDep
 from app.taxonomy_enums import SuperKingdom, Clade, SK_CLADE_MAPPING
-from app.models import ProteinResponse, ProteinInfo, ProteinFilter, TaxonomyFilter
+from app.models import (
+    ProteinResponse,
+    ProteinInfo,
+    ProteinFilter,
+    TaxonomyFilter,
+    ProteinExistence,
+)
 from app.core.config import settings
 import app.crud as crud
 
@@ -99,7 +105,7 @@ def get_proteins_by_clade(
     return ProteinResponse(items=proteins, total_count=count)
 
 
-@router.get("/exists/{uniprot_accession}")
+@router.get("/exists/{uniprot_accession}", response_model=ProteinExistence)
 def check_protein_exists(session: SessionDep, uniprot_accession: str):
     exists = crud.check_protein_exists(session, uniprot_accession)
-    return {"exists": exists}
+    return ProteinExistence(exists=exists)

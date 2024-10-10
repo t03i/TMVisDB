@@ -154,3 +154,7 @@ class AnnotationLegend(BaseModel):
     name: str
     description: str
     labels: list[LabelInfo]
+
+
+class ProteinExistence(BaseModel):
+    exists: bool
