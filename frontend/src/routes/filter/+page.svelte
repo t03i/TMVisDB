@@ -41,6 +41,9 @@
     <div class="card p-2">
       {#if isSuccessful}
         <!--FIXME page size-->
+        <h3 class="h3 mb-1 text-center">
+          {params?.search_for ? "Filtered Proteins" : "Random Proteins"}
+        </h3>
         <DataTable
           data={proteinResponse.items}
           headers={proteinTableHeaders}
