@@ -173,3 +173,9 @@ def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
     protein_info = ProteinInfo.model_validate(combined_dict)
 
     return protein_info
+
+
+def check_protein_exists(db: Session, uniprot_accession: str) -> bool:
+    query = select(Sequence.id).where(Sequence.uniprot_accession == uniprot_accession)
+    result = db.execute(query).first()
+    return result is not None

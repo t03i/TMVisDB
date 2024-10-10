@@ -97,3 +97,9 @@ def get_proteins_by_clade(
     if proteins is None:
         raise HTTPException(status_code=404, detail="No proteins found")
     return ProteinResponse(items=proteins, total_count=count)
+
+
+@router.get("/exists/{uniprot_accession}")
+def check_protein_exists(session: SessionDep, uniprot_accession: str):
+    exists = crud.check_protein_exists(session, uniprot_accession)
+    return {"exists": exists}
