@@ -24,12 +24,10 @@
   <div
     class="input-group grid-cols-[auto_1fr_auto] shadow-lg bg-transparent"
     class:border-error-500-400-token={input_type == UniprotACCType.UNKNOWN}
-    class:border-success-400-500-token={input_type != UniprotACCType.UNKNOWN}
+    class:border-success-500-400-token={input_type != UniprotACCType.UNKNOWN}
     title={input_type == UniprotACCType.UNKNOWN
       ? "Invalid UniprotKB Identifier"
-      : input_type == UniprotACCType.UNIPROT_ACCESSION
-        ? "Search UniprotKB Accession"
-        : "Search UniprotKB Name"}
+      : `Search for ${UniprotACCTypeNameMap[input_type]}`}
   >
     <div class=" input-group-shim bg-transparent">
       <iconify-icon icon="mdi:search" height="1em" class="text-surface-300"
