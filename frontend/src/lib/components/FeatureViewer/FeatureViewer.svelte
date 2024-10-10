@@ -59,12 +59,13 @@
   let tooltipContent = writable("");
 
   // TODO: this causes highlight to break; need to fix
+  // Seems to not pass down the event to the track
   function handleFeatureEvent(event: CustomEvent) {
     const { detail } = event;
     switch (detail.eventType) {
       case "mouseover":
         const { feature, target, parentEvent } = detail;
-        if (feature) {
+        if (feature && feature?.type) {
           tooltipContent.set(
             `${KEY_TO_DISPLAY_NAME[feature.sourceDB]}: ${feature.tooltipContent} (${feature.type}), Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
           );
@@ -81,8 +82,15 @@
 </script>
 
 {#if sequence && trackData}
-  <div bind:this={rootContainer} class="w-full max-w-7xl mx-auto p-5 h-full">
-    <nightingale-manager id="manager" class="col-span-2 lg:col-span-1">
+  <div
+    bind:this={rootContainer}
+    class="w-full max-w-7xl mx-auto p-5 min-h-[200px]"
+  >
+    <nightingale-manager
+      id="manager"
+      class="col-span-2 lg:col-span-1"
+      on:change={handleFeatureEvent}
+    >
       <div class="grid grid-cols-1 gap-x-2 lg:grid-cols-[1fr,11fr] w-full">
         <div class="text-mono leading-none justify-self-end"></div>
         <div class="leading-none relative">
@@ -117,7 +125,7 @@
               bind:this={trackElements[sourceDB]}
               id={"track-" + sourceDB}
               {length}
-              on:change={handleFeatureEvent}
+              manager="manager"
               width={componentWidth}
               display-start={displayStart}
               display-end={displayEnd}
@@ -149,7 +157,7 @@
         </div>
       </div>
       <div
-        class="text-mono text-[8pt] lg:text-base leading-1 mt-5 justify-self-start lg:col-span-2"
+        class="text-mono text-[8pt] lg:text-base leading-normal min-h-6 mt-5 justify-self-start lg:col-span-2"
       >
         {$tooltipContent}
       </div>

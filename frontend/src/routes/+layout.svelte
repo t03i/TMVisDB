@@ -32,11 +32,11 @@
   });
 </script>
 
-<div class="flex flex-col h-screen">
+<div class="flex flex-col min-h-screen">
   <Header />
   <div class="flex flex-1 overflow-hidden">
     <!-- Navigation sidebar -->
-    <nav class="w-16 border-r flex-shrink-0">
+    <nav class="w-16 border-r">
       <AppRail>
         <AppRailAnchor href="/" selected={$page.url.pathname === "/"}
           ><iconify-icon icon="mdi:home" height="2em"
@@ -58,7 +58,7 @@
     </nav>
     <!-- Main content area -->
     <div class="flex flex-col flex-1 overflow-auto">
-      <main class="flex-1 p-4">
+      <main class="flex-1 p-4 h-full">
         <QueryClientProvider client={queryClient}>
           <slot />
           {#if browser}
@@ -66,7 +66,9 @@
           {/if}
         </QueryClientProvider>
       </main>
-      <Footer />
+      <div class="mt-4">
+        <Footer />
+      </div>
     </div>
   </div>
 </div>
