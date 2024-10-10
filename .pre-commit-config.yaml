@@ -28,12 +28,13 @@ repos:
         name: Generate API Client
         entry: scripts/generate-client.sh
         language: script
-        files: ^backend/app/.*\.py$
+        files: backend/app/
+        types: [python]
       - id: generate-enums
         name: Generate Enums
         entry: scripts/generate-enums.sh
         language: script
-        files: ^shared/taxonomies\.json$
+        files: shared/taxonomies\.json
 
 ci:
   autofix_commit_msg: 🎨 [pre-commit.ci] Auto format from pre-commit.com hooks
