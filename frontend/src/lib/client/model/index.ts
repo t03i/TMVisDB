@@ -16,6 +16,7 @@ export * from './getProteinsBySuperKingdomParams';
 export * from './getTaxonomies200';
 export * from './hTTPValidationError';
 export * from './labelInfo';
+export * from './proteinExistence';
 export * from './proteinInfo';
 export * from './proteinInfoClade';
 export * from './proteinResponse';

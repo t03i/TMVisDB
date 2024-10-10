@@ -24,11 +24,12 @@ import type {
   GetProteinsBySuperKingdomParams,
   GetTaxonomies200,
   HTTPValidationError,
+  ProteinExistence,
   ProteinInfo,
   ProteinResponse,
   SuperKingdom
 } from './model'
-import { customMutator } from './dataMutator';
+import { dataMutator } from './dataMutator';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -45,7 +46,7 @@ export const getRandomProteins = (
 ) => {
       
       
-      return customMutator<ProteinResponse>(
+      return dataMutator<ProteinResponse>(
       {url: `/api/v1/proteins/random/${numSequences}/`, method: 'GET', signal
     },
       );
@@ -109,7 +110,7 @@ export const getProteinById = (
 ) => {
       
       
-      return customMutator<ProteinInfo>(
+      return dataMutator<ProteinInfo>(
       {url: `/api/v1/proteins/${uniprotAccession}`, method: 'GET', signal
     },
       );
@@ -174,7 +175,7 @@ export const getProteinsByOrganism = (
 ) => {
       
       
-      return customMutator<ProteinResponse>(
+      return dataMutator<ProteinResponse>(
       {url: `/api/v1/proteins/by-organism/${organismId}/`, method: 'GET',
         params, signal
     },
@@ -243,7 +244,7 @@ export const getProteinsBySuperKingdom = (
 ) => {
       
       
-      return customMutator<ProteinResponse>(
+      return dataMutator<ProteinResponse>(
       {url: `/api/v1/proteins/by-lineage/${superKingdom}/`, method: 'GET',
         params, signal
     },
@@ -313,7 +314,7 @@ export const getProteinsByClade = (
 ) => {
       
       
-      return customMutator<ProteinResponse>(
+      return dataMutator<ProteinResponse>(
       {url: `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`, method: 'GET',
         params, signal
     },
@@ -376,6 +377,70 @@ export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getPr
 
 
 /**
+ * @summary Check Protein Exists
+ */
+export const checkProteinExists = (
+    uniprotAccession: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return dataMutator<ProteinExistence>(
+      {url: `/api/v1/proteins/exists/${uniprotAccession}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getCheckProteinExistsQueryKey = (uniprotAccession: string,) => {
+    return [`/api/v1/proteins/exists/${uniprotAccession}`] as const;
+    }
+
+    
+export const getCheckProteinExistsQueryOptions = <TData = Awaited<ReturnType<typeof checkProteinExists>>, TError = HTTPValidationError>(uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof checkProteinExists>>, TError, TData>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCheckProteinExistsQueryKey(uniprotAccession);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof checkProteinExists>>> = ({ signal }) => checkProteinExists(uniprotAccession, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(uniprotAccession), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof checkProteinExists>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type CheckProteinExistsQueryResult = NonNullable<Awaited<ReturnType<typeof checkProteinExists>>>
+export type CheckProteinExistsQueryError = HTTPValidationError
+
+
+/**
+ * @summary Check Protein Exists
+ */
+
+export function createCheckProteinExists<TData = Awaited<ReturnType<typeof checkProteinExists>>, TError = HTTPValidationError>(
+ uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof checkProteinExists>>, TError, TData>, }
+
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getCheckProteinExistsQueryOptions(uniprotAccession,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Get Protein Annotations
  */
 export const getProteinAnnotations = (
@@ -384,7 +449,7 @@ export const getProteinAnnotations = (
 ) => {
       
       
-      return customMutator<AnnotationData>(
+      return dataMutator<AnnotationData>(
       {url: `/api/v1/annotations/${uniprotId}`, method: 'GET', signal
     },
       );
@@ -448,7 +513,7 @@ export const getDbAnnotationsLegends = (
 ) => {
       
       
-      return customMutator<GetDbAnnotationsLegends200>(
+      return dataMutator<GetDbAnnotationsLegends200>(
       {url: `/api/v1/info/legends/`, method: 'GET', signal
     },
       );
@@ -512,7 +577,7 @@ export const getAnnotationLegendForDb = (
 ) => {
       
       
-      return customMutator<AnnotationLegend>(
+      return dataMutator<AnnotationLegend>(
       {url: `/api/v1/info/legend/${dbName}`, method: 'GET', signal
     },
       );
@@ -576,7 +641,7 @@ export const getTaxonomies = (
 ) => {
       
       
-      return customMutator<GetTaxonomies200>(
+      return dataMutator<GetTaxonomies200>(
       {url: `/api/v1/info/taxonomies/`, method: 'GET', signal
     },
       );

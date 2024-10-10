@@ -10,7 +10,7 @@ export type DatabaseType = typeof DatabaseType[keyof typeof DatabaseType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const DatabaseType = {
-  tmvis: 'tmvis',
+  tmbed: 'tmbed',
   topdb: 'topdb',
   membranome: 'membranome',
   uniprot: 'uniprot',
