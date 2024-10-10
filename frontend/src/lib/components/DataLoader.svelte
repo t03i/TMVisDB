@@ -28,7 +28,7 @@
     page_size: pageSize,
     page: currentPage,
     ...(params.topology && { topology: params.topology as Topology }),
-    ...(params.has_signal_peptide && {
+    ...(params.peptide && {
       has_signal_peptide: params.peptide === "true",
     }),
     ...(params.min && { sequence_length_min: parseInt(params.min) }),
