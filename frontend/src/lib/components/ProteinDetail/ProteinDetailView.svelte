@@ -36,7 +36,9 @@
       <div>
         <h3 class="h3">Taxonomy</h3>
         <p class="text-sm">Super Kingdom: {proteinInfo.super_kingdom}</p>
-        <p class="text-sm">Clade: {proteinInfo.clade}</p>
+        {#if proteinInfo.clade}
+          <p class="text-sm">Clade: {proteinInfo.clade}</p>
+        {/if}
         <p class="text-sm">
           Taxon Name:
           <a
