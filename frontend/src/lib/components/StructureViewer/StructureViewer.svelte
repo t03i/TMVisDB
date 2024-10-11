@@ -1,7 +1,10 @@
 <!-- StructureViewer.svelte -->
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   import ResourceLoader from "./ResourceLoader.svelte";
   import ThemeSwitcher from "./ThemeSwitcher.svelte";
+  import exp from "constants";
 
   export let structureUrl: string = "";
   export let format: "cif" | "mmcif" | "pdb" = "pdb";
@@ -10,6 +13,7 @@
   export { className as class };
 
   let viewerElement: any;
+  const dispatch = createEventDispatcher();
 
   // Function to update the viewer with new data
   function updateViewer() {
@@ -29,15 +33,40 @@
     updateViewer();
   }
 
+  $: if (viewerElement && viewerElement.viewerInstance) {
+    dispatch("viewerReady", { highlightResidues, clearHighlight });
+  }
+
   export function highlightResidues(
-    residues: string[],
+    residues: { start_residue_number: number; end_residue_number: number }[],
     color: { r: number; g: number; b: number },
   ) {
+    console.log(viewerElement);
     if (viewerElement && viewerElement.viewerInstance) {
+      console.log(
+        residues.map((residue) => {
+          return {
+            ...residue,
+            color,
+            focus,
+          };
+        }),
+      );
       viewerElement.viewerInstance.visual.select({
-        data: residues,
-        addedColor: { r: 255, g: 112, b: 3 },
+        data: residues.map((residue) => {
+          return {
+            ...residue,
+            color,
+            focus,
+          };
+        }),
       });
+    }
+  }
+
+  export function clearHighlight() {
+    if (viewerElement && viewerElement.viewerInstance) {
+      viewerElement.viewerInstance.visual.clearSelection();
     }
   }
 </script>

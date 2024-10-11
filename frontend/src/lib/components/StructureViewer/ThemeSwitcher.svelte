@@ -72,6 +72,7 @@
       }
     });
 
+    // TODO switch to on:loadComplete event
     // Check periodically if viewerInstance is available
     const checkViewerInstance = setInterval(() => {
       if (

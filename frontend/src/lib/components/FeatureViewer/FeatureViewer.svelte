@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from "svelte";
+  import { afterUpdate, onMount, createEventDispatcher } from "svelte";
   import { writable } from "svelte/store";
   import { modeCurrent } from "@skeletonlabs/skeleton";
 
@@ -16,10 +16,9 @@
 
   export let sequence: string;
   export let trackData: TrackData;
-  export let featureEventHandler: (event: CustomEvent) => void = () => {};
   export let displayStart: number = 1;
   export let displayEnd: number = sequence.length;
-  export let highlightColor: string = "rgba(var(--color-secondary-500)/0.3)";
+  export let highlightColor: string = "rgba(var(--color-warning-500)/0.3)";
   export let marginColor: string = "rgba(0, 0, 0, 0)";
   export let minWidth: number = 10;
   export let height: number = 50;
@@ -31,6 +30,8 @@
     SourceDB,
     HTMLElement | null
   >;
+
+  const dispatch = createEventDispatcher();
 
   function updateTracks() {
     Object.entries(trackData).forEach(([sourceDB, features]) => {
@@ -64,9 +65,10 @@
     event.preventDefault();
 
     const { detail } = event;
+    const { feature, target, parentEvent } = detail;
+
     switch (detail.eventType) {
       case "mouseover":
-        const { feature, target, parentEvent } = detail;
         if (feature && feature?.type) {
           tooltipContent.set(
             `${KEY_TO_DISPLAY_NAME[feature.sourceDB]}: ${feature.tooltipContent} (${feature.type}), Start: ${feature.locations[0].fragments[0].start}, End: ${feature.locations[0].fragments[0].end}`,
@@ -76,8 +78,12 @@
       case "mouseout":
         tooltipContent.set("");
         break;
+      case "click":
+        if (feature && feature?.type) {
+          dispatch("feature-clicked", detail);
+        }
+        break;
     }
-    featureEventHandler(event);
   }
 
   $: componentWidth = Math.ceil(length * 100) / 100;

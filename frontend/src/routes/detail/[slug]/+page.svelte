@@ -32,6 +32,52 @@
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
 
+  let highlightResidueFn: (
+    residues: { start_residue_number: number; end_residue_number: number }[],
+    color: { r: number; g: number; b: number },
+  ) => void;
+  let clearHighlightFn: () => void;
+
+  function handleViewerReady(event: CustomEvent) {
+    console.log("Viewer ready", event.detail);
+    highlightResidueFn = event.detail.highlightResidues;
+    clearHighlightFn = event.detail.clearHighlight;
+  }
+
+  function convertToRGB(color: string): { r: number; g: number; b: number } {
+    if (color.startsWith("rgb")) {
+      const [r, g, b] = color.match(/\d+/g)!.map(Number);
+      return { r, g, b };
+    } else if (color.startsWith("#")) {
+      const hex = color.replace("#", "");
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      return { r, g, b };
+    }
+    return { r: 255, g: 255, b: 0 }; // Default to yellow if parsing fails
+  }
+
+  const handleFeatureEvent = (event: CustomEvent) => {
+    const { detail } = event;
+    const { feature, target } = detail;
+    console.log("Feature clicked", feature);
+
+    if (feature && highlightResidueFn) {
+      const cssVarName = feature.color.match(/var\((.*?)(,|\))/)[1];
+      const color = getComputedStyle(target)
+        .getPropertyValue(cssVarName)
+        .trim();
+      const rgbColor = convertToRGB(color);
+
+      const residues = feature.locations[0].fragments.map((fragment) => ({
+        start_residue_number: fragment.start,
+        end_residue_number: fragment.end,
+      }));
+      highlightResidueFn(residues, rgbColor);
+    }
+  };
+
   const uniprotAcc = data.slug;
 
   const {
@@ -72,6 +118,7 @@
           structureUrl={$structureUrl}
           format={$structureQuery?.data?.format}
           binary={$structureQuery?.data?.binary}
+          on:viewerReady={handleViewerReady}
           class="h-full w-full card min-h-[200px]"
         />
       {/if}
@@ -101,6 +148,7 @@
       <FeatureViewerLoading />
     {:else if $structureQuery.data?.sequence && $annotationTracks}
       <FeatureViewer
+        on:feature-clicked={handleFeatureEvent}
         sequence={$structureQuery.data?.sequence}
         trackData={$annotationTracks}
       />
