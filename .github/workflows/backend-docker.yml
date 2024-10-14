@@ -53,7 +53,7 @@ jobs:
       with:
         cache-map: |
             {
-             "uv-cache": '/root/.cache/uv'
+             "uv-cache": "/root/.cache/uv"
              }
         skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
