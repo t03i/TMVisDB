@@ -6,6 +6,7 @@
   import { AppBar } from "@skeletonlabs/skeleton";
   import { LightSwitch } from "@skeletonlabs/skeleton";
   import config from "$lib/config";
+  import Logo from "$lib/components/Logo.svelte";
 </script>
 
 <AppBar
@@ -14,7 +15,11 @@
   slotTrail="place-content-end"
   class="sticky shadow-lg top-0 z-10"
 >
-  <svelte:fragment slot="lead">(icon)</svelte:fragment>
+  <svelte:fragment slot="lead">
+    <a href="/" class="inline-block">
+      <Logo class="h-12" />
+    </a></svelte:fragment
+  >
   <h1 class="h1">
     <span class="gradient-heading"
       ><a href="/" class="undecorated">{config.APP_NAME}</a></span
