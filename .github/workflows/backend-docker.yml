@@ -1,4 +1,4 @@
-name: Docker Build, Push to ghcr.io, and Deploy to Render
+name: Docker Build and Push to ghcr.io
 
 on:
   push:
