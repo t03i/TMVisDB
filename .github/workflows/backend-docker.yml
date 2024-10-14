@@ -1,11 +1,14 @@
 name: Docker Build and Push to ghcr.io
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    push:
+      branches: [ "main" ]
+      paths:
+        - 'backend/**'
+    pull_request:
+      branches: [ "main" ]
+      paths:
+        - 'backend/**'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}-backend
