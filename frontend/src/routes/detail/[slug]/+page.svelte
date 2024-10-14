@@ -102,9 +102,9 @@
   onDestroy(structureCleanup);
 </script>
 
-<div class="flex flex-col m-5 p-3 gap-4 h-full lg:h-lvh">
-  <div class="flex flex-col lg:flex-row gap-4 h-lvh lg:h-1/2 min-h-[450px]">
-    <div class="card w-full lg:w-1/2 h-full">
+<div class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh">
+  <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">
+    <div class="card h-full w-full lg:w-1/2">
       {#if $structureQuery?.isLoading}
         <div class="h-full w-full p-6">
           <StructureViewerLoading />
@@ -119,11 +119,11 @@
           format={$structureQuery?.data?.format}
           binary={$structureQuery?.data?.binary}
           on:viewerReady={handleViewerReady}
-          class="h-full w-full card min-h-[200px]"
+          class="card h-full min-h-[200px] w-full"
         />
       {/if}
     </div>
-    <div class="card w-full lg:w-1/2 p-6 h-full">
+    <div class="card h-full w-full p-6 lg:w-1/2">
       {#if !$infoQuery?.error && $infoQuery?.data}
         <ProteinDetailView proteinInfo={$infoQuery.data} />
       {:else if $infoQuery?.isLoading}
@@ -134,16 +134,16 @@
     </div>
   </div>
 
-  <div class="card w-full p-6 space-y-6">
-    <h3 class="h3 no-wrap">Annotation Sources</h3>
+  <div class="card w-full space-y-6 p-6">
+    <h3 class="no-wrap h3">Annotation Sources</h3>
     {#if $annotationsIsFetching}
       <DBReferencesLoading />
     {:else if $annotationDBReferences && Object.keys($annotationDBReferences).length > 0}
       <DBReferencesView dbReferences={$annotationDBReferences} />
     {/if}
   </div>
-  <div class="card w-full p-6 space-y-6">
-    <h3 class="h3 no-wrap">Annotations</h3>
+  <div class="card w-full space-y-6 p-6">
+    <h3 class="no-wrap h3">Annotations</h3>
     {#if $annotationsIsFetching}
       <FeatureViewerLoading />
     {:else if $structureQuery.data?.sequence && $annotationTracks}
