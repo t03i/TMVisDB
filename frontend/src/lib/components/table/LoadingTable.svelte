@@ -38,7 +38,7 @@
     <tr>
       {#each headers as header}
         <th>
-          <div class="placeholder animate-pulse h-4 w-3/4 mx-auto" />
+          <div class="placeholder mx-auto h-4 w-3/4 animate-pulse" />
         </th>
       {/each}
     </tr>

@@ -54,7 +54,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center justify-center h-full m-3 min-h-44 min-w-44"
+  class="m-3 flex h-full min-h-44 min-w-44 flex-col items-center justify-center"
 >
   {#if !isLoading}
     <div class="w-full md:w-1/2">
@@ -63,7 +63,7 @@
   {/if}
 
   {#if isLoading}
-    <div class="flex items-center justify-center w-full md:w-1/2 space-x-4">
+    <div class="flex w-full items-center justify-center space-x-4 md:w-1/2">
       <ProgressRadial
         value={undefined}
         stroke={80}
@@ -77,7 +77,7 @@
   {/if}
 
   {#if $uniprotQuery?.data?.accession}
-    <div class="card p-4 variant-filled-success mt-4">
+    <div class="card variant-filled-success mt-4 p-4">
       We found a protein matching your search in UniprotKB:
       <a
         class="anchor"
@@ -92,13 +92,13 @@
   {/if}
 
   {#if uniprotError}
-    <div class="card p-4 variant-filled-error mt-4">
+    <div class="card variant-filled-error mt-4 p-4">
       We could not find a protein matching your search in UniprotKB.
     </div>
   {/if}
 
   {#if tmvisdbError}
-    <div class="card p-4 variant-filled-error mt-4">
+    <div class="card variant-filled-error mt-4 p-4">
       We could not find a protein for {$uniprotQuery?.data?.accession} in {config.APP_NAME}.
       If you believe this is an error,
       <a href={config.GITHUB_URL} class="anchor">create an issue</a>.

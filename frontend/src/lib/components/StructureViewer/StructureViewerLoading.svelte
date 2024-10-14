@@ -9,7 +9,7 @@
 </script>
 
 <div
-  class="flex justify-center items-center h-full {className}"
+  class="flex h-full items-center justify-center {className}"
   {...$$restProps}
 >
   <ProgressRadial

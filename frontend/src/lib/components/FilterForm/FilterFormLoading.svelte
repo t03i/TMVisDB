@@ -10,13 +10,13 @@
   export let isLoading: boolean;
 </script>
 
-<div class="p-4 relative">
+<div class="relative p-4">
   <div class={isLoading ? "pointer-events-none" : ""}>
     <slot></slot>
   </div>
   {#if isLoading}
     <div
-      class="rounded-container-token absolute inset-0 bg-surface-100-800-token/50 backdrop-blur-sm flex items-center justify-center"
+      class="bg-surface-100-800-token/50 absolute inset-0 flex items-center justify-center backdrop-blur-sm rounded-container-token"
     >
       <ProgressRadial
         value={undefined}

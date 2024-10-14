@@ -1,4 +1,4 @@
-<div class="container mx-auto p-4 space-y-6">
+<div class="container mx-auto space-y-6 p-4">
   <h1 class="h1">About TMvisDB</h1>
 
   <p>
@@ -17,13 +17,13 @@
       To browse the predicted transmembrane proteins in TMvisDB via a table, you
       can show a random selection or use the following filters:
     </p>
-    <ul class="list-disc list-inside">
+    <ul class="list-inside list-disc">
       <li>Transmembrane topology (alpha-helix, beta-strand)</li>
       <li>Include/Exclude sequences with predicted signal peptides</li>
       <li>Taxonomy (UniProt Organism Identifier, Domain, Kingdom)</li>
       <li>Protein length</li>
     </ul>
-    <p class="text-sm italic mt-2">
+    <p class="mt-2 text-sm italic">
       Note: We follow the general length restrictions of AlphaFold DB: a minimum
       of 16 amino acids for all organisms, and a maximum of 1,280 amino acids
       for all organisms except SwissProt (2,700 amino acids) and human (no
@@ -45,10 +45,10 @@
   </div>
 
   <div class="flex space-x-4">
-    <a type="button" class="btn variant-filled-primary" href="filter">
+    <a type="button" class="variant-filled-primary btn" href="filter">
       Start Browsing
     </a>
-    <a type="button" class="btn variant-filled-secondary" href="/search">
+    <a type="button" class="variant-filled-secondary btn" href="/search">
       Search Protein
     </a>
   </div>

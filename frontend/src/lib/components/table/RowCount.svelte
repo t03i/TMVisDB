@@ -7,7 +7,7 @@
   $: endRow = Math.min(currentPage * pageSize, totalItems);
 </script>
 
-<aside class="text-sm leading-8 mr-6">
+<aside class="mr-6 text-sm leading-8">
   {#if totalItems > 0}
     <b>{startRow}</b>
     - <b>{endRow}</b>

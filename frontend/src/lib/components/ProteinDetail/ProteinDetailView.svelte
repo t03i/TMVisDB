@@ -32,7 +32,7 @@
       </a>
     </p>
 
-    <div class="grid grid-cols-2 gap-4 mt-4">
+    <div class="mt-4 grid grid-cols-2 gap-4">
       <div>
         <h3 class="h3">Taxonomy</h3>
         <p class="text-sm">Super Kingdom: {proteinInfo.super_kingdom}</p>
@@ -113,7 +113,7 @@
               )}%)
             </p>
           </div>
-          <div class="flex items-star justify-end">
+          <div class="items-star flex justify-end">
             <div class="w-full max-w-[150px]">
               <ProgressBar
                 value={proteinInfo.tm_helix_percent}

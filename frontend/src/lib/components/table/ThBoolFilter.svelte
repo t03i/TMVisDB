@@ -15,7 +15,7 @@
   <select
     bind:value={selectedValue}
     on:change={updateFilter}
-    class="select select-sm"
+    class="select-sm select"
   >
     <option value="">Any</option>
     <option value="true">Yes</option>

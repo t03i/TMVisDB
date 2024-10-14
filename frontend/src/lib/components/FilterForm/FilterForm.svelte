@@ -119,14 +119,14 @@
 </script>
 
 <form
-  class="flex-col flex items-center gap-4 p-4 w-full"
+  class="flex w-full flex-col items-center gap-4 p-4"
   on:submit|preventDefault={handleSubmit}
 >
-  <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4">
+  <div class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-4">
     <!-- Filter Type Radio Group -->
     <div class="flex items-center gap-2">
       <span class="text-sm font-bold">Filter By:</span>
-      <RadioGroup class="flex-col md:flex-row space-x-2">
+      <RadioGroup class="flex-col space-x-2 md:flex-row">
         <RadioItem name="filter-1" bind:group={filters.filterType} value="taxa"
           >Taxonomy</RadioItem
         >
@@ -145,7 +145,7 @@
         <input
           id="organism_id"
           type="number"
-          class="input py-1 px-2 leading-tight w-32"
+          class="input w-32 px-2 py-1 leading-tight"
           placeholder="Organism ID"
           bind:value={filters.filterOrganismId}
           required
@@ -157,7 +157,7 @@
         <label for="domain" class="text-sm font-bold">Domain:</label>
         <select
           id="domain"
-          class="select py-1 px-2 leading-tight w-40"
+          class="select w-40 px-2 py-1 leading-tight"
           bind:value={filters.filterDomain}
           required
         >
@@ -172,7 +172,7 @@
         <label for="kingdom" class="text-sm font-bold">Kingdom:</label>
         <select
           id="kingdom"
-          class="select py-1 px-2 leading-tight w-40"
+          class="select w-40 px-2 py-1 leading-tight"
           bind:value={filters.filterKingdom}
         >
           <option value="">All</option>
@@ -184,11 +184,11 @@
     {/if}
   </div>
 
-  <div class="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-4">
+  <div class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-4">
     <!-- Structural Topology Radio Group -->
     <div class="flex items-center gap-2">
       <span class="text-sm font-bold">Topology:</span>
-      <RadioGroup class="flex flex-col md:flex-row space-x-2">
+      <RadioGroup class="flex flex-col space-x-2 md:flex-row">
         <RadioItem
           name="topology-1"
           bind:group={filters.filterTopology}
@@ -227,7 +227,7 @@
       <span class="text-sm font-bold">Length:</span>
       <input
         type="number"
-        class="input py-1 px-2 w-20"
+        class="input w-20 px-2 py-1"
         bind:value={filters.filterMinLength}
         min={config.MIN_PROTEIN_LENGTH}
         max={filters.filterMaxLength}
@@ -236,7 +236,7 @@
       <span>-</span>
       <input
         type="number"
-        class="input py-1 px-2 w-20"
+        class="input w-20 px-2 py-1"
         bind:value={filters.filterMaxLength}
         min={filters.filterMinLength}
         max={config.MAX_PROTEIN_LENGTH}
@@ -249,13 +249,13 @@
   <div class="flex gap-2">
     <button
       type="submit"
-      class="btn variant-filled-success"
+      class="variant-filled-success btn"
       disabled={!canApplyFilter}>Apply</button
     >
     <button
       type="button"
       on:click={handleReset}
-      class="btn variant-soft-warning"
+      class="variant-soft-warning btn"
       disabled={!canReset}
     >
       Reset

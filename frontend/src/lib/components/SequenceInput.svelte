@@ -30,7 +30,7 @@
 
 <form on:submit|preventDefault={handleSubmit}>
   <div
-    class="input-group grid-cols-[auto_1fr_auto] shadow-lg bg-transparent"
+    class="input-group grid-cols-[auto_1fr_auto] bg-transparent shadow-lg"
     class:border-error-500-400-token={input_type == UniprotACCType.UNKNOWN}
     class:border-success-500-400-token={input_type != UniprotACCType.UNKNOWN}
     title={input_type == UniprotACCType.UNKNOWN

@@ -2,8 +2,8 @@
   import config from "$lib/config";
 </script>
 
-<div class="flex justify-center w-full">
-  <div class="w-full md:w-1/2 mx-2 max-w-3xl gap-4">
+<div class="flex w-full justify-center">
+  <div class="mx-2 w-full max-w-3xl gap-4 md:w-1/2">
     <h2 class="h2 my-6 text-center">Imprint</h2>
 
     <div class="space-y-6">

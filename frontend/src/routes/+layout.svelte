@@ -32,7 +32,7 @@
   });
 </script>
 
-<div class="flex flex-col min-h-screen">
+<div class="flex min-h-screen flex-col">
   <Header />
   <div class="flex flex-1 overflow-hidden">
     <!-- Navigation sidebar -->
@@ -57,8 +57,8 @@
       </AppRail>
     </nav>
     <!-- Main content area -->
-    <div class="flex flex-col flex-1 overflow-auto">
-      <main class="flex-1 p-4 h-full">
+    <div class="flex flex-1 flex-col overflow-auto">
+      <main class="h-full flex-1 p-4">
         <QueryClientProvider client={queryClient}>
           <slot />
           {#if browser}

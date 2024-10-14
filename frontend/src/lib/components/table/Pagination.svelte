@@ -55,7 +55,7 @@
 
 <!-- Desktop buttons -->
 <section
-  class="btn-group variant-ghost-surface [&>*+*]:border-surface-500 h-10 hidden lg:flex"
+  class="variant-ghost-surface btn-group hidden h-10 lg:flex [&>*+*]:border-surface-500"
 >
   <button
     type="button"
@@ -96,18 +96,18 @@
 <section class="flex lg:hidden">
   <button
     type="button"
-    class="btn variant-ghost-surface mr-2 mb-2 hover:variant-soft-primary"
+    class="variant-ghost-surface btn mb-2 mr-2 hover:variant-soft-primary"
     disabled={currentPage === 1}
     on:click={() => onSetPage(currentPage - 1)}
   >
     ←
   </button>
-  <span class="flex-grow text-center my-auto">
+  <span class="my-auto flex-grow text-center">
     Page {currentPage} of {totalPages}
   </span>
   <button
     type="button"
-    class="btn variant-ghost-surface mb-2 hover:variant-soft-primary"
+    class="variant-ghost-surface btn mb-2 hover:variant-soft-primary"
     disabled={currentPage === totalPages}
     on:click={() => onSetPage(currentPage + 1)}
   >

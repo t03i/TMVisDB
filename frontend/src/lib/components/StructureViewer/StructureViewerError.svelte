@@ -22,14 +22,14 @@
 </script>
 
 <div class="display-block {className}" {...$$restProps}>
-  <div class="flex flex-col items-center justify-center p-4 rounded-lg mb-5">
-    <div class="h-1/3 flex items-end justify-center">
+  <div class="mb-5 flex flex-col items-center justify-center rounded-lg p-4">
+    <div class="flex h-1/3 items-end justify-center">
       {#if is404Error}
-        <p class="text-error-500 text-[150pt] leading-none">🧬</p>
+        <p class="text-[150pt] leading-none text-error-500">🧬</p>
       {:else}
         <iconify-icon
           icon="line-md:close-circle"
-          class="text-error-500 text-[150pt]"
+          class="text-[150pt] text-error-500"
         />
       {/if}
     </div>
@@ -49,9 +49,9 @@
       </p>
     {:else}
       <p class="text-center">{errorMessage}</p>
-      <div class="flex flex-row justify-center mt-4">
+      <div class="mt-4 flex flex-row justify-center">
         <button
-          class="btn variant-filled-error mt-4 mr-2"
+          class="variant-filled-error btn mr-2 mt-4"
           on:click={() => window.location.reload()}
         >
           Try Again
@@ -60,7 +60,7 @@
           href="{config.GITHUB_URL}/issues"
           target="_blank"
           rel="noopener"
-          class="btn variant-filled mt-4"
+          class="variant-filled btn mt-4"
         >
           Report an Issue
         </a>

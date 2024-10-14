@@ -92,16 +92,16 @@
 {#if sequence && trackData}
   <div
     bind:this={rootContainer}
-    class="w-full max-w-7xl mx-auto p-5 min-h-[200px]"
+    class="mx-auto min-h-[200px] w-full max-w-7xl p-5"
   >
     <nightingale-manager
       id="manager"
       class="col-span-2 lg:col-span-1"
       on:change|preventDefault={handleFeatureEvent}
     >
-      <div class="grid grid-cols-1 gap-x-2 lg:grid-cols-[1fr,11fr] w-full">
-        <div class="text-mono leading-none justify-self-end"></div>
-        <div class="leading-none relative">
+      <div class="grid w-full grid-cols-1 gap-x-2 lg:grid-cols-[1fr,11fr]">
+        <div class="text-mono justify-self-end leading-none"></div>
+        <div class="relative leading-none">
           <nightingale-navigation
             id="navigation"
             {length}
@@ -119,13 +119,13 @@
 
         {#each Object.entries(trackData) as [sourceDB, features], index}
           <div
-            class="font-mono text-base justify-self-end leading-none hidden lg:block"
+            class="hidden justify-self-end font-mono text-base leading-none lg:block"
           >
             {KEY_TO_DISPLAY_NAME[sourceDB]}
           </div>
-          <div class="leading-none relative">
+          <div class="relative leading-none">
             <div
-              class="font-mono text-[8pt] absolute variant-glass-surface z-1 lg:hidden"
+              class="z-1 variant-glass-surface absolute font-mono text-[8pt] lg:hidden"
             >
               {KEY_TO_DISPLAY_NAME[sourceDB]}
             </div>
@@ -146,8 +146,8 @@
             ></nightingale-track>
           </div>
         {/each}
-        <div class="text-mono leading-none justify-self-end"></div>
-        <div class="leading-none relative">
+        <div class="text-mono justify-self-end leading-none"></div>
+        <div class="relative leading-none">
           <nightingale-sequence
             id="sequence"
             {sequence}
@@ -165,7 +165,7 @@
         </div>
       </div>
       <div
-        class="text-mono text-[8pt] lg:text-base leading-normal min-h-6 mt-5 justify-self-start lg:col-span-2"
+        class="text-mono mt-5 min-h-6 justify-self-start text-[8pt] leading-normal lg:col-span-2 lg:text-base"
       >
         {$tooltipContent}
       </div>

@@ -32,7 +32,7 @@
   let:isLoading
   let:error
 >
-  <div class="flex flex-col gap-4 mx-8 my-8">
+  <div class="mx-8 my-8 flex flex-col gap-4">
     <div class="card">
       <FilterFormLoading {isLoading}>
         <FilterForm />

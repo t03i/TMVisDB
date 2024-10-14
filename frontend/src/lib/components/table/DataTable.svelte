@@ -37,7 +37,7 @@
 </script>
 
 {#if handler}
-  <div class="overflow-x-auto space-y-4">
+  <div class="space-y-4 overflow-x-auto">
     <header class="flex justify-between gap-4">
       <Search {handler} />
       <DownloadCsv {data} {headers} {currentPage} />

@@ -8,18 +8,18 @@
   import config from "$lib/config";
 </script>
 
-<footer class="bg-surface-100-800-token py-8 mt-20">
+<footer class="bg-surface-100-800-token mt-20 py-8">
   <div class="container mx-auto px-4">
     <div
-      class="flex flex-col items-center md:items-start md:flex-row md:justify-between gap-8"
+      class="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between"
     >
       <div
-        class="w-full max-w-[200px] md:max-w-none flex justify-center md:justify-start"
+        class="flex w-full max-w-[200px] justify-center md:max-w-none md:justify-start"
       >
         <a href="https://rostlab.org" class="inline-block">
           <img
             src={logo}
-            class="h-32 md:h-44 object-contain"
+            class="h-32 object-contain md:h-44"
             alt="Rostlab Logo"
           />
         </a>
@@ -62,30 +62,30 @@
       <div class="w-full max-w-[200px] md:max-w-none">
         <h3 class="h3 mb-4">Follow Us</h3>
         <div class="flex space-x-4">
-          <a href="https://x.com/rostlab" class="btn btn-sm variant-soft"
+          <a href="https://x.com/rostlab" class="variant-soft btn btn-sm"
             ><iconify-icon icon="line-md:twitter-x"></iconify-icon></a
           >
           <a
             href="https://www.youtube.com/rostlab"
-            class="btn btn-sm variant-soft"
+            class="variant-soft btn btn-sm"
             ><iconify-icon icon="line-md:youtube"></iconify-icon></a
           >
-          <a href="https://github.com/Rostlab" class="btn btn-sm variant-soft"
+          <a href="https://github.com/Rostlab" class="variant-soft btn btn-sm"
             ><iconify-icon icon="line-md:github"></iconify-icon></a
           >
           <a
             href="https://linkedin.com/company/rostlab"
-            class="btn btn-sm variant-soft"
+            class="variant-soft btn btn-sm"
             ><iconify-icon icon="line-md:linkedin"></iconify-icon></a
           >
-          <a href="https://rostlab.org" class="btn btn-sm variant-soft"
+          <a href="https://rostlab.org" class="variant-soft btn btn-sm"
             ><iconify-icon icon="line-md:home"></iconify-icon></a
           >
         </div>
       </div>
     </div>
   </div>
-  <div class="text-center py-3 mt-8">
+  <div class="mt-8 py-3 text-center">
     © {new Date().getFullYear()} Copyright:
     <a href="https://rostlab.org" class="anchor">Rostlab</a>
   </div>
