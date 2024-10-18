@@ -16,12 +16,13 @@ engine = create_engine(
 
 
 def set_pragma_settings(dbapi_connection, connection_record):
+    # Optimization found here: https://youtubetranscriptoptimizer.com/blog/02_what_i_learned_making_the_python_backend_for_yto
     cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA cache_size = -65536")  # Set cache size to 64MB
+    cursor.execute("PRAGMA cache_size = -262144")  # Set cache size to 1GB
     cursor.execute("PRAGMA journal_mode = OFF")
     cursor.execute("PRAGMA synchronous = NORMAL")
     cursor.execute("PRAGMA temp_store = MEMORY")
-    cursor.execute("PRAGMA mmap_size = 268435456")
+    cursor.execute("PRAGMA mmap_size = 30000000000")  # Set 30GB memory map size
     cursor.execute("PRAGMA read_uncommitted = 1")
     cursor.execute("PRAGMA optimize")
     cursor.close()
