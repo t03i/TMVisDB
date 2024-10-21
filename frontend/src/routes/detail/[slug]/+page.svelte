@@ -61,7 +61,7 @@
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
     const { feature, target } = detail;
-    console.log("Feature clicked", feature);
+    console.log("Feature clicked", feature, highlightResidueFn);
 
     if (feature && highlightResidueFn) {
       const cssVarName = feature.color.match(/var\((.*?)(,|\))/)[1];
