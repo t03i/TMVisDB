@@ -54,7 +54,7 @@ class Settings(BaseSettings):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def SQL_ALCHEMY_DB_URL(self) -> AnyUrl:
-        return f"sqlite:///{self.SQLITE_DATABASE_PATH}"
+        return f"sqlite:///{self.SQLITE_DATABASE_PATH}?mode=ro"
 
 
 settings = Settings()  # type: ignore
