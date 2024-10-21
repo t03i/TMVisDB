@@ -11,7 +11,7 @@ from .config import settings
 
 # Create the SQLAlchemy engine
 engine = create_engine(
-    settings.SQL_ALCHEMY_DB_URL, connect_args={"check_same_thread": False}
+    f"{settings.SQL_ALCHEMY_DB_URL}?mode=ro", connect_args={"check_same_thread": False}
 )
 
 
