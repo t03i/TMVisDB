@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from sqlalchemy import create_engine, text
-from sqlmodel import SQLModel
 
 
 # Replace with your actual database URL
@@ -63,19 +62,23 @@ def run_migration():
             # Execute the index recreation
             conn.execute(text("DROP INDEX IF EXISTS annotation_sequence_start_end"))
             index_exists = conn.execute(
-                text("""
-            SELECT name FROM sqlite_master 
+                text(
+                    """
+            SELECT name FROM sqlite_master
             WHERE type='index' AND name='ix_annotation_sequence_id_start_end'
-        """)
+        """
+                )
             ).fetchone()
 
             if not index_exists:
                 # Create the index only if it doesn't exist
                 conn.execute(
-                    text("""
+                    text(
+                        """
                     CREATE INDEX ix_annotation_sequence_id_start_end
                     ON annotation (sequence_id, start, "end")
-                """)
+                """
+                    )
                 )
                 print("Index created successfully.")
             else:
