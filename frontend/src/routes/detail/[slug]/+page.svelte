@@ -38,10 +38,11 @@
   ) => void;
   let clearHighlightFn: () => void;
 
+  let viewer: StructureViewer;
   function handleViewerReady(event: CustomEvent) {
-    console.log("Viewer ready", event.detail);
-    highlightResidueFn = event.detail.highlightResidues;
-    clearHighlightFn = event.detail.clearHighlight;
+    console.log("Viewer ready");
+    highlightResidueFn = viewer.highlightResidues;
+    clearHighlightFn = viewer.clearHighlight;
   }
 
   function convertToRGB(color: string): { r: number; g: number; b: number } {
@@ -61,9 +62,8 @@
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
     const { feature, target } = detail;
-    console.log("Feature clicked", feature, highlightResidueFn);
 
-    if (feature && highlightResidueFn) {
+    if (feature) {
       const cssVarName = feature.color.match(/var\((.*?)(,|\))/)[1];
       const color = getComputedStyle(target)
         .getPropertyValue(cssVarName)
@@ -115,6 +115,7 @@
         </div>
       {:else if $structureUrl}
         <StructureViewer
+          bind:this={viewer}
           structureUrl={$structureUrl}
           format={$structureQuery?.data?.format}
           binary={$structureQuery?.data?.binary}

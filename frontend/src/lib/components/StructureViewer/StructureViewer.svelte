@@ -44,7 +44,8 @@
 
   onMount(() => {
     pollViewerReady(() => {
-      dispatch("viewerReady", { highlightResidues, clearHighlight });
+      isViewerReady = true;
+      dispatch("viewerReady");
     });
   });
 
