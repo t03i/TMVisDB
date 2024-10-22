@@ -22,12 +22,12 @@
     StructureViewer,
     StructureViewerError,
     StructureViewerLoading,
-  } from "$lib/components/StructureViewer";
+  } from "$lib/comps/StructureViewer";
 
   import {
     FeatureViewer,
     FeatureViewerLoading,
-  } from "$lib/components/FeatureViewer";
+  } from "$lib/comps/FeatureViewer";
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
