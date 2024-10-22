@@ -1,4 +1,4 @@
-<!-- src/lib/components/ProteinDatatable.svelte -->
+<!-- src/lib/comps/ProteinDatatable.svelte -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { DataHandler } from "@vincjo/datatables";
@@ -9,7 +9,7 @@
   import ThBoolFilter from "./ThBoolFilter.svelte";
   import Search from "./Search.svelte";
   import TableFooter from "./TableFooter.svelte";
-  import type { TableHeader } from "$lib/components/Table";
+  import type { TableHeader } from "$lib/comps/Table";
   import DownloadCsv from "./DownloadCSV.svelte";
 
   export let data: any[];
