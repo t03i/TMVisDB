@@ -8,7 +8,7 @@
   import "iconify-icon";
   import type { DataHandler } from "@vincjo/datatables";
 
-  import type { TableHeader } from "$lib/comps/Table";
+  import type { TableHeader } from "$lib/components/Table";
   import config from "$lib/config";
 
   export let data: Record<string, any>[];

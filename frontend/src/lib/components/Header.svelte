@@ -6,7 +6,7 @@
   import { AppBar } from "@skeletonlabs/skeleton";
   import { LightSwitch } from "@skeletonlabs/skeleton";
   import config from "$lib/config";
-  import Logo from "$lib/comps/Logo.svelte";
+  import Logo from "$lib/components/Logo.svelte";
 </script>
 
 <AppBar

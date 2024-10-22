@@ -11,23 +11,23 @@
     ProteinDetailView,
     ProteinDetailLoading,
     ProteinDetailError,
-  } from "$lib/comps/ProteinDetail";
+  } from "$lib/components/ProteinDetail";
 
   import {
     DBReferencesView,
     DBReferencesLoading,
-  } from "$lib/comps/DBReferences";
+  } from "$lib/components/DBReferences";
 
   import {
     StructureViewer,
     StructureViewerError,
     StructureViewerLoading,
-  } from "$lib/comps/StructureViewer";
+  } from "$lib/components/StructureViewer";
 
   import {
     FeatureViewer,
     FeatureViewerLoading,
-  } from "$lib/comps/FeatureViewer";
+  } from "$lib/components/FeatureViewer";
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };

@@ -17,8 +17,8 @@
   import "iconify-icon";
 
   import "../app.css";
-  import Footer from "$lib/comps/Footer.svelte";
-  import Header from "$lib/comps/Header.svelte";
+  import Footer from "$lib/components/Footer.svelte";
+  import Header from "$lib/components/Header.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
