@@ -11,12 +11,12 @@
     ProteinDetailView,
     ProteinDetailLoading,
     ProteinDetailError,
-  } from "$lib/components/ProteinDetail";
+  } from "$lib/comps/ProteinDetail";
 
   import {
     DBReferencesView,
     DBReferencesLoading,
-  } from "$lib/components/DBReferences";
+  } from "$lib/comps/DBReferences";
 
   import {
     StructureViewer,
