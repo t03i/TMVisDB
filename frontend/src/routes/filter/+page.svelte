@@ -2,9 +2,9 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
 
-  import DataLoader from "$lib/components/DataLoader.svelte";
-  import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
-  import { DataTable, LoadingTable } from "$lib/components/Table";
+  import DataLoader from "$lib/comps/DataLoader.svelte";
+  import { FilterForm, FilterFormLoading } from "$lib/comps/FilterForm";
+  import { DataTable, LoadingTable } from "$lib/comps/Table";
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
 

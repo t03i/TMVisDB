@@ -8,7 +8,7 @@
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
-  import SequenceInput from "$lib/components/SequenceInput.svelte";
+  import SequenceInput from "$lib/comps/SequenceInput.svelte";
   import {
     createGetUniprotAnnotation,
     type UniprotAnnotationData,
