@@ -2,7 +2,7 @@
 
 import type { ProteinInfo } from "$lib/client/model";
 import { uniprot_entry_url, uniprot_taxonomy_url } from "$lib/external/uniprot";
-import type { TableHeader } from "$lib/components/Table";
+import type { TableHeader } from "$lib/comps/Table";
 
 
 
