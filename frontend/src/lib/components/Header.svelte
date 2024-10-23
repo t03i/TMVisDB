@@ -27,3 +27,13 @@
   </h1>
   <svelte:fragment slot="trail"><LightSwitch /></svelte:fragment>
 </AppBar>
+
+<style>
+  .gradient-heading {
+    @apply box-decoration-clone bg-clip-text text-transparent;
+    /* Direction */
+    @apply bg-gradient-to-br;
+    /* Color Stops */
+    @apply from-primary-500 via-tertiary-500 to-secondary-500;
+  }
+</style>
