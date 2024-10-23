@@ -7,6 +7,7 @@
   import { DataTable, LoadingTable } from "$lib/components/Table";
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
+  import config from "$lib/config";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -21,6 +22,10 @@
     goto(`/detail/${row.uniprot_accession}`);
   }
 </script>
+
+<svelte:head>
+  <title>{config.APP_NAME} Filter</title>
+</svelte:head>
 
 <DataLoader
   {params}

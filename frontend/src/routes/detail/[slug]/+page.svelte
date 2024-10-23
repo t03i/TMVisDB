@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
   import { createStructureStore } from "$lib/stores/StructureStore";
   import { createAnnotationStore } from "$lib/stores/AnnotationStore";
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import type { ProteinInfo } from "$lib/client/model";
+  import config from "$lib/config";
 
   import {
     ProteinDetailView,
@@ -101,6 +102,10 @@
 
   onDestroy(structureCleanup);
 </script>
+
+<svelte:head>
+  <title>{config.APP_NAME} - {uniprotAcc}</title>
+</svelte:head>
 
 <div class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh">
   <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">

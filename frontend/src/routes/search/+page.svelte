@@ -9,6 +9,7 @@
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
   import SequenceInput from "$lib/components/SequenceInput.svelte";
+
   import {
     createGetUniprotAnnotation,
     type UniprotAnnotationData,
@@ -18,7 +19,6 @@
     createCheckProteinExists,
     type CheckProteinExistsQueryResult,
   } from "$lib/client/tmvisdb";
-  import type { ProteinExistence } from "$lib/client/model";
   import config from "$lib/config";
 
   $: identifier = $page.url.searchParams.get("search") || "";
@@ -52,6 +52,10 @@
     !$tmvisdbQuery.isLoading &&
     ($tmvisdbQuery.error || ($tmvisdbQuery.data && !$tmvisdbQuery.data.exists));
 </script>
+
+<svelte:head>
+  <title>{config.APP_NAME} Search</title>
+</svelte:head>
 
 <div
   class="m-3 flex h-full min-h-44 min-w-44 flex-col items-center justify-center"

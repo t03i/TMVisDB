@@ -2,6 +2,10 @@
   import config from "$lib/config";
 </script>
 
+<svelte:head>
+  <title>{config.APP_NAME} Imprint</title>
+</svelte:head>
+
 <div class="flex w-full justify-center">
   <div class="mx-2 w-full max-w-3xl gap-4 md:w-1/2">
     <h2 class="h2 my-6 text-center">Imprint</h2>

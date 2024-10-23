@@ -1,3 +1,11 @@
+<script lang="ts">
+  import config from "$lib/config";
+</script>
+
+<svelte:head>
+  <title>{config.APP_NAME}</title>
+</svelte:head>
+
 <div class="container mx-auto space-y-6 p-4">
   <h1 class="h1">About TMvisDB</h1>
 
