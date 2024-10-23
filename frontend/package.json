@@ -19,6 +19,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
+		"@tanstack/svelte-query-devtools": "^5.59.13",
 		"@types/node": "^22.7.4",
 		"@vincjo/datatables": "^1.14.10",
 		"autoprefixer": "^10.4.20",
@@ -42,8 +43,7 @@
 		"@nightingale-elements/nightingale-saver": "^5.0.0",
 		"@nightingale-elements/nightingale-sequence": "^5.0.0",
 		"@nightingale-elements/nightingale-track": "^5.0.0",
-		"@tanstack/svelte-query": "^5.59.0",
-		"@tanstack/svelte-query-devtools": "^5.59.0",
+		"@tanstack/svelte-query": "^5.59.13",
 		"axios": "^1.7.7",
 		"iconify-icon": "^2.1.0",
 		"pdbe-molstar": "^3.3.0"

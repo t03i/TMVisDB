@@ -61,7 +61,7 @@
       <main class="h-full flex-1 p-4">
         <QueryClientProvider client={queryClient}>
           <slot />
-          {#if browser}
+          {#if browser && import.meta.env.DEV}
             <SvelteQueryDevtools />
           {/if}
         </QueryClientProvider>
