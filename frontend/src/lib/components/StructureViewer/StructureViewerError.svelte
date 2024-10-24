@@ -7,7 +7,7 @@
   import "iconify-icon";
   import config from "$lib/config";
   import type { AxiosError } from "axios";
-  import { IssueTemplate } from "$lib/github";
+  import { IssueTemplate, missingStructureOptions } from "$lib/github";
 
   export let error: AxiosError;
   let className = "";
@@ -37,10 +37,9 @@
         The structure for this protein is not available in AlphaFoldDB. If you
         believe this is an error, please
         <a
-          href={config.GITHUB_LINKS.getNewIssueUrl({
-            template: IssueTemplate.DATA,
-            title: `[DATA] missing structure for ${uniprotAcc}`,
-          })}
+          href={config.GITHUB_LINKS.getNewIssueUrl(
+            missingStructureOptions(uniprotAcc),
+          )}
           target="_blank"
           rel="noopener"
           class="anchor"

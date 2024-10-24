@@ -6,7 +6,7 @@
   import "iconify-icon";
   import config from "$lib/config";
   import type { AxiosError } from "axios";
-  import { IssueTemplate } from "$lib/github";
+  import { IssueTemplate, missingEntryOptions } from "$lib/github";
 
   export let error: AxiosError;
   let className = "";
@@ -36,10 +36,9 @@
         {uniprotAcc} is not (yet) in {config.APP_NAME}. If you think it should
         be, feel free to
         <a
-          href={config.GITHUB_LINKS.getNewIssueUrl({
-            template: IssueTemplate.DATA,
-            title: `[DATA] missing details for ${uniprotAcc}`,
-          })}
+          href={config.GITHUB_LINKS.getNewIssueUrl(
+            missingEntryOptions(uniprotAcc),
+          )}
           target="_blank"
           rel="noopener"
           class="anchor"

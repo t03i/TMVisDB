@@ -156,3 +156,16 @@ export class GitHubLinks {
     return `${this.baseUrl}/blob/${branch}/${path}`;
   }
 }
+
+
+export const missingEntryOptions =  (uniprotAcc?: string) => ({
+    template: IssueTemplate.DATA,
+    title: `[DATA] missing structure for ${uniprotAcc}`,
+    labels: ['missing-entry', 'data'],
+  });
+
+export const missingStructureOptions =  (uniprotAcc?: string) => ({
+    template: IssueTemplate.DATA,
+    title: `[DATA] missing structure for ${uniprotAcc}`,
+    labels: ['missing-structure', 'data'],
+  });

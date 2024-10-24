@@ -20,6 +20,7 @@
     type CheckProteinExistsQueryResult,
   } from "$lib/client/tmvisdb";
   import config from "$lib/config";
+  import { missingEntryOptions } from "$lib/github";
 
   $: identifier = $page.url.searchParams.get("search") || "";
 
@@ -105,7 +106,12 @@
     <div class="card variant-filled-error mt-4 p-4">
       We could not find a protein for {$uniprotQuery?.data?.accession} in {config.APP_NAME}.
       If you believe this is an error,
-      <a href={config.GITHUB_URL} class="anchor">create an issue</a>.
+      <a
+        href={config.GITHUB_LINKS.getNewIssueUrl(
+          missingEntryOptions($uniprotQuery?.data?.accession),
+        )}
+        class="anchor">create an issue</a
+      >.
     </div>
   {/if}
 </div>
