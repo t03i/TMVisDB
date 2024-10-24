@@ -8,11 +8,6 @@
   } from "@skeletonlabs/skeleton";
 
   import "iconify-icon";
-  import { Cite } from "@citation-js/core";
-  import "@citation-js/plugin-doi";
-  import "@citation-js/plugin-csl";
-  import "@citation-js/plugin-ris";
-  import "@citation-js/plugin-bibtex";
 
   export let doi: string;
   let citeData: any = null;
@@ -33,6 +28,17 @@
     error = null;
 
     try {
+      // Dynamically import citation-js and its plugins
+      const [{ Cite }, pluginDoi, pluginCsl, pluginRis, pluginBibtex] =
+        await Promise.all([
+          import("@citation-js/core"),
+          import("@citation-js/plugin-doi"),
+          import("@citation-js/plugin-csl"),
+          import("@citation-js/plugin-ris"),
+          import("@citation-js/plugin-bibtex"),
+        ]);
+
+      // Use Cite after plugins are loaded
       citeData = await Cite.async(doi);
     } catch (e) {
       error = e instanceof Error ? e.message : "Failed to generate citation";
