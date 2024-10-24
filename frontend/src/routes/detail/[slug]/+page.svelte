@@ -116,7 +116,7 @@
         </div>
       {:else if $structureQuery?.error}
         <div class="h-full w-full p-6">
-          <StructureViewerError error={$structureQuery?.error} />
+          <StructureViewerError error={$structureQuery?.error} {uniprotAcc} />
         </div>
       {:else if $structureUrl}
         <StructureViewer
@@ -135,7 +135,7 @@
       {:else if $infoQuery?.isLoading}
         <ProteinDetailLoading />
       {:else if $infoQuery?.error}
-        <ProteinDetailError error={$infoQuery.error} />
+        <ProteinDetailError error={$infoQuery.error} {uniprotAcc} />
       {/if}
     </div>
   </div>

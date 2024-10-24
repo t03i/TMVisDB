@@ -7,6 +7,7 @@
   import { emojis } from "$lib/statusEmojis";
   import { page } from "$app/stores";
   import config from "$lib/config";
+  import { DiscussionCategory, IssueTemplate } from "$lib/github";
 </script>
 
 <div class="grid h-[calc(100vh-4rem)] w-full place-items-center p-4">
@@ -37,9 +38,19 @@
           Go Home
         </a>
 
+        <a
+          href={`${config.GITHUB_LINKS.getDiscussionsUrl(DiscussionCategory.QA)}`}
+          class="variant-soft btn w-full sm:w-auto"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <iconify-icon icon="lucide:bug" class="mr-2"></iconify-icon>
+          Ask for support
+        </a>
+
         {#if $page.status >= 500}
           <a
-            href={`${config.GITHUB_URL}/issues/new`}
+            href={`${config.GITHUB_LINKS.getNewIssueUrl({ template: IssueTemplate.BUG })}`}
             class="variant-soft btn w-full sm:w-auto"
             target="_blank"
             rel="noopener noreferrer"

@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   import config from "$lib/config";
-  export let message: string = "We're fixing issues with the backend.";
+  import { DiscussionCategory } from "$lib/github";
 </script>
 
 <div
@@ -20,15 +20,27 @@
       </p>
 
       <div class="card variant-soft mt-4 w-full p-4">
-        <h2 class="h3 mb-2">Why are we in maintenance?</h2>
-        <p>
-          {message}
-        </p>
+        <h2 class="h3 mb-2">
+          <a
+            class="anchor"
+            target="_blank"
+            rel="noopener"
+            href={config.GITHUB_LINKS.getDiscussionsUrl(
+              DiscussionCategory.ANNOUNCEMENTS,
+            )}
+            >Why are we in maintenance?<iconify-icon
+              icon="line-md:external-link"
+            ></iconify-icon></a
+          >
+        </h2>
       </div>
 
       <div class="mt-4 flex flex-col space-y-2">
         <p class="text-sm">Need assistance?</p>
-        <a href={config.GITHUB_URL} class="variant-filled-primary btn">
+        <a
+          href={config.GITHUB_LINKS.getDiscussionsUrl(DiscussionCategory.QA)}
+          class="variant-filled-primary btn"
+        >
           Contact Support
         </a>
       </div>

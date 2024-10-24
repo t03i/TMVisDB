@@ -6,10 +6,12 @@
   import "iconify-icon";
   import config from "$lib/config";
   import type { AxiosError } from "axios";
+  import { IssueTemplate } from "$lib/github";
 
   export let error: AxiosError;
   let className = "";
   export { className as class };
+  export let uniprotAcc: string = "<Uniprot Accession>";
 
   $: errorMessage = error.message || "An unknown error occurred";
   $: statusCode = error.status || 500;
@@ -31,10 +33,13 @@
     <h2 class="h2 mb-2">Error</h2>
     {#if is404Error}
       <p class="text-center">
-        This protein is not (yet) in {config.APP_NAME}. If you think it should
+        {uniprotAcc} is not (yet) in {config.APP_NAME}. If you think it should
         be, feel free to
         <a
-          href="{config.GITHUB_URL}/issues"
+          href={config.GITHUB_LINKS.getNewIssueUrl({
+            template: IssueTemplate.DATA,
+            title: `[DATA] missing details for ${uniprotAcc}`,
+          })}
           target="_blank"
           rel="noopener"
           class="anchor"
@@ -52,7 +57,9 @@
           Try Again
         </button>
         <a
-          href="{config.GITHUB_URL}/issues"
+          href={config.GITHUB_LINKS.getNewIssueUrl({
+            template: IssueTemplate.BUG,
+          })}
           target="_blank"
           rel="noopener"
           class="variant-filled btn mt-4"

@@ -3,18 +3,16 @@
  SPDX-License-Identifier: Apache-2.0
 -->
 
-<!--
- Copyright 2024 Tobias Olenyi.
- SPDX-License-Identifier: Apache-2.0
--->
 <script lang="ts">
   import "iconify-icon";
   import config from "$lib/config";
   import type { AxiosError } from "axios";
+  import { IssueTemplate } from "$lib/github";
 
   export let error: AxiosError;
   let className = "";
   export { className as class };
+  export let uniprotAcc: string = "<Uniprot Accession>";
 
   $: errorMessage = error.message || "An unknown error occurred";
   $: statusCode = error.status || 500;
@@ -39,7 +37,10 @@
         The structure for this protein is not available in AlphaFoldDB. If you
         believe this is an error, please
         <a
-          href="{config.GITHUB_URL}/issues"
+          href={config.GITHUB_LINKS.getNewIssueUrl({
+            template: IssueTemplate.DATA,
+            title: `[DATA] missing structure for ${uniprotAcc}`,
+          })}
           target="_blank"
           rel="noopener"
           class="anchor"
@@ -57,7 +58,9 @@
           Try Again
         </button>
         <a
-          href="{config.GITHUB_URL}/issues"
+          href={config.GITHUB_LINKS.getNewIssueUrl({
+            template: IssueTemplate.BUG,
+          })}
           target="_blank"
           rel="noopener"
           class="variant-filled btn mt-4"

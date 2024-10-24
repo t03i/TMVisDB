@@ -29,7 +29,9 @@
         <ul class="space-y-1">
           <li><a href="/imprint" class="anchor">Imprint</a></li>
           <li><a href="/cite" class="anchor">Cite</a></li>
-          <li><a href={config.GITHUB_URL} class="anchor">GitHub</a></li>
+          <li>
+            <a href={config.GITHUB_LINKS.getRepoUrl()} class="anchor">GitHub</a>
+          </li>
         </ul>
       </div>
       <div class="w-full max-w-[200px] md:max-w-none">

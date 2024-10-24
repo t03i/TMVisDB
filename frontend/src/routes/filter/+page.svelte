@@ -7,6 +7,7 @@
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
   import config from "$lib/config";
+  import { IssueTemplate } from "$lib/github";
 
   /** @type {import('./$types').PageData} */
   export let data;
@@ -77,7 +78,9 @@
             Try Again
           </button>
           <a
-            href="{config.GITHUB_URL}/issues"
+            href={config.GITHUB_LINKS.getNewIssueUrl({
+              template: IssueTemplate.BUG,
+            })}
             target="_blank"
             rel="noopener"
             class="variant-soft btn"

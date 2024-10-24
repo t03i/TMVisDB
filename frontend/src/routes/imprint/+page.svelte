@@ -62,7 +62,7 @@
           {config.APP_NAME} was implemented by the RostLab using Svelte, SvelteKit,
           and FastAPI. The used Database relies on SQLite. Technical details, assistance
           and open issues can be found on
-          <a href={config.GITHUB_URL} class="anchor">GitHub</a>.
+          <a href={config.GITHUB_LINKS.getRepoUrl()} class="anchor">GitHub</a>.
         </p>
       </section>
 
