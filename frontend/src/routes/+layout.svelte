@@ -17,6 +17,8 @@
     Navigation,
     QueryLayout,
   } from "$lib/components/Layout";
+  import config from "$lib/config";
+  import Maintenance from "$lib/components/Maintenance.svelte";
 </script>
 
 <div class="flex min-h-screen flex-col">
@@ -27,9 +29,13 @@
     <!-- Main content area -->
     <div class="flex flex-1 flex-col overflow-auto">
       <main class="h-full flex-1 p-4">
-        <QueryLayout>
-          <slot></slot>
-        </QueryLayout>
+        {#if config.MAINTENANCE_MODE}
+          <Maintenance message={config.MAINTENANCE_MESSAGE} />
+        {:else}
+          <QueryLayout>
+            <slot></slot>
+          </QueryLayout>
+        {/if}
       </main>
       <div class="mt-4">
         <Footer />
