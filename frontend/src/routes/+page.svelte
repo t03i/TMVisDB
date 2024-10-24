@@ -1,5 +1,6 @@
 <script lang="ts">
   import config from "$lib/config";
+  import overview from "$lib/assets/overview.png";
 </script>
 
 <svelte:head>
@@ -18,6 +19,9 @@
     <a href="https://doi.org/10.1186/s12859-022-04873-x" class="anchor">TMbed</a
     >, and are visualized by overlaying them with AlphaFold 2 structures.
   </p>
+
+  <!-- TODO improve overview image-->
+  <img src={overview} alt="Overview of TMvisDB" />
 
   <div>
     <h2 class="h3">How to browse TMvisDB:</h2>
