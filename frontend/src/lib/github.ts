@@ -1,5 +1,7 @@
 // githubLinks.ts
 
+import { title } from "process";
+
 /**
  * Represents the structure of a GitHub repository
  */
@@ -169,3 +171,9 @@ export const missingStructureOptions =  (uniprotAcc?: string) => ({
     title: `[DATA] missing structure for ${uniprotAcc}`,
     labels: ['missing-structure', 'data'],
   });
+
+export const bugOptions = () => ({
+  template: IssueTemplate.BUG,
+  title: '[BUG] ',
+  labels: ['bug'],
+})

@@ -7,7 +7,11 @@
   import "iconify-icon";
   import config from "$lib/config";
   import type { AxiosError } from "axios";
-  import { IssueTemplate, missingStructureOptions } from "$lib/github";
+  import {
+    bugOptions,
+    IssueTemplate,
+    missingStructureOptions,
+  } from "$lib/github";
 
   export let error: AxiosError;
   let className = "";
@@ -57,9 +61,7 @@
           Try Again
         </button>
         <a
-          href={config.GITHUB_LINKS.getNewIssueUrl({
-            template: IssueTemplate.BUG,
-          })}
+          href={config.GITHUB_LINKS.getNewIssueUrl(bugOptions())}
           target="_blank"
           rel="noopener"
           class="variant-filled btn mt-4"
