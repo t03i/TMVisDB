@@ -12,9 +12,9 @@ interface GitHubRepo {
  * Available GitHub issue templates
  */
 export enum IssueTemplate {
-  BUG = 'bug_report.md',
-  FEATURE = 'feature_request.md',
-  DATA = 'data_issue.md'
+  BUG = 'bug_report.yml',
+  FEATURE = 'feature_request.yml',
+  DATA = 'data_issue.yml'
 }
 
 /**
