@@ -11,7 +11,7 @@
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   import "../app.css";
-  import "iconify-icon";
+  import GdprBanner from "@beyonk/gdpr-cookie-consent-banner";
 
   import {
     Header,
@@ -44,4 +44,33 @@
       </div>
     </div>
   </div>
+  <GdprBanner
+    cookieName="gdpr_consent"
+    heading="Privacy Notice"
+    description="We do not collect any personal data beyond the necessities to operate this site. The only cookie is used to acknowledge this banner."
+    choices={{
+      necessary: {
+        label: "Necessary cookies",
+        description: "Used for cookie control. Can't be turned off.",
+        value: true,
+      },
+      tracking: {
+        label: "Tracking cookies",
+        description: "Used for advertising purposes.",
+        value: false,
+      },
+      analytics: {
+        label: "Analytics cookies",
+        description:
+          "Used to control Google Analytics, a 3rd party tool offered by Google to track user behavior.",
+        value: false,
+      },
+      marketing: {
+        label: "Marketing cookies",
+        description: "Used for marketing data.",
+        value: false,
+      },
+    }}
+    showEditIcon={false}
+  />
 </div>

@@ -11,6 +11,7 @@
 		"postinstall": "svelte-kit sync"
 	},
 	"devDependencies": {
+		"@beyonk/gdpr-cookie-consent-banner": "^12.1.4",
 		"@skeletonlabs/skeleton": "^2.10.2",
 		"@skeletonlabs/tw-plugin": "^0.4.0",
 		"@sveltejs/adapter-auto": "^3.2.5",

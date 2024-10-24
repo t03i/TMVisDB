@@ -42,6 +42,9 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0(@types/react@18.3.9)(fp-ts@2.16.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
+      '@beyonk/gdpr-cookie-consent-banner':
+        specifier: ^12.1.4
+        version: 12.1.4
       '@skeletonlabs/skeleton':
         specifier: ^2.10.2
         version: 2.10.2(svelte@4.2.19)
@@ -118,6 +121,9 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@beyonk/gdpr-cookie-consent-banner@12.1.4':
+    resolution: {integrity: sha512-W4S50psrX5WMAihwwqFsnNzL0ZF91OHv4EuIMelTD4yTMU09qTU1cKgUJ7Tt8qRvIyTzfbPwiXGrDYUtFJuOtw==}
 
   '@cloudflare/kv-asset-handler@0.3.4':
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
@@ -1733,6 +1739,10 @@ packages:
     resolution: {integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==}
     hasBin: true
 
+  js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -2849,6 +2859,10 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@beyonk/gdpr-cookie-consent-banner@12.1.4':
+    dependencies:
+      js-cookie: 3.0.5
 
   '@cloudflare/kv-asset-handler@0.3.4':
     dependencies:
@@ -4539,6 +4553,8 @@ snapshots:
       '@pkgjs/parseargs': 0.11.0
 
   jiti@1.21.6: {}
+
+  js-cookie@3.0.5: {}
 
   js-tokens@4.0.0: {}
 
