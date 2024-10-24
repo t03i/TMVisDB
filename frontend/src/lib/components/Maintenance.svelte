@@ -11,9 +11,13 @@
   <title>{config.APP_NAME} Maintenance 🚧</title>
 </svelte:head>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center">
-  <div class="variant-glass-surface max-w-2xl space-y-6 p-8">
-    <div class="card flex flex-col items-center space-y-4 text-center">
+<div class="fixed inset-0 z-50 flex h-full w-full">
+  <div
+    class="variant-glass-surface flex h-full w-full place-content-center place-items-center space-y-6 p-8"
+  >
+    <div
+      class="card flex max-h-fit max-w-2xl flex-col items-center space-y-4 p-4 text-center"
+    >
       <span class="emoji text-6xl">🚧</span>
       <h1 class="h1">Maintenance Mode</h1>
       <p class="text-lg">
