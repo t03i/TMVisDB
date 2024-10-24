@@ -11,6 +11,8 @@
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   import "../app.css";
+  import "iconify-icon";
+
   import {
     Header,
     Footer,

@@ -10,6 +10,10 @@
   import { DiscussionCategory, IssueTemplate } from "$lib/github";
 </script>
 
+<svelte:head>
+  <title>{config.APP_NAME} {emojis[$page.status] ?? emojis[500]}</title>
+</svelte:head>
+
 <div class="grid h-[calc(100vh-4rem)] w-full place-items-center p-4">
   <div class="card variant-glass-surface w-full max-w-2xl">
     <header class="card-header flex flex-col items-center p-4">

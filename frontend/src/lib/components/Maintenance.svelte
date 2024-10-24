@@ -7,12 +7,14 @@
   import { DiscussionCategory } from "$lib/github";
 </script>
 
-<div
-  class="fixed inset-0 z-50 flex items-center justify-center bg-surface-900/95"
->
-  <div class="card variant-glass-surface max-w-2xl space-y-6 p-8">
-    <div class="flex flex-col items-center space-y-4 text-center">
-      <span class="emoji text-6xl">🔧</span>
+<svelte:head>
+  <title>{config.APP_NAME} Maintenance 🚧</title>
+</svelte:head>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center">
+  <div class="variant-glass-surface max-w-2xl space-y-6 p-8">
+    <div class="card flex flex-col items-center space-y-4 text-center">
+      <span class="emoji text-6xl">🚧</span>
       <h1 class="h1">Maintenance Mode</h1>
       <p class="text-lg">
         We're currently updating our systems to serve you better. We expect to
