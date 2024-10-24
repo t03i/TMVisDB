@@ -36,6 +36,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@citation-js/core": "^0.7.14",
+		"@citation-js/plugin-bibtex": "^0.7.16",
+		"@citation-js/plugin-csl": "^0.7.14",
+		"@citation-js/plugin-doi": "^0.7.16",
+		"@citation-js/plugin-ris": "^0.7.16",
 		"@floating-ui/dom": "^1.6.11",
 		"@nightingale-elements/nightingale-interpro-track": "^5.0.0",
 		"@nightingale-elements/nightingale-manager": "^5.0.0",
