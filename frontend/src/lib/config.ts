@@ -14,7 +14,6 @@ interface Config {
     API_BASE_URL: string;
     APP_NAME: string;
     MAINTENANCE_MODE: boolean;
-    MAINTENANCE_MESSAGE: string;
 }
 
 
@@ -25,7 +24,6 @@ const config: Config = {
     GITHUB_LINKS: new GitHubLinks(PUBLIC_GITHUB_REPO || {owner:'t03i', name: 'TMvisDB'}),
     API_BASE_URL: PUBLIC_API_URL || 'http://localhost:8000',
     APP_NAME: PUBLIC_PROJECT_NAME || 'TMVisDB',
-    MAINTENANCE_MESSAGE: PUBLIC_MAINTENANCE_MESSAGE || "We're currently updating our service and expect to be back within one to two days.",
     MAINTENANCE_MODE: PUBLIC_MAINTENANCE_MODE.toLowerCase() === 'true' || false
 };
 axios.defaults.baseURL = config.API_BASE_URL;
