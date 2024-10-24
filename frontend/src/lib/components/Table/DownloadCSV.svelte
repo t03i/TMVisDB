@@ -62,5 +62,5 @@
 </script>
 
 <button on:click={handleDownload} class="btn">
-  <iconify-icon icon="material-symbols:download" height="1.5em"></iconify-icon>
+  <iconify-icon icon="mdi:download" height="1.5em"></iconify-icon>
 </button>

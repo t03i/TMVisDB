@@ -38,7 +38,10 @@
       : `Search for ${UniprotACCTypeNameMap[input_type]}`}
   >
     <div class=" input-group-shim bg-transparent">
-      <iconify-icon icon="mdi:search" height="1em" class="text-surface-300"
+      <iconify-icon
+        icon="material-symbols:search"
+        height="1em"
+        class="text-surface-300"
       ></iconify-icon>
     </div>
     <input

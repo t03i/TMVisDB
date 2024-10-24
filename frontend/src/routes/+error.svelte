@@ -34,7 +34,7 @@
 
       <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
         <a href="/" class="variant-filled-primary btn w-full sm:w-auto">
-          <iconify-icon icon="lucide:home" class="mr-2"></iconify-icon>
+          <iconify-icon icon="mdi:home" class="mr-2"></iconify-icon>
           Go Home
         </a>
 
@@ -44,7 +44,7 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          <iconify-icon icon="lucide:bug" class="mr-2"></iconify-icon>
+          <iconify-icon icon="mdi:support" class="mr-2"></iconify-icon>
           Ask for support
         </a>
 
@@ -55,7 +55,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            <iconify-icon icon="lucide:bug" class="mr-2"></iconify-icon>
+            <iconify-icon icon="mdi:bug" class="mr-2"></iconify-icon>
             Report Issue
           </a>
         {/if}
@@ -64,7 +64,7 @@
           class="variant-ghost btn w-full sm:w-auto"
           on:click={() => window.location.reload()}
         >
-          <iconify-icon icon="lucide:refresh-cw" class="mr-2"></iconify-icon>
+          <iconify-icon icon="mdi:refresh" class="mr-2"></iconify-icon>
           Try Again
         </button>
       </div>
