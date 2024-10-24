@@ -1,7 +1,5 @@
 // githubLinks.ts
 
-import { title } from "process";
-
 /**
  * Represents the structure of a GitHub repository
  */
