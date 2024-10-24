@@ -1,0 +1,64 @@
+name: 🔍 Data Issue
+description: Report an issue with protein data or annotations
+title: "[DATA] "
+labels: ["data"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a data issue!
+
+  - type: input
+    id: protein_id
+    attributes:
+      label: Protein ID
+      description: The UniProt ID or accession number of the protein
+      placeholder: e.g., Q9NVH1
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue_description
+    attributes:
+      label: Issue Description
+      description: Describe what seems incorrect about the data
+      placeholder: The Protein is missing | The annotation appears to be...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_data
+    attributes:
+      label: Expected Data
+      description: Describe what you believe the correct data should be
+      placeholder: Based on recent research...
+    validations:
+      required: true
+
+  - type: input
+    id: reference
+    attributes:
+      label: Reference
+      description: Provide a reference (if applicable) supporting the correct data
+      placeholder: DOI, URL, or citation
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the data issue here
+      placeholder: Any other relevant information...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](../blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
