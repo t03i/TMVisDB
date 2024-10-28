@@ -19,6 +19,7 @@
       viewerElement &&
       viewerElement.viewerInstance &&
       viewerElement.viewerInstance.visual &&
+      viewerElement.viewerInstance.plugin &&
       typeof viewerElement.viewerInstance.visual.select === "function" &&
       typeof viewerElement.viewerInstance.visual.clearSelection === "function"
     );
