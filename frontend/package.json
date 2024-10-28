@@ -51,6 +51,7 @@
 		"@tanstack/svelte-query": "^5.59.16",
 		"axios": "^1.7.7",
 		"iconify-icon": "^2.1.0",
+		"molstar": "^4.8.0",
 		"pdbe-molstar": "^3.3.0"
 	}
 }
