@@ -2,9 +2,7 @@
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import { browser } from "$app/environment";
-  import { modeCurrent } from "@skeletonlabs/skeleton";
-  import { tick } from "svelte";
-
+  import SelectionControls from "./SelectionControls.svelte";
   const dispatch = createEventDispatcher();
   export let structureUrl: string;
   export let isBinary = false;
@@ -47,17 +45,46 @@
       throw new Error("Failed to init Mol*");
     }
 
-    // Set viewer as ready
     viewerReady = true;
-
     dispatch("ready", { plugin });
+  }
+
+  // Control actions
+  async function handleReset() {
+    if (!plugin) return;
+    await plugin.canvas3d?.resetCamera();
+  }
+
+  async function handleScreenshot() {
+    if (!plugin) return;
+    const imageData = plugin.canvas3d?.getImageData();
+    if (imageData) {
+      const blob = new Blob([imageData], { type: "image/png" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "screenshot.png";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  async function toggleSpin() {
+    if (!plugin) return;
+    const canvas3d = plugin.canvas3d;
+    if (canvas3d.props.trackball.animate.name === "spin") {
+      canvas3d.setProps({ trackball: { animate: { name: "off" } } });
+    } else {
+      canvas3d.setProps({
+        trackball: { animate: { name: "spin", params: { speed: 1 } } },
+      });
+    }
   }
 
   async function loadStructure(url: string) {
     if (!plugin) return;
     try {
       await plugin.clear();
-
       const data = await plugin.builders.data.download({
         url,
         isBinary: true,
@@ -102,8 +129,6 @@
       if (structureUrl) {
         await loadStructure(structureUrl);
       }
-
-      // Cleanup subscription on component destroy
       return () => {
         if (plugin) {
           plugin.dispose();
@@ -113,18 +138,13 @@
   });
 </script>
 
-<div class="molstar-container card overflow-hidden" bind:this={container}>
-  <!-- Molstar will render here -->
+<div class="card relative h-full w-full overflow-hidden" bind:this={container}>
+  {#if plugin}
+    <div class="absolute left-1/2 top-2 z-10 -translate-x-1/2">
+      <SelectionControls {plugin} />
+    </div>
+  {/if}
 </div>
 
 <style>
-  .molstar-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
-
-  :global(canvas) {
-    border-radius: 0.5rem; /* Match rounded-lg */
-  }
 </style>

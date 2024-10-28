@@ -19,5 +19,6 @@
     structureUrl="https://alphafold.ebi.ac.uk/files/AF-O15552-F1-model_v4.bcif"
     isBinary={true}
     on:ready={handleReady}
+    class="card relative h-full w-full"
   />
 </div>
