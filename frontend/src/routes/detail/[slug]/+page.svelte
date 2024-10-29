@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
+  import { modeCurrent } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
   import { createStructureStore } from "$lib/stores/StructureStore";
   import { createAnnotationStore } from "$lib/stores/AnnotationStore";
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import type { ProteinInfo } from "$lib/client/model";
+  import { AnnotationStyleManager } from "$lib/annotations";
+
   import config from "$lib/config";
 
   import {
@@ -32,6 +35,8 @@
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
+  let rootContainer: HTMLDivElement;
+  let annotationStyleManager: AnnotationStyleManager;
 
   let highlightResidueFn: (
     residues: { start_residue_number: number; end_residue_number: number }[],
@@ -46,36 +51,26 @@
     clearHighlightFn = viewer.clearHighlight;
   }
 
-  function convertToRGB(color: string): { r: number; g: number; b: number } {
-    if (color.startsWith("rgb")) {
-      const [r, g, b] = color.match(/\d+/g)!.map(Number);
-      return { r, g, b };
-    } else if (color.startsWith("#")) {
-      const hex = color.replace("#", "");
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      return { r, g, b };
-    }
-    return { r: 255, g: 255, b: 0 }; // Default to yellow if parsing fails
-  }
-
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
-    const { feature, target } = detail;
+    const { feature } = detail;
 
-    if (feature) {
-      const cssVarName = feature.color.match(/var\((.*?)(,|\))/)[1];
-      const color = getComputedStyle(target)
-        .getPropertyValue(cssVarName)
-        .trim();
-      const rgbColor = convertToRGB(color);
+    if (feature && highlightResidueFn && annotationStyleManager) {
+      // Get the CSS variable name from the feature's color value
+      const cssVarMatch = feature.color.match(/var\((.*?), rgba\(.*\)\)/);
+      if (cssVarMatch && cssVarMatch[1]) {
+        // Get the RGB color using the CSS variable name
+        const color = annotationStyleManager.getColorForVar(cssVarMatch[1]);
 
-      const residues = feature.locations[0].fragments.map((fragment) => ({
-        start_residue_number: fragment.start,
-        end_residue_number: fragment.end,
-      }));
-      highlightResidueFn(residues, rgbColor);
+        // Convert feature locations to the expected residue format
+        const residues = feature.locations[0].fragments.map((fragment) => ({
+          start_residue_number: fragment.start,
+          end_residue_number: fragment.end,
+        }));
+
+        // Highlight the residues with the obtained color
+        highlightResidueFn(residues, color);
+      }
     }
   };
 
@@ -92,13 +87,22 @@
   ) as unknown as CreateQueryResult<ProteinInfo>;
 
   const {
-    uniprotQuery,
-    tmvisdbQuery,
-    tmAlphaFoldQuery,
     isFetching: annotationsIsFetching,
+    annotationStructureQuery,
     annotationDBReferences,
     annotationTracks,
   } = createAnnotationStore(uniprotAcc, infoQuery);
+
+  onMount(() => {
+    annotationStyleManager = new AnnotationStyleManager(
+      rootContainer,
+      modeCurrent ? "light" : "dark",
+    );
+    const unsubscribe = modeCurrent.subscribe((mode) => {
+      annotationStyleManager.setTheme(mode ? "light" : "dark");
+    });
+    return unsubscribe;
+  });
 
   onDestroy(structureCleanup);
 </script>
@@ -107,7 +111,10 @@
   <title>{config.APP_NAME} - {uniprotAcc}</title>
 </svelte:head>
 
-<div class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh">
+<div
+  bind:this={rootContainer}
+  class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh"
+>
   <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">
     <div class="card h-full w-full lg:w-1/2">
       {#if $structureQuery?.isLoading}

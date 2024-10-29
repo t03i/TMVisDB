@@ -96,11 +96,10 @@ export function createAnnotationStore(
       $annotations.length > 0 ? annotationsToTracks($annotations) : null,
   );
 
-  const structureQuery: Readable<StructureSelectionQuery[] | null> = derived(
-    annotations,
-    ($annotations) =>
+  const annotationStructureQuery: Readable<StructureSelectionQuery[] | null> =
+    derived(annotations, ($annotations) =>
       $annotations.length > 0 ? annotationToStructureQuery($annotations) : null,
-  );
+    );
 
   return {
     uniprotQuery,
@@ -109,6 +108,6 @@ export function createAnnotationStore(
     isFetching,
     annotationDBReferences,
     annotationTracks,
-    structureQuery,
+    annotationStructureQuery,
   };
 }
