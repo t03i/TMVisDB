@@ -3,12 +3,15 @@
 import { useQueryClient, type CreateQueryResult } from "@tanstack/svelte-query";
 import { derived, writable, type Readable, type Writable } from "svelte/store";
 
-import type { DBReferences, TrackData } from "$lib/annotations";
+import type {
+  DBReferences,
+  StructureSelectionData,
+  TrackData,
+} from "$lib/annotations";
 import {
   annotationsToReferences,
   annotationsToTracks,
-  annotationToStructureQuery,
-  type StructureSelectionQuery,
+  annotationToStructureSelection,
 } from "$lib/annotations";
 import type {
   AnnotationData,
@@ -96,9 +99,11 @@ export function createAnnotationStore(
       $annotations.length > 0 ? annotationsToTracks($annotations) : null,
   );
 
-  const annotationStructureQuery: Readable<StructureSelectionQuery[] | null> =
+  const annotationStructureSelection: Readable<StructureSelectionData | null> =
     derived(annotations, ($annotations) =>
-      $annotations.length > 0 ? annotationToStructureQuery($annotations) : null,
+      $annotations.length > 0
+        ? annotationToStructureSelection($annotations)
+        : null,
     );
 
   return {
@@ -108,6 +113,6 @@ export function createAnnotationStore(
     isFetching,
     annotationDBReferences,
     annotationTracks,
-    annotationStructureQuery,
+    annotationStructureSelection,
   };
 }

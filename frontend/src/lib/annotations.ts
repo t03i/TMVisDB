@@ -184,38 +184,45 @@ export function annotationsToTracks(
   return tracks;
 }
 
-export function annotationToStructureQuery(
+export type StructureSelectionData = Record<
+  SourceDB,
+  StructureSelectionQuery[]
+>;
+
+export function annotationToStructureSelection(
   annotations: PublicAnnotation[],
-): StructureSelectionQuery[] {
+): StructureSelectionData {
   if (!annotations || annotations.length === 0) {
-    return [];
+    return {} as StructureSelectionData;
   }
 
   const annotationsByDB = annotationsToDBMap(annotations);
-  const queries: StructureSelectionQuery[] = [];
+  const queryMap: Partial<StructureSelectionData> = {};
 
   for (const [sourceDB, dbAnnotations] of Object.entries(annotationsByDB)) {
     if (!SOURCE_DATABASES.includes(sourceDB as SourceDB)) continue;
+
+    const dbQueries: StructureSelectionQuery[] = [];
 
     for (const annotation of dbAnnotations) {
       const label = annotation.label;
       const labelInfo = legendData[sourceDB]?.labels[label];
       if (!labelInfo) continue;
 
-      // Get the appropriate color based on the theme (using light by default)
-      const color = labelInfo.color_light;
-
-      queries.push({
+      dbQueries.push({
         start_residue_number: annotation.start,
         end_residue_number: annotation.end,
-        color,
+        color: labelInfo.color_light,
         focus: false,
         tooltip: labelInfo.description,
       });
     }
-  }
 
-  return queries;
+    if (dbQueries.length > 0) {
+      queryMap[sourceDB as SourceDB] = dbQueries;
+    }
+  }
+  return queryMap as StructureSelectionData;
 }
 
 export class AnnotationStyleManager {

@@ -26,6 +26,7 @@
     StructureViewer,
     StructureViewerError,
     StructureViewerLoading,
+    StructureColorSwitcher,
   } from "$lib/components/StructureViewer";
 
   import {
@@ -88,7 +89,7 @@
 
   const {
     isFetching: annotationsIsFetching,
-    annotationStructureQuery,
+    annotationStructureSelection,
     annotationDBReferences,
     annotationTracks,
   } = createAnnotationStore(uniprotAcc, infoQuery);
@@ -126,14 +127,19 @@
           <StructureViewerError error={$structureQuery?.error} {uniprotAcc} />
         </div>
       {:else if $structureUrl}
-        <StructureViewer
-          bind:this={viewer}
-          structureUrl={$structureUrl}
-          format={$structureQuery?.data?.format}
-          binary={$structureQuery?.data?.binary}
-          on:viewerReady={handleViewerReady}
-          class="card h-full min-h-[200px] w-full"
-        />
+        <div class="relative h-full w-full">
+          <StructureColorSwitcher
+            annotationStructureSelection={$annotationStructureSelection}
+          />
+          <StructureViewer
+            bind:this={viewer}
+            structureUrl={$structureUrl}
+            format={$structureQuery?.data?.format}
+            binary={$structureQuery?.data?.binary}
+            on:viewerReady={handleViewerReady}
+            class="card h-full min-h-[200px] w-full"
+          />
+        </div>
       {/if}
     </div>
     <div class="card h-full w-full p-6 lg:w-1/2">

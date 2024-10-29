@@ -74,7 +74,7 @@
 
 <ResourceLoader />
 <ThemeSwitcher {viewerElement} />
-<div class="molstarContainer {className}" {...$$restProps}>
+<div class="z-2 {className}" {...$$restProps}>
   {#if structureUrl}
     <pdbe-molstar
       style="height: 100%; width: 100%;"
@@ -92,11 +92,11 @@
 </div>
 
 <style>
-  .msp-layout {
+  :global(.msp-layout) {
     border: none !important;
   }
-  .molstarContainer {
-    position: relative;
-    z-index: 2;
+  /* FIXME */
+  :global(.msp-viewport) {
+    @apply card;
   }
 </style>
