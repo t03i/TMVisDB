@@ -6,7 +6,8 @@
     type StructureSelectionData,
   } from "$lib/annotations";
 
-  export let annotationStructureSelection: StructureSelectionData[] | null;
+
+  export let annotationStructureSelection: StructureSelectionData | null;
   let activeSourceDB: SourceDB | null = null;
 
   const dispatch = createEventDispatcher<{
