@@ -1,7 +1,9 @@
 import legendData from "$lib/assets/shared/legend.json";
 import type { PublicAnnotation } from "$lib/client/model";
 import type { Feature } from "@nightingale-elements/nightingale-track";
+
 import { convertToRGB, type RGB } from "./utils";
+import type { StructureSelectionQuery } from "$lib/components/StructureViewer";
 
 export const SOURCE_DATABASES = Object.keys(
   legendData,
@@ -19,37 +21,6 @@ export type DBReferences = Partial<Record<SourceDB, DBReference>>;
 export interface AnnotationSet {
   annotations: PublicAnnotation[];
   dbReferences: DBReferences;
-}
-
-export interface StructureSelectionQuery {
-  auth_seq_id?: number;
-  entity_id?: string;
-  auth_asym_id?: string;
-  struct_asym_id?: string;
-  residue_number?: number;
-  start_residue_number?: number;
-  end_residue_number?: number;
-  auth_residue_number?: number;
-  auth_ins_code_id?: string;
-  start_auth_residue_number?: number;
-  start_auth_ins_code_id?: string;
-  end_auth_residue_number?: number;
-  end_auth_ins_code_id?: string;
-  atoms?: string[];
-  label_comp_id?: string;
-  color?: any;
-  sideChain?: boolean;
-  representation?: string;
-  representationColor?: any;
-  focus?: boolean;
-  tooltip?: string;
-  start?: any;
-  end?: any;
-  atom_id?: number[];
-  uniprot_accession?: string;
-  uniprot_residue_number?: number;
-  start_uniprot_residue_number?: number;
-  end_uniprot_residue_number?: number;
 }
 
 export type TrackData = Record<SourceDB, Feature[]>;
@@ -212,7 +183,6 @@ export function annotationToStructureSelection(
       dbQueries.push({
         start_residue_number: annotation.start,
         end_residue_number: annotation.end,
-        color: labelInfo.color_light,
         focus: false,
         tooltip: labelInfo.description,
       });

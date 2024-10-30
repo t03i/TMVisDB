@@ -7,6 +7,7 @@
   import { createAnnotationStore } from "$lib/stores/AnnotationStore";
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import type { ProteinInfo } from "$lib/client/model";
+  import type { SourceDB } from "$lib/annotations";
   import { AnnotationStyleManager } from "$lib/annotations";
 
   import config from "$lib/config";
@@ -94,6 +95,28 @@
     annotationTracks,
   } = createAnnotationStore(uniprotAcc, infoQuery);
 
+  function handleColorSchemeChange(
+    event: CustomEvent<{ sourceDB: SourceDB | null }>,
+  ) {
+    const { sourceDB } = event.detail;
+    if (sourceDB && $annotationStructureSelection) {
+      const dbAnnotations = $annotationStructureSelection[sourceDB] ?? null;
+      if (!dbAnnotations) return;
+
+      const coloredAnnotations = dbAnnotations.map((annotation) => ({
+        ...annotation,
+        color: annotationStyleManager.getColorForVar(annotation.color)
+      }));
+
+      if (highlightResidueFn) {
+        clearHighlightFn?.();
+        highlightResidueFn(coloredAnnotations);
+      }
+    } else if (clearHighlightFn) {
+      clearHighlightFn();
+    }
+  }
+
   onMount(() => {
     annotationStyleManager = new AnnotationStyleManager(
       rootContainer,
@@ -130,6 +153,7 @@
         <div class="relative h-full w-full">
           <StructureColorSwitcher
             annotationStructureSelection={$annotationStructureSelection}
+            on:colorSchemeChange={handleColorSchemeChange}
           />
           <StructureViewer
             bind:this={viewer}
