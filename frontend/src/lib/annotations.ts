@@ -157,7 +157,10 @@ export function annotationsToTracks(
 
 export type StructureSelectionData = Record<
   SourceDB,
-  StructureSelectionQuery[]
+  {
+    label: string;
+    query: StructureSelectionQuery;
+  }[]
 >;
 
 export function annotationToStructureSelection(
@@ -173,7 +176,7 @@ export function annotationToStructureSelection(
   for (const [sourceDB, dbAnnotations] of Object.entries(annotationsByDB)) {
     if (!SOURCE_DATABASES.includes(sourceDB as SourceDB)) continue;
 
-    const dbQueries: StructureSelectionQuery[] = [];
+    const dbQueries: { label: string; query: StructureSelectionQuery }[] = [];
 
     for (const annotation of dbAnnotations) {
       const label = annotation.label;
@@ -181,10 +184,13 @@ export function annotationToStructureSelection(
       if (!labelInfo) continue;
 
       dbQueries.push({
-        start_residue_number: annotation.start,
-        end_residue_number: annotation.end,
-        focus: false,
-        tooltip: labelInfo.description,
+        label,
+        query: {
+          start_residue_number: annotation.start,
+          end_residue_number: annotation.end,
+          focus: false,
+          tooltip: labelInfo.description,
+        }
       });
     }
 

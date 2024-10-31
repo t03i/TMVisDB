@@ -24,7 +24,7 @@ export interface StructureSelectionQuery {
     end_auth_ins_code_id?: string;
     atoms?: string[];
     label_comp_id?: string;
-    color?: RGB;
+    color?: RGB | undefined | null;
     sideChain?: boolean;
     representation?: string;
     representationColor?: any;

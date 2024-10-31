@@ -52,15 +52,17 @@
       const dbAnnotations = $annotationStructureSelection[sourceDB] ?? null;
       if (!dbAnnotations) return;
 
-      const coloredAnnotations = dbAnnotations.map((annotation) => ({
-        ...annotation,
-        color: annotationStyleManager.getColorForVar(annotation.color)
+      const coloredAnnotations = dbAnnotations.map(({label, query}) => ({
+        ...query,
+        color: annotationStyleManager.getColorForLabel(sourceDB, label)
       }));
+      console.log("coloredAnnotations: ", coloredAnnotations);
 
       // Use selection store for overall theme
       structureSelection.select(
         coloredAnnotations,
-        { r: 255, g: 255, b: 255 }, // primary color
+        undefined, // Set the global color to nothing
+        // TODO get background color from annotation
         { r: 200, g: 200, b: 200 }  // non-selected color
       );
     } else {
@@ -72,18 +74,15 @@
     const { detail } = event;
     const { feature } = detail;
 
-    if (feature && annotationStyleManager) {
-      const cssVarMatch = feature.color.match(/var\((.*?), rgba\(.*\)\)/);
-      if (cssVarMatch && cssVarMatch[1]) {
-        const color = annotationStyleManager.getColorForVar(cssVarMatch[1]);
-
-        const residues = feature.locations[0].fragments.map((fragment) => ({
+    if (feature) {
+        const residues = feature.locations[0].fragments.map((fragment: { start: number; end: number }) => ({
           start_residue_number: fragment.start,
           end_residue_number: fragment.end,
         }));
+        // TODO get highlight color from annotation
 
-        structureHighlight.highlight(residues, color);
-      }
+        structureHighlight.highlight(residues, {r: 0, g: 255, b: 255}, true);
+
     }
   };
 

@@ -4,7 +4,7 @@ import type { StructureSelectionQuery } from '$lib/components/StructureViewer';
 
 interface HighlightState {
   residues: StructureSelectionQuery[];
-  color?: RGB;
+  color: RGB | undefined | null;
   focus?: boolean;
   structureId?: string;
   structureNumber?: number;
@@ -12,8 +12,8 @@ interface HighlightState {
 
 interface SelectionState {
   residues: StructureSelectionQuery[];
-  color: RGB;
-  nonSelectedColor?: RGB;
+  color: RGB | undefined | null;
+  nonSelectedColor: RGB | undefined | null;
   structureId?: string;
   structureNumber?: number;
   keepColors?: boolean;
@@ -47,7 +47,7 @@ function createStructureSelectionStore() {
     subscribe,
     select: (
       residues: StructureSelectionQuery[],
-      color: RGB,
+      color?: RGB,
       nonSelectedColor?: RGB,
       structureId?: string,
       structureNumber?: number,

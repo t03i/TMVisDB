@@ -19,57 +19,28 @@
   let modeUnsubscribe: () => void;
   let highlightUnsubscribe: () => void;
   let selectionUnsubscribe: () => void;
+  let observer: MutationObserver;
 
   const dispatch = createEventDispatcher();
-
-  function getBackgroundColor(): RGB {
-    const parentElement = viewerElement?.parentElement;
-    let bgColor = 'rgb(255, 255, 255)';
-
-    if (parentElement) {
-      const computedStyle = getComputedStyle(parentElement);
-      bgColor = computedStyle.backgroundColor;
-
-      if (!bgColor || bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") {
-        bgColor = getComputedStyle(document.body).backgroundColor;
-      }
-    }
-
-    const rgbValues = bgColor.match(/\d+/g)?.map(Number) ?? [255, 255, 255];
-    return {
-      r: rgbValues[0],
-      g: rgbValues[1],
-      b: rgbValues[2]
-    };
-  }
-
-  async function updateBackground() {
-    if (viewerElement?.viewerInstance?.canvas) {
-      viewerElement.viewerInstance.canvas.setBgColor(getBackgroundColor());
-    }
-  }
-
-  let loadCompleteSubscription: any;
-  let observer: MutationObserver;
 
   onMount(() => {
     // Subscribe to mode changes
     modeUnsubscribe = modeCurrent.subscribe(async () => {
       if (isViewerAvailable) {
         await tick();
-        updateBackground();
+        await updateBackground();
       }
     });
 
     // Create mutation observer to watch for viewer instance
-    observer = new MutationObserver((mutations) => {
+    observer = new MutationObserver(async (mutations) => {
       if (viewerElement?.viewerInstance?.canvas && viewerElement?.viewerInstance?.plugin) {
         observer.disconnect();
 
         // Component is already loaded if we have canvas and events
         isViewerAvailable = true;
         dispatch('viewerReady');
-        updateBackground();
+        await updateBackground();
       }
     });
 
@@ -124,8 +95,34 @@
     selectionUnsubscribe?.();
     modeUnsubscribe?.();
     observer?.disconnect();
-
   });
+
+  function getBackgroundColor(): RGB {
+    const parentElement = viewerElement?.parentElement;
+    let bgColor = 'rgb(255, 255, 255)';
+
+    if (parentElement) {
+      const computedStyle = getComputedStyle(parentElement);
+      bgColor = computedStyle.backgroundColor;
+
+      if (!bgColor || bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") {
+        bgColor = getComputedStyle(document.body).backgroundColor;
+      }
+    }
+
+    const rgbValues = bgColor.match(/\d+/g)?.map(Number) ?? [255, 255, 255];
+    return {
+      r: rgbValues[0],
+      g: rgbValues[1],
+      b: rgbValues[2]
+    };
+  }
+
+  async function updateBackground() {
+    if (viewerElement?.viewerInstance?.canvas) {
+      viewerElement.viewerInstance.canvas.setBgColor(getBackgroundColor());
+    }
+  }
 
   async function select(
     residues: StructureSelectionQuery[],
@@ -138,11 +135,8 @@
   ) {
     if (isViewerAvailable) {
       await viewerElement.viewerInstance.visual.select({
-        data: residues.map((residue) => ({
-          ...residue,
-          color,
-          focus: true,
-        })),
+        data: residues,
+        color,
         nonSelectedColor,
         structureId,
         structureNumber,
@@ -178,7 +172,10 @@
 
   async function clearSelection() {
     if (isViewerAvailable) {
-      await viewerElement.viewerInstance.visual.clearSelection();
+      await viewerElement.viewerInstance.visual.clearSelection({
+        keepColors: false,
+        keepRepresentations: true
+      });
     }
   }
 </script>
