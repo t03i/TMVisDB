@@ -4,6 +4,7 @@
   import { modeCurrent } from "@skeletonlabs/skeleton";
   import ResourceLoader from "./ResourceLoader.svelte";
   import type { StructureSelectionQuery } from "./index";
+  import { structureHighlight, structureSelection } from '$lib/stores/StructureMarksStore';
   import type { RGB } from "$lib/utils";
 
   export let structureUrl: string = "";
@@ -18,6 +19,8 @@
   let bgColorG = 255;
   let bgColorB = 255;
   let modeUnsubscribe: () => void;
+  let highlightUnsubscribe: () => void;
+  let selectionUnsubscribe: () => void;
 
   const dispatch = createEventDispatcher();
 
@@ -81,22 +84,55 @@
       subtree: true
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    highlightUnsubscribe = structureHighlight.subscribe(async (state) => {
+      if (!state) {
+        await clearHighlight();
+        return;
+      }
+
+      const { residues, color, focus, structureId, structureNumber } = state;
+      await highlight(residues, color, focus, structureId, structureNumber);
+    });
+
+    // Handle selection
+    selectionUnsubscribe = structureSelection.subscribe(async (state) => {
+      if (!state) {
+        await clearSelection();
+        return;
+      }
+
+      const {
+        residues,
+        color,
+        nonSelectedColor,
+        structureId,
+        structureNumber,
+        keepColors,
+        keepRepresentations
+      } = state;
+
+      await select(
+        residues,
+        color,
+        nonSelectedColor,
+        structureId,
+        structureNumber,
+        keepColors,
+        keepRepresentations
+      );
+    });
+
   });
 
   onDestroy(() => {
-    if (modeUnsubscribe) {
-      modeUnsubscribe();
-    }
-    if (observer) {
-      observer.disconnect();
-    }
+    highlightUnsubscribe?.();
+    selectionUnsubscribe?.();
+    modeUnsubscribe?.();
+    observer?.disconnect();
+
   });
 
-  // Export methods for external use
-  export async function select(
+  async function select(
     residues: StructureSelectionQuery[],
     color: RGB,
     nonSelectedColor?: RGB,
@@ -121,7 +157,7 @@
     }
   }
 
-  export async function highlight(
+  async function highlight(
     residues: StructureSelectionQuery[],
     color?: RGB,
     focus?: boolean,
@@ -139,13 +175,13 @@
     }
   }
 
-  export async function clearHighlight() {
+  async function clearHighlight() {
     if (isViewerAvailable) {
       return await viewerElement.viewerInstance.visual.clearHighlight();
     }
   }
 
-  export async function clearSelection() {
+  async function clearSelection() {
     if (isViewerAvailable) {
       await viewerElement.viewerInstance.visual.clearSelection();
     }

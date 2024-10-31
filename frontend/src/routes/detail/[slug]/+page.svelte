@@ -9,6 +9,7 @@
   import type { ProteinInfo } from "$lib/client/model";
   import type { SourceDB } from "$lib/annotations";
   import { AnnotationStyleManager } from "$lib/annotations";
+  import { structureHighlight, structureSelection } from '$lib/stores/StructureMarksStore';
 
   import config from "$lib/config";
 
@@ -40,38 +41,48 @@
   let rootContainer: HTMLDivElement;
   let annotationStyleManager: AnnotationStyleManager;
 
-  let highlightResidueFn: (
-    residues: { start_residue_number: number; end_residue_number: number }[],
-    color: { r: number; g: number; b: number },
-  ) => void;
-  let clearHighlightFn: () => void;
-
   let viewer: StructureViewer;
   function handleViewerReady(event: CustomEvent) {
     console.log("Viewer ready");
-    highlightResidueFn = viewer.highlightResidues;
-    clearHighlightFn = viewer.clearHighlight;
+  }
+
+  function handleColorSchemeChange(event: CustomEvent<{ sourceDB: SourceDB | null }>) {
+    const { sourceDB } = event.detail;
+    if (sourceDB && $annotationStructureSelection) {
+      const dbAnnotations = $annotationStructureSelection[sourceDB] ?? null;
+      if (!dbAnnotations) return;
+
+      const coloredAnnotations = dbAnnotations.map((annotation) => ({
+        ...annotation,
+        color: annotationStyleManager.getColorForVar(annotation.color)
+      }));
+
+      // Use selection store for overall theme
+      structureSelection.select(
+        coloredAnnotations,
+        { r: 255, g: 255, b: 255 }, // primary color
+        { r: 200, g: 200, b: 200 }  // non-selected color
+      );
+    } else {
+      structureSelection.clear();
+    }
   }
 
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
     const { feature } = detail;
 
-    if (feature && highlightResidueFn && annotationStyleManager) {
-      // Get the CSS variable name from the feature's color value
+    if (feature && annotationStyleManager) {
       const cssVarMatch = feature.color.match(/var\((.*?), rgba\(.*\)\)/);
       if (cssVarMatch && cssVarMatch[1]) {
-        // Get the RGB color using the CSS variable name
         const color = annotationStyleManager.getColorForVar(cssVarMatch[1]);
 
-        // Convert feature locations to the expected residue format
         const residues = feature.locations[0].fragments.map((fragment) => ({
           start_residue_number: fragment.start,
           end_residue_number: fragment.end,
         }));
 
-        // Highlight the residues with the obtained color
-        highlightResidueFn(residues, color);
+        structureHighlight.highlight(residues, color);
       }
     }
   };
@@ -95,27 +106,6 @@
     annotationTracks,
   } = createAnnotationStore(uniprotAcc, infoQuery);
 
-  function handleColorSchemeChange(
-    event: CustomEvent<{ sourceDB: SourceDB | null }>,
-  ) {
-    const { sourceDB } = event.detail;
-    if (sourceDB && $annotationStructureSelection) {
-      const dbAnnotations = $annotationStructureSelection[sourceDB] ?? null;
-      if (!dbAnnotations) return;
-
-      const coloredAnnotations = dbAnnotations.map((annotation) => ({
-        ...annotation,
-        color: annotationStyleManager.getColorForVar(annotation.color)
-      }));
-
-      if (highlightResidueFn) {
-        clearHighlightFn?.();
-        highlightResidueFn(coloredAnnotations);
-      }
-    } else if (clearHighlightFn) {
-      clearHighlightFn();
-    }
-  }
 
   onMount(() => {
     annotationStyleManager = new AnnotationStyleManager(
