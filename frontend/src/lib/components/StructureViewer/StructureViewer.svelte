@@ -15,42 +15,37 @@
 
   let viewerElement: any;
   let isViewerAvailable = false;
-  let bgColorR = 255;
-  let bgColorG = 255;
-  let bgColorB = 255;
+
   let modeUnsubscribe: () => void;
   let highlightUnsubscribe: () => void;
   let selectionUnsubscribe: () => void;
 
   const dispatch = createEventDispatcher();
 
-  // Function to extract and parse the background color
-  function getBackgroundColor() {
+  function getBackgroundColor(): RGB {
     const parentElement = viewerElement?.parentElement;
+    let bgColor = 'rgb(255, 255, 255)';
 
     if (parentElement) {
       const computedStyle = getComputedStyle(parentElement);
-      let bgColor = computedStyle.backgroundColor;
+      bgColor = computedStyle.backgroundColor;
 
       if (!bgColor || bgColor === "transparent" || bgColor === "rgba(0, 0, 0, 0)") {
         bgColor = getComputedStyle(document.body).backgroundColor;
       }
-
-      const rgbValues = bgColor.match(/\d+/g)?.map(Number);
-      if (rgbValues && rgbValues.length >= 3) {
-        [bgColorR, bgColorG, bgColorB] = rgbValues;
-      }
     }
+
+    const rgbValues = bgColor.match(/\d+/g)?.map(Number) ?? [255, 255, 255];
+    return {
+      r: rgbValues[0],
+      g: rgbValues[1],
+      b: rgbValues[2]
+    };
   }
 
   async function updateBackground() {
     if (viewerElement?.viewerInstance?.canvas) {
-      getBackgroundColor();
-      viewerElement.viewerInstance.canvas.setBgColor({
-        r: bgColorR,
-        g: bgColorG,
-        b: bgColorB,
-      });
+      viewerElement.viewerInstance.canvas.setBgColor(getBackgroundColor());
     }
   }
 
@@ -205,12 +200,3 @@
     ></pdbe-molstar>
   {/if}
 </div>
-
-<style>
-  :global(.msp-layout) {
-    border: none !important;
-  }
-  :global(.msp-viewport) {
-    @apply card;
-  }
-</style>
