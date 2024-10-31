@@ -126,8 +126,8 @@
 
   async function select(
     residues: StructureSelectionQuery[],
-    color: RGB,
-    nonSelectedColor?: RGB,
+    color: RGB | undefined | null,
+    nonSelectedColor?: RGB | undefined | null,
     structureId?: string,
     structureNumber?: number,
     keepColors?: boolean,
@@ -148,7 +148,7 @@
 
   async function highlight(
     residues: StructureSelectionQuery[],
-    color?: RGB,
+    color?: RGB | undefined | null,
     focus?: boolean,
     structureId?: string,
     structureNumber?: number
