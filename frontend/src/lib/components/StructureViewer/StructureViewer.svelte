@@ -189,10 +189,10 @@
 </script>
 
 <ResourceLoader />
-<div class="z-2 {className}" {...$$restProps}>
+<div class="z-4 {className}" {...$$restProps}>
   {#if structureUrl}
     <pdbe-molstar
-      style="height: 100%; width: 100%;"
+      style="height: 100%; width: 100%; z-index: 4;"
       bind:this={viewerElement}
       custom-data-url={structureUrl}
       custom-data-format={format}
