@@ -3,15 +3,16 @@
   import { createEventDispatcher, onMount, onDestroy, tick} from "svelte";
   import { modeCurrent } from "@skeletonlabs/skeleton";
   import ResourceLoader from "./ResourceLoader.svelte";
-  import type { StructureSelectionQuery } from "./index";
-  import { structureHighlight, structureSelection } from '$lib/stores/StructureMarksStore';
+  import type { StructureSelectionQuery,  HighlightState,  SelectionState, StructureViewerState } from '$lib/stores/StructureMarksStore';
   import type { RGB } from "$lib/utils";
 
   export let structureUrl: string = "";
   export let format: "cif" | "mmcif" | "pdb" = "pdb";
   export let binary: boolean = false;
+  export let state: StructureViewerState;
   let className = "";
   export { className as class };
+
 
   let viewerElement: any;
   let isViewerAvailable = false;
@@ -50,44 +51,14 @@
       subtree: true
     });
 
-    highlightUnsubscribe = structureHighlight.subscribe(async (state) => {
-      if (!state) {
-        await clearHighlight();
-        return;
-      }
-
-      const { residues, color, focus, structureId, structureNumber } = state;
-      await highlight(residues, color, focus, structureId, structureNumber);
+    highlightUnsubscribe = state.highlightStore.subscribe(async (state) => {
+      await updateHighlight(state);
     });
 
     // Handle selection
-    selectionUnsubscribe = structureSelection.subscribe(async (state) => {
-      if (!state) {
-        await clearSelection();
-        return;
-      }
-
-      const {
-        residues,
-        color,
-        nonSelectedColor,
-        structureId,
-        structureNumber,
-        keepColors,
-        keepRepresentations
-      } = state;
-
-      await select(
-        residues,
-        color,
-        nonSelectedColor,
-        structureId,
-        structureNumber,
-        keepColors,
-        keepRepresentations
-      );
+    selectionUnsubscribe = state.selectionStore.subscribe(async (state) => {
+      await updateSelection(state);
     });
-
   });
 
   onDestroy(() => {
@@ -122,6 +93,43 @@
     if (viewerElement?.viewerInstance?.canvas) {
       viewerElement.viewerInstance.canvas.setBgColor(getBackgroundColor());
     }
+  }
+
+  async function updateSelection(state: SelectionState | null ){
+    if (!state) {
+        await clearSelection();
+        return;
+      }
+
+      const {
+        residues,
+        color,
+        nonSelectedColor,
+        structureId,
+        structureNumber,
+        keepColors,
+        keepRepresentations
+      } = state;
+
+      await select(
+        residues as StructureSelectionQuery[],
+        color,
+        nonSelectedColor,
+        structureId,
+        structureNumber,
+        keepColors,
+        keepRepresentations
+      );
+  }
+
+  async function updateHighlight(state: HighlightState | null ){
+    if (!state) {
+        await clearHighlight();
+        return;
+      }
+
+      const { residues, color, focus, structureId, structureNumber } = state;
+      await highlight(residues, color, focus, structureId, structureNumber);
   }
 
   async function select(

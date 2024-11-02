@@ -3,7 +3,7 @@ import type { PublicAnnotation } from "$lib/client/model";
 import type { Feature } from "@nightingale-elements/nightingale-track";
 
 import { convertToRGB, type RGB } from "./utils";
-import type { StructureSelectionQuery } from "$lib/components/StructureViewer";
+import type { LabeledSelectionQuery } from "$lib/stores/StructureMarksStore";
 
 export const SOURCE_DATABASES = Object.keys(
   legendData,
@@ -156,12 +156,7 @@ export function annotationsToTracks(
 }
 
 export type StructureSelectionData = Record<
-  SourceDB,
-  {
-    label: string;
-    query: StructureSelectionQuery;
-  }[]
->;
+  SourceDB, LabeledSelectionQuery[]>;
 
 export function annotationToStructureSelection(
   annotations: PublicAnnotation[],
@@ -176,7 +171,7 @@ export function annotationToStructureSelection(
   for (const [sourceDB, dbAnnotations] of Object.entries(annotationsByDB)) {
     if (!SOURCE_DATABASES.includes(sourceDB as SourceDB)) continue;
 
-    const dbQueries: { label: string; query: StructureSelectionQuery }[] = [];
+    const dbQueries: LabeledSelectionQuery[] = [];
 
     for (const annotation of dbAnnotations) {
       const label = annotation.label;
@@ -185,12 +180,10 @@ export function annotationToStructureSelection(
 
       dbQueries.push({
         label,
-        query: {
-          start_residue_number: annotation.start,
-          end_residue_number: annotation.end,
-          focus: false,
-          tooltip: labelInfo.description,
-        }
+        start_residue_number: annotation.start,
+        end_residue_number: annotation.end,
+        focus: false,
+        tooltip: labelInfo.description,
       });
     }
 
@@ -266,5 +259,13 @@ export class AnnotationStyleManager {
       .getPropertyValue(cssVarName)
       .trim();
     return convertToRGB(color);
+  }
+
+  public getNeutralColor(): RGB {
+    return this.theme === "light" ? this.getColorForVar("--color-surface-100") : this.getColorForVar("--color-surface-800");
+  }
+
+  public getSelectionColor(): RGB {
+    return this.getColorForVar("--color-warning-500");
   }
 }

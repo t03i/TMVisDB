@@ -8,8 +8,10 @@ export type RGB = {
 };
 
 export function convertToRGB(color: string): RGB {
-  if (color.startsWith("rgb")) {
-    const [r, g, b] = color.match(/\d+/g)!.map(Number);
+  // Handle rgb(n n n), rgba(n n n), and n n n formats
+  const rgbMatch = color.match(/^(?:rgba?\(\s*)?(\d+)\s+(\d+)\s+(\d+)(?:\s*\))?$/);
+  if (rgbMatch) {
+    const [_, r, g, b] = rgbMatch.map(Number);
     return { r, g, b };
   } else if (color.startsWith("#")) {
     const hex = color.replace("#", "");

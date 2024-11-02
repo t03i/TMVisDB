@@ -9,7 +9,7 @@
   import type { ProteinInfo } from "$lib/client/model";
   import type { SourceDB } from "$lib/annotations";
   import { AnnotationStyleManager } from "$lib/annotations";
-  import { structureHighlight, structureSelection } from '$lib/stores/StructureMarksStore';
+  import { StructureViewerState } from '$lib/stores/StructureMarksStore';
 
   import config from "$lib/config";
 
@@ -38,8 +38,10 @@
 
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
+
   let rootContainer: HTMLDivElement;
   let annotationStyleManager: AnnotationStyleManager;
+  let structureState: StructureViewerState;
 
   let viewer: StructureViewer;
   function handleViewerReady(event: CustomEvent) {
@@ -52,21 +54,15 @@
       const dbAnnotations = $annotationStructureSelection[sourceDB] ?? null;
       if (!dbAnnotations) return;
 
-      const coloredAnnotations = dbAnnotations.map(({label, query}) => ({
-        ...query,
-        color: annotationStyleManager.getColorForLabel(sourceDB, label)
-      }));
-      console.log("coloredAnnotations: ", coloredAnnotations);
 
       // Use selection store for overall theme
-      structureSelection.select(
-        coloredAnnotations,
+      structureState.setSelection(
+        dbAnnotations,
+        sourceDB,
         undefined, // Set the global color to nothing
-        // TODO get background color from annotation
-        { r: 200, g: 200, b: 200 }  // non-selected color
       );
     } else {
-      structureSelection.clear();
+      structureState.clearSelection();
     }
   }
 
@@ -79,10 +75,7 @@
           start_residue_number: fragment.start,
           end_residue_number: fragment.end,
         }));
-        // TODO get highlight color from annotation
-
-        structureHighlight.highlight(residues, {r: 0, g: 255, b: 255}, true);
-
+        structureState.setHighlight(residues, {r: 0, g: 255, b: 255}, true);
     }
   };
 
@@ -111,8 +104,11 @@
       rootContainer,
       modeCurrent ? "light" : "dark",
     );
+
+    structureState = new StructureViewerState(annotationStyleManager);
     const unsubscribe = modeCurrent.subscribe((mode) => {
       annotationStyleManager.setTheme(mode ? "light" : "dark");
+      structureState.updateColors();
     });
     return unsubscribe;
   });
@@ -149,6 +145,7 @@
             structureUrl={$structureUrl}
             format={$structureQuery?.data?.format}
             binary={$structureQuery?.data?.binary}
+            state={structureState}
             on:viewerReady={handleViewerReady}
             class="card h-full min-h-[200px] w-full"
           />
