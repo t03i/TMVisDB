@@ -1,18 +1,16 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import {
     KEY_TO_DISPLAY_NAME,
     type SourceDB,
     type StructureSelectionData,
   } from "$lib/annotations";
+  import { StructureViewerState } from "$lib/stores/StructureMarksStore";
 
 
   export let annotationStructureSelection: StructureSelectionData | null;
+  export let structureState: StructureViewerState;
   let activeSourceDB: SourceDB | null = null;
 
-  const dispatch = createEventDispatcher<{
-    colorSchemeChange: { sourceDB: SourceDB | null };
-  }>();
 
   // Get available source databases from track data
   $: availableSourceDBs = annotationStructureSelection
@@ -20,21 +18,19 @@
     : [];
 
   // Set default source DB to TMbed if available, otherwise first available
-  $: {
-    if (availableSourceDBs.length > 0 && !activeSourceDB) {
-      const tmbed = availableSourceDBs.find(
-        (db) => db.toLowerCase() === "tmbed",
-      );
-      activeSourceDB = tmbed || availableSourceDBs[0];
-      handleSelectionChange({ target: { value: activeSourceDB } } as any);
-    }
+  $: if (availableSourceDBs.length > 0 && !activeSourceDB) {
+    const tmbed = availableSourceDBs.find(
+      (db) => db.toLowerCase() === "tmbed",
+    );
+    activeSourceDB = tmbed || availableSourceDBs[0];
+    structureState.setSourceDB(activeSourceDB);
   }
 
   function handleSelectionChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     const value = select.value as SourceDB | "";
     const newSourceDB = value === "" ? null : value;
-    dispatch("colorSchemeChange", { sourceDB: newSourceDB });
+    structureState.setSourceDB(newSourceDB);
     activeSourceDB = newSourceDB;
   }
 </script>

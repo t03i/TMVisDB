@@ -1,6 +1,6 @@
 import { writable, get, type Writable, type Readable, derived} from 'svelte/store';
 import type { RGB } from '$lib/utils';
-import type { AnnotationStyleManager, SourceDB } from '$lib/annotations';
+import type { AnnotationStyleManager, SourceDB, StructureSelectionData } from '$lib/annotations';
 
 export interface HighlightState {
   residues: StructureSelectionQuery[];
@@ -59,17 +59,42 @@ export interface LabeledSelectionQuery extends StructureSelectionQuery {
 export class StructureViewerState {
   private highlight: Writable<HighlightState | null>;
   private selection: Writable<SelectionState | null>;
-  private activeSelectionSource: Writable<SourceDB | null>;
+  private annotations: Readable<StructureSelectionData | null>;
+  private sourceDB: Writable<SourceDB | null>;
+  private activeAnnotations: Readable<LabeledSelectionQuery[] | null>;
+
   private annotationStyle: AnnotationStyleManager;
 
-   public readonly highlightStore: Readable<HighlightState | null>;
-   public readonly selectionStore: Readable<SelectionState | null>;
+  public readonly highlightStore: Readable<HighlightState | null>;
+  public readonly selectionStore: Readable<SelectionState | null>;
 
-  constructor(annotationStyle: AnnotationStyleManager) {
+  constructor(annotationStyle: AnnotationStyleManager, annotations: Readable<StructureSelectionData | null>) {
+
+    this.annotations = annotations;
+    this.annotationStyle = annotationStyle;
     this.highlight = writable(null);
     this.selection = writable(null);
-    this.activeSelectionSource = writable(null);
-    this.annotationStyle = annotationStyle;
+    this.sourceDB = writable(null);
+
+    this.activeAnnotations = derived([this.annotations, this.sourceDB], ([annotations, sourceDB]) => {
+      const dbAnnotations = annotations && sourceDB ? annotations[sourceDB] ?? null : null;
+      if (!dbAnnotations) return null;
+      return dbAnnotations;
+    });
+
+    derived([this.activeAnnotations, this.sourceDB], ([activeAnnotations, sourceDB]) => {
+      if (activeAnnotations && sourceDB) {
+        this.setSelectionWithColors({
+          residues: activeAnnotations,
+          color: undefined,
+          keepColors: true,
+          keepRepresentations: true
+        });
+      } else {
+        this.selection.set(null);
+      }
+    }).subscribe(() => {});
+
     this.highlightStore = derived(this.highlight, $highlight => $highlight);
     this.selectionStore = derived(this.selection, $selection => $selection);
 
@@ -92,24 +117,22 @@ export class StructureViewerState {
     ));
   }
 
-  public setSelection(residues: LabeledSelectionQuery[], sourceDB: SourceDB, keepColors?: boolean, keepRepresentations?: boolean) {
-    const selection: SelectionState = { residues: residues, color: undefined, nonSelectedColor: undefined, structureId: undefined, structureNumber: undefined, keepColors, keepRepresentations };
-    this.activeSelectionSource.set(sourceDB);
-    this.setSelectionWithColors(selection);
-  }
-
   public updateColors() {
     const currentSelection = get(this.selection);
     this.setSelectionWithColors(currentSelection);
   }
 
   private setSelectionWithColors(sel: SelectionState | null) {
-    const sourceDB = get(this.activeSelectionSource);
+    const sourceDB = get(this.sourceDB);
     if (sel && sourceDB) {
       const coloredAnnotations = this.colorAnnotations(sel.residues, sourceDB);
       const neutralColor = this.annotationStyle.getNeutralColor();
       this.selection.set({ residues: coloredAnnotations, color: sel.color, nonSelectedColor: neutralColor, structureId: sel.structureId, structureNumber: sel.structureNumber, keepColors: sel.keepColors, keepRepresentations: sel.keepRepresentations });
     }
+  }
+
+  public setSourceDB(sourceDB: SourceDB | null) {
+    this.sourceDB.set(sourceDB);
   }
 
   public clearSelection() {

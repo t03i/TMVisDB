@@ -48,24 +48,6 @@
     console.log("Viewer ready");
   }
 
-  function handleColorSchemeChange(event: CustomEvent<{ sourceDB: SourceDB | null }>) {
-    const { sourceDB } = event.detail;
-    if (sourceDB && $annotationStructureSelection) {
-      const dbAnnotations = $annotationStructureSelection[sourceDB] ?? null;
-      if (!dbAnnotations) return;
-
-
-      // Use selection store for overall theme
-      structureState.setSelection(
-        dbAnnotations,
-        sourceDB,
-        undefined, // Set the global color to nothing
-      );
-    } else {
-      structureState.clearSelection();
-    }
-  }
-
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
     const { feature } = detail;
@@ -105,7 +87,8 @@
       modeCurrent ? "light" : "dark",
     );
 
-    structureState = new StructureViewerState(annotationStyleManager);
+    structureState = new StructureViewerState(annotationStyleManager, annotationStructureSelection);
+
     const unsubscribe = modeCurrent.subscribe((mode) => {
       annotationStyleManager.setTheme(mode ? "light" : "dark");
       structureState.updateColors();
@@ -137,8 +120,8 @@
       {:else if $structureUrl}
         <div class="relative h-full w-full">
           <StructureColorSwitcher
+            structureState={structureState}
             annotationStructureSelection={$annotationStructureSelection}
-            on:colorSchemeChange={handleColorSchemeChange}
           />
           <StructureViewer
             bind:this={viewer}

@@ -1,6 +1,8 @@
 <!-- StructureViewer.svelte -->
 <script lang="ts">
   import { createEventDispatcher, onMount, onDestroy, tick} from "svelte";
+  import { get } from "svelte/store";
+
   import { modeCurrent } from "@skeletonlabs/skeleton";
   import ResourceLoader from "./ResourceLoader.svelte";
   import type { StructureSelectionQuery,  HighlightState,  SelectionState, StructureViewerState } from '$lib/stores/StructureMarksStore';
@@ -24,7 +26,7 @@
 
   const dispatch = createEventDispatcher();
 
-  onMount(() => {
+  onMount(async () => {
     // Subscribe to mode changes
     modeUnsubscribe = modeCurrent.subscribe(async () => {
       if (isViewerAvailable) {
@@ -37,11 +39,10 @@
     observer = new MutationObserver(async (mutations) => {
       if (viewerElement?.viewerInstance?.canvas && viewerElement?.viewerInstance?.plugin) {
         observer.disconnect();
-
-        // Component is already loaded if we have canvas and events
         isViewerAvailable = true;
         dispatch('viewerReady');
         await updateBackground();
+        await updateSelection(get(state.selectionStore));
       }
     });
 
@@ -55,7 +56,6 @@
       await updateHighlight(state);
     });
 
-    // Handle selection
     selectionUnsubscribe = state.selectionStore.subscribe(async (state) => {
       await updateSelection(state);
     });
