@@ -1,0 +1,8 @@
+{
+    "files.exclude": {
+        "frontend/": true,
+        "backend/": true,
+        ".ruff_cache/": true,
+        "build/": true
+    }
+}

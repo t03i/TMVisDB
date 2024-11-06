@@ -1,27 +1,37 @@
 {
     "folders": [
         {
+            "name": "Backend",
+            "path": "./backend"
+        },
+        {
+            "name": "Frontend",
+            "path": "./frontend"
+        },
+        {
+            "name": "Root",
             "path": "."
         }
     ],
     "settings": {
-        "editor.defaultFormatter": "svelte.svelte-vscode",
+        "editor.defaultFormatter": null,
         "cSpell.words": [
+            "AlphaFold",
             "bibtex",
-            "Foldseek",
-            "Membranome",
-            "skeletonlabs",
-            "tanstack",
-            "tmvisdb",
-            "transmembrane",
+            "bioinformatics",
             "bioRxiv",
             "DOI",
-            "UniProt",
-            "TopDB",
-            "TMAlphaFold",
+            "Foldseek",
+            "Membranome",
             "pLDDT",
-            "AlphaFold",
-            "bioinformatics"
+            "skeletonlabs",
+            "tailwindcss",
+            "tanstack",
+            "TMAlphaFold",
+            "tmvisdb",
+            "TopDB",
+            "transmembrane",
+            "UniProt"
         ]
     }
 }
