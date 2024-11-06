@@ -1,6 +1,10 @@
 <!-- cSpell:ignore gkab gkac gkad -->
+<div align="center">
+  <img src=".github/images/logo.svg" alt="TMVis Logo" width="200"/>
 
-# TMvisDB
+# TMVis Backend
+
+</div>
 
 A database for searching and visualizing predicted transmembrane proteins with their AlphaFold structures. :seal:
 
