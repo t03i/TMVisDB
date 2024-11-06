@@ -1,3 +1,5 @@
+<!-- cSpell:ignore gkab gkac gkad -->
+
 # TMvisDB
 
 A database for searching and visualizing predicted transmembrane proteins with their AlphaFold structures. :seal:
@@ -10,7 +12,7 @@ The web interface is accessible [here](https://tmvisdb.predictprotein.org)
 
 ## Preview
 
-<img width="1200" alt="image" src="https://user-images.githubusercontent.com/73125710/202669572-5dffebee-73bd-4839-92b5-e3d2acdc20c1.png">
+<img width="1200" alt="image" src=".github/images/preview.png">
 
 <details>
   <summary markdown="span"> **Figure caption** </summary>
