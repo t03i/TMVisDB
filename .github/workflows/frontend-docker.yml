@@ -1,0 +1,69 @@
+name: Docker Build and Push to ghcr.io
+
+on:
+    repository_dispatch:
+        types: [build-docker-image]
+
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}-frontend
+
+jobs:
+    build-push-deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=ref,event=branch,suffix=-dev
+                      type=semver,pattern={{version}},suffix=-dev
+                      type=semver,pattern={{version}}.{{minor}},suffix=-dev
+                      type=semver,pattern={{major}}.{{minor}}.{{patch}},suffix=-dev
+                      type=raw,value=latest
+
+            - name: Go Build Cache for Docker
+              uses: actions/cache@v4
+              with:
+                  path: pnpm-dev-cache
+                  key: ${{ runner.os }}-pnpm-dev-cache-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+
+            - name: inject cache into docker
+              uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+              with:
+                  cache-map: |
+                      {
+                       "pnpm-dev-cache": "/pnpm/store"
+                       }
+                  skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+
+            - name: Build and push
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: ./frontend.Dockerfile
+                  target: dev
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}

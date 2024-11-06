@@ -8,8 +8,12 @@ backend/tools/
 .*
 */.*
 .git
+.gitignore
+*.md
 */build
 */dist
+*/.vscode
 
 */node_modules
 frontend/*/shared/
+frontend/.svelte-kit

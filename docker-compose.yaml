@@ -41,14 +41,6 @@ services:
       caddy.@match.path: /api /api/* /docs /docs/* /redoc /redoc/*
       caddy.reverse_proxy: "@match backend:8000"
 
-  # Frontend service remains commented out, but here's how it would look:
-  # frontend:
-  #   labels:
-  #     - caddy=${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
-  #     - caddy.@www-redirect.redir_regexp = ^https?://www\.(.+)/(.*) https://{re.1}/$2
-  #     - caddy.handle = @www-redirect
-  #     - caddy.handle = reverse_proxy {{upstreams 80}}
-
 volumes:
   caddy-data:
   caddy-config:

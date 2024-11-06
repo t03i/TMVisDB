@@ -14,3 +14,23 @@ services:
         - action: rebuild
           path: backend/pyproject.toml
     command: ["fastapi", "dev", "--host", "0.0.0.0", "app/main.py", "--port", "8000"]
+
+  frontend:
+    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
+    restart: "always"
+    networks:
+      - caddy
+    command: ["pnpm", "dev", "--port", "5173", "--host", "0.0.0.0"]
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/app
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+      target: dev
+    platform: linux/amd64
+    labels:
+      caddy: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
+      caddy.@not_api.path.not: /api /api/* /docs /docs/* /redoc /redoc/*
+      caddy.reverse_proxy: "@not_api backend:5173"
