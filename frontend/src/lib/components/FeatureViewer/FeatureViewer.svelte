@@ -9,7 +9,6 @@
   import "@nightingale-elements/nightingale-track";
   import {
     KEY_TO_DISPLAY_NAME,
-    AnnotationStyleManager,
     type TrackData,
     type SourceDB,
   } from "$lib/annotations";
@@ -25,7 +24,6 @@
 
   const length = sequence.length;
 
-  let rootContainer: HTMLElement;
   let trackElements: Record<SourceDB, HTMLElement | null> = {} as Record<
     SourceDB,
     HTMLElement | null
@@ -41,17 +39,6 @@
       }
     });
   }
-
-  onMount(() => {
-    const annotationStyleManager = new AnnotationStyleManager(
-      rootContainer,
-      modeCurrent ? "light" : "dark",
-    );
-    const unsubscribe = modeCurrent.subscribe((mode) => {
-      annotationStyleManager.setTheme(mode ? "light" : "dark");
-    });
-    return unsubscribe;
-  });
 
   afterUpdate(() => {
     updateTracks();
@@ -90,10 +77,7 @@
 </script>
 
 {#if sequence && trackData}
-  <div
-    bind:this={rootContainer}
-    class="mx-auto min-h-[200px] w-full max-w-7xl p-5"
-  >
+  <div class="mx-auto min-h-[200px] w-full max-w-7xl p-5">
     <nightingale-manager
       id="manager"
       class="col-span-2 lg:col-span-1"

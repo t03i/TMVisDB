@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import { modeCurrent } from "@skeletonlabs/skeleton";
   import { browser } from "$app/environment";
 
+  const dispatch = createEventDispatcher();
   let currentStylesheet: HTMLLinkElement | null = null;
   let scriptLoaded: boolean = false;
 
@@ -38,11 +39,16 @@
         script.async = true;
         script.onload = () => {
           scriptLoaded = true;
+          dispatch("viewerLoaded");
           resolve();
         };
-        script.onerror = () => resolve(); // Resolve even on error to prevent blocking
+        script.onerror = () => {
+          dispatch("viewerError");
+          resolve();
+        };
         document.body.appendChild(script);
       } else {
+        dispatch("viewerLoaded");
         resolve();
       }
     });

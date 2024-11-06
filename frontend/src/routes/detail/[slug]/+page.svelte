@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
+  import { modeCurrent } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
   import { createStructureStore } from "$lib/stores/StructureStore";
   import { createAnnotationStore } from "$lib/stores/AnnotationStore";
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import type { ProteinInfo } from "$lib/client/model";
+  import type { SourceDB } from "$lib/annotations";
+  import { AnnotationStyleManager } from "$lib/annotations";
+  import { StructureViewerState } from '$lib/stores/StructureMarksStore';
+
   import config from "$lib/config";
 
   import {
@@ -23,6 +28,7 @@
     StructureViewer,
     StructureViewerError,
     StructureViewerLoading,
+    StructureColorSwitcher,
   } from "$lib/components/StructureViewer";
 
   import {
@@ -33,49 +39,25 @@
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
 
-  let highlightResidueFn: (
-    residues: { start_residue_number: number; end_residue_number: number }[],
-    color: { r: number; g: number; b: number },
-  ) => void;
-  let clearHighlightFn: () => void;
+  let rootContainer: HTMLDivElement;
+  let annotationStyleManager: AnnotationStyleManager;
+  let structureState: StructureViewerState;
 
   let viewer: StructureViewer;
   function handleViewerReady(event: CustomEvent) {
     console.log("Viewer ready");
-    highlightResidueFn = viewer.highlightResidues;
-    clearHighlightFn = viewer.clearHighlight;
-  }
-
-  function convertToRGB(color: string): { r: number; g: number; b: number } {
-    if (color.startsWith("rgb")) {
-      const [r, g, b] = color.match(/\d+/g)!.map(Number);
-      return { r, g, b };
-    } else if (color.startsWith("#")) {
-      const hex = color.replace("#", "");
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      return { r, g, b };
-    }
-    return { r: 255, g: 255, b: 0 }; // Default to yellow if parsing fails
   }
 
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
-    const { feature, target } = detail;
+    const { feature } = detail;
 
     if (feature) {
-      const cssVarName = feature.color.match(/var\((.*?)(,|\))/)[1];
-      const color = getComputedStyle(target)
-        .getPropertyValue(cssVarName)
-        .trim();
-      const rgbColor = convertToRGB(color);
-
-      const residues = feature.locations[0].fragments.map((fragment) => ({
-        start_residue_number: fragment.start,
-        end_residue_number: fragment.end,
-      }));
-      highlightResidueFn(residues, rgbColor);
+        const residues = feature.locations[0].fragments.map((fragment: { start: number; end: number }) => ({
+          start_residue_number: fragment.start,
+          end_residue_number: fragment.end,
+        }));
+        structureState.setHighlight(residues, {r: 0, g: 255, b: 255}, true);
     }
   };
 
@@ -92,13 +74,27 @@
   ) as unknown as CreateQueryResult<ProteinInfo>;
 
   const {
-    uniprotQuery,
-    tmvisdbQuery,
-    tmAlphaFoldQuery,
     isFetching: annotationsIsFetching,
+    annotationStructureSelection,
     annotationDBReferences,
     annotationTracks,
   } = createAnnotationStore(uniprotAcc, infoQuery);
+
+
+  onMount(() => {
+    annotationStyleManager = new AnnotationStyleManager(
+      rootContainer,
+      modeCurrent ? "light" : "dark",
+    );
+
+    structureState = new StructureViewerState(annotationStyleManager, annotationStructureSelection);
+
+    const unsubscribe = modeCurrent.subscribe((mode) => {
+      annotationStyleManager.setTheme(mode ? "light" : "dark");
+      structureState.updateColors();
+    });
+    return unsubscribe;
+  });
 
   onDestroy(structureCleanup);
 </script>
@@ -107,7 +103,10 @@
   <title>{config.APP_NAME} - {uniprotAcc}</title>
 </svelte:head>
 
-<div class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh">
+<div
+  bind:this={rootContainer}
+  class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh"
+>
   <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">
     <div class="card h-full w-full lg:w-1/2">
       {#if $structureQuery?.isLoading}
@@ -119,14 +118,21 @@
           <StructureViewerError error={$structureQuery?.error} {uniprotAcc} />
         </div>
       {:else if $structureUrl}
-        <StructureViewer
-          bind:this={viewer}
-          structureUrl={$structureUrl}
-          format={$structureQuery?.data?.format}
-          binary={$structureQuery?.data?.binary}
-          on:viewerReady={handleViewerReady}
-          class="card h-full min-h-[200px] w-full"
-        />
+        <div class="relative h-full w-full">
+          <StructureColorSwitcher
+            structureState={structureState}
+            annotationStructureSelection={$annotationStructureSelection}
+          />
+          <StructureViewer
+            bind:this={viewer}
+            structureUrl={$structureUrl}
+            format={$structureQuery?.data?.format}
+            binary={$structureQuery?.data?.binary}
+            state={structureState}
+            on:viewerReady={handleViewerReady}
+            class="card h-full min-h-[200px] w-full"
+          />
+        </div>
       {/if}
     </div>
     <div class="card h-full w-full p-6 lg:w-1/2">
