@@ -10,7 +10,8 @@ from app.definitions import DatabaseType
 
 router = APIRouter()
 
-@router.get("/legends/", response_model=dict[str,AnnotationLegend])
+
+@router.get("/legends/", response_model=dict[str, AnnotationLegend])
 def get_db_annotations_legends():
     legends = {}
     for db_name in DatabaseType:
@@ -26,6 +27,7 @@ def get_annotation_legend_for_db(db_name: DatabaseType):
         raise HTTPException(status_code=404, detail="No legend found")
     return legend
 
-@router.get('/taxonomies/', response_model=dict[str,Optional[list[str]]])
+
+@router.get("/taxonomies/", response_model=dict[str, Optional[list[str]]])
 def get_taxonomies():
     return utils.get_all_taxonomies()
