@@ -7,6 +7,7 @@
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "markdownlint.config": {
+        "MD041": false, // Allow center alignment
         "MD033": {
             "allowed_elements": [
                 "div",
