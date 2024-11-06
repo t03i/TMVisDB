@@ -16,12 +16,12 @@ The web interface is accessible [here](https://tmvisdb.predictprotein.org)
 
 ## Preview
 
-<img width="1200" alt="image" src=".github/images/preview.png">
+<img width="1200" alt="image" src=".github/images/Q9NVH1-tmbed.png">
 
 <details>
   <summary markdown="span"> **Figure caption** </summary>
 
-**3D structure and membrane topology visualization protein DnaJ homolog subfamily C member 11 (Q9NVH1).** The protein DnaJ with (A) per-residue topology color-scheme: inside-to-outside TMH (light green), outside-to-inside TMH (dark green), inside-to-outside TMB (light blue), outside-to-inside TMB (dark blue), signal peptide (pink), other (grey), and (B) a per-residue AlphaFold color-scheme based on the confidence measure predicted local distance test (pLDDT): very low pLDDT ≤ 50 (red), low 50 < pLDDT ≤ 70 (yellow), confident 70 < pLDDT ≤ 90 (green), very confident pLDDT > 90 (blue). The predicted transmembrane topology aligns well with the predicted AlphaFold structure in regions of high pLDDT, and the length of the alpha-helix and beta-barrel could align with membrane boundaries.
+**3D structure and membrane topology visualization protein DnaJ homolog subfamily C member 11 (Q9NVH1).** The protein DnaJ with per-residue topology color-scheme: inside-to-outside TMH (light red), outside-to-inside TMH (dark red), inside-to-outside TMB (light blue), outside-to-inside TMB (dark blue),other (grey). The length of the alpha-helix and beta-barrel could align with membrane boundaries.
 
 </details>
 
