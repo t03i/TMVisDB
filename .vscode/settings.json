@@ -4,5 +4,18 @@
         "backend/": true,
         ".ruff_cache/": true,
         "build/": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "markdownlint.config": {
+        "MD033": {
+            "allowed_elements": [
+                "kbd",
+                "br",
+                "details",
+                "summary",
+                "img",
+                "sup"
+            ]
+        }
     }
 }

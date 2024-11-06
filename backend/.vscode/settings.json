@@ -2,5 +2,8 @@
     "files.exclude": {
         ".venv/": true,
         "**/__pycache__/": true
-    }
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true
 }
