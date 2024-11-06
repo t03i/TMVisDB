@@ -2,7 +2,7 @@
 <div align="center">
   <img src=".github/images/logo.svg" alt="TMVis Logo" width="200"/>
 
-# TMVis Backend
+# TMVisDB
 
 </div>
 
