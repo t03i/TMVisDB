@@ -19,7 +19,9 @@ The web interface is accessible [here](https://tmvisdb.predictprotein.org)
 <img width="1200" alt="image" src=".github/images/Q9NVH1-tmbed.png">
 
 <details>
-  <summary markdown="span"> **Figure caption** </summary>
+  <summary markdown="span">
+  Figure caption
+  </summary>
 
 **3D structure and membrane topology visualization protein DnaJ homolog subfamily C member 11 (Q9NVH1).** The protein DnaJ with per-residue topology color-scheme: inside-to-outside TMH (light red), outside-to-inside TMH (dark red), inside-to-outside TMB (light blue), outside-to-inside TMB (dark blue),other (grey). The length of the alpha-helix and beta-barrel could align with membrane boundaries.
 
