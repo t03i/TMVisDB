@@ -155,7 +155,6 @@
         keepColors,
         keepRepresentations
       });
-      console.log("select", residues, color, nonSelectedColor, structureId, structureNumber, keepColors, keepRepresentations);
     }
   }
 

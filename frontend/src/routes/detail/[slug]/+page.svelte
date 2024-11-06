@@ -44,9 +44,6 @@
   let structureState: StructureViewerState;
 
   let viewer: StructureViewer;
-  function handleViewerReady(event: CustomEvent) {
-    console.log("Viewer ready");
-  }
 
   const handleFeatureEvent = (event: CustomEvent) => {
     const { detail } = event;
@@ -57,7 +54,7 @@
           start_residue_number: fragment.start,
           end_residue_number: fragment.end,
         }));
-        structureState.setHighlight(residues, {r: 0, g: 255, b: 255}, true);
+        structureState.setHighlight(residues,  true);
     }
   };
 
@@ -129,7 +126,6 @@
             format={$structureQuery?.data?.format}
             binary={$structureQuery?.data?.binary}
             state={structureState}
-            on:viewerReady={handleViewerReady}
             class="card h-full min-h-[200px] w-full"
           />
         </div>

@@ -102,7 +102,6 @@ function annotationsToDBMap(
 
 function dbLabelToCSSVar(sourceDB: SourceDB, labelType: string): string {
   let label = labelType
-    .toLowerCase()
     .replace(/\s+/g, "-")
     .replace(/\./g, "dot")
     .replace(/[^a-z0-9-]/g, "");
