@@ -104,7 +104,7 @@ function dbLabelToCSSVar(sourceDB: SourceDB, labelType: string): string {
   let label = labelType
     .replace(/\s+/g, "-")
     .replace(/\./g, "dot")
-    .replace(/[^a-z0-9-]/g, "");
+    .replace(/[^A-Za-z0-9-]/g, "");
   return `--annotation-${sourceDB}-${label}`;
 }
 

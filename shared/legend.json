@@ -73,7 +73,7 @@
         "fullName": "Membranome Annotation",
         "description": "Annotations from the Membranome database",
         "labels": {
-            "TM": {
+            "AH": {
                 "description": "Membrane region",
                 "color_dark": "rgba(var(--color-primary-400))",
                 "color_light": "rgba(var(--color-primary-500))"
