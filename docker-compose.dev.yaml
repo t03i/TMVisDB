@@ -1,21 +1,4 @@
 services:
-  traefik:
-    ports: !override
-      - "80:80"
-    command:
-      - --providers.docker
-      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.http.address=:80
-      - --entrypoints.https.address=:443
-      - --accesslog
-      - --log
-      - --log.level=DEBUG
-    labels: !override
-      - traefik.enable=true
-      - traefik.constraint-label=traefik-public
-      - traefik.http.middlewares.https-redirect.contenttype.autodetect=false
-
   backend:
     restart: "no"
     volumes:
@@ -31,12 +14,3 @@ services:
         - action: rebuild
           path: backend/pyproject.toml
     command: ["fastapi", "dev", "--host", "0.0.0.0", "app/main.py", "--port", "8000"]
-    labels: !override
-      - traefik.enable=true
-      - traefik.constraint-label=traefik-public
-      - traefik.http.services.backend.loadbalancer.server.port=8000
-      - traefik.http.routers.backend-http.rule=Host(`${API_DOMAIN?Variable not set}`) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))
-      - traefik.http.routers.backend-http.entrypoints=http
-      - traefik.http.routers.backend-https.rule=Host(`${API_DOMAIN?Variable not set}`) && (PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`))
-      - traefik.http.routers.backend-https.entrypoints=https
-      - traefik.http.routers.backend-https.tls=true
