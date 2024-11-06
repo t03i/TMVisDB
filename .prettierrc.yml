@@ -1,0 +1,6 @@
+# Markdown fix according to https://github.com/prettier/prettier/pull/15526
+tabWidth: 4
+overrides:
+  - files: "*.md"
+    options:
+      tabWidth: 2
