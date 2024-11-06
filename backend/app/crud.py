@@ -48,7 +48,7 @@ def filtered_query(filter: ProteinFilter):
             conditions.append(TMInfo.has_beta_strand == True)  # noqa: E712
         elif filter.topology == Topology.BOTH:
             conditions.append(
-                and_(TMInfo.has_alpha_helix == True, TMInfo.has_beta_strand == True)  # noqa: E712
+                and_(TMInfo.has_alpha_helix == True, TMInfo.has_beta_strand == True)  # type: ignore noqa: E712  # noqa: E712
             )
 
     # Signal peptide filter
@@ -58,7 +58,7 @@ def filtered_query(filter: ProteinFilter):
     # Sequence length filter
     if filter.sequence_length_min is not None or filter.sequence_length_max is not None:
         conditions.append(
-            Sequence.seq_length.between(
+            Sequence.seq_length.between(  # type: ignore
                 filter.sequence_length_min
                 if filter.sequence_length_min is not None
                 else settings.MIN_PROTEIN_LENGTH,
@@ -95,10 +95,10 @@ def get_paginated_proteins_with_count(
 
 def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annotation]:
     sequence = (
-        db.query(Sequence).filter(Sequence.uniprot_accession == selected_id).first()
+        db.query(Sequence).filter(Sequence.uniprot_accession == selected_id).first()  # type: ignore
     )
     if not sequence:
-        return None
+        return []
 
     annotations = (
         db.query(Annotation).filter(Annotation.sequence_id == sequence.id).all()
@@ -119,7 +119,7 @@ def get_random_proteins(
         select(Sequence, TMInfo, Organism)
         .join(TMInfo)
         .join(Organism)
-        .filter(Sequence.id.in_(random_ids))
+        .filter(Sequence.id.in_(random_ids))  # type: ignore
         .limit(num_sequences)
     )
 
@@ -133,7 +133,7 @@ def get_proteins_by_organism(
     db: Session, organism_id: int, filter: ProteinFilter
 ) -> tuple[list[ProteinInfo], int]:
     query = filtered_query(filter)
-    query = query.where(Organism.taxon_id == organism_id)
+    query = query.where(Organism.taxon_id == organism_id)  # type: ignore
 
     return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
 
@@ -142,9 +142,9 @@ def get_proteins_by_lineage(
     db: Session, taxonomy: TaxonomyFilter, filter: ProteinFilter
 ) -> tuple[list[ProteinInfo], int]:
     query = filtered_query(filter)
-    query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)
+    query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)  # type: ignore
     if taxonomy.clade:
-        query = query.where(Organism.clade == taxonomy.clade)
+        query = query.where(Organism.clade == taxonomy.clade)  # type: ignore
 
     return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
 
@@ -154,13 +154,12 @@ def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
         select(Sequence, TMInfo, Organism)
         .join(TMInfo)
         .join(Organism)
-        .where(Sequence.uniprot_accession == uniprot_accession)
+        .where(Sequence.uniprot_accession == uniprot_accession)  # type: ignore
     )
 
     result = db.execute(query).first()
-
     if result is None:
-        return None
+        raise ValueError(f"No protein found with uniprot_accession {uniprot_accession}")
 
     # Create a combined dictionary from all three Pydantic models
     combined_dict = {
@@ -176,6 +175,6 @@ def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
 
 
 def check_protein_exists(db: Session, uniprot_accession: str) -> bool:
-    query = select(Sequence.id).where(Sequence.uniprot_accession == uniprot_accession)
+    query = select(Sequence.id).where(Sequence.uniprot_accession == uniprot_accession)  # type: ignore
     result = db.execute(query).first()
     return result is not None

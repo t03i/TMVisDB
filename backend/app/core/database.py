@@ -17,9 +17,9 @@ engine = create_engine(
 )
 
 
-def set_pragma_settings(dbapi_connection, connection_record):
+def set_pragma_settings(db_connection, connection_record):
     # Optimization found here: https://youtubetranscriptoptimizer.com/blog/02_what_i_learned_making_the_python_backend_for_yto
-    cursor = dbapi_connection.cursor()
+    cursor = db_connection.cursor()
     cursor.execute("PRAGMA cache_size = -1048576")  # Set cache size to 4GB
     cursor.execute("PRAGMA journal_mode = OFF")
     cursor.execute("PRAGMA synchronous = NORMAL")

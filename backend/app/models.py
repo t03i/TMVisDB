@@ -22,7 +22,7 @@ class PublicOrganism(SQLModel, table=False):
 
 
 class Organism(PublicOrganism, table=True):
-    __tablename__ = "organism"
+    __tablename__: str = "organism"
     id: Optional[int] = Field(default=None, primary_key=True)
     sequences: List["Sequence"] = Relationship(back_populates="organism")
 
@@ -39,7 +39,7 @@ class PublicSequence(SQLModel, table=False):
 
 
 class Sequence(PublicSequence, table=True):
-    __tablename__ = "sequence"
+    __tablename__: str = "sequence"
     id: Optional[int] = Field(default=None, primary_key=True)
     organism_id: int = Field(foreign_key="organism.id", index=True)
 
@@ -61,7 +61,7 @@ class PublicTMInfo(SQLModel, table=False):
 
 
 class TMInfo(PublicTMInfo, table=True):
-    __tablename__ = "tminfo"
+    __tablename__: str = "tminfo"
     id: Optional[int] = Field(default=None, primary_key=True)
     sequence_id: int = Field(foreign_key="sequence.id", index=True)
     generated_at: date
@@ -98,7 +98,7 @@ class PublicAnnotation(SQLModel, table=False):
 
 
 class Annotation(PublicAnnotation, table=True):
-    __tablename__ = "annotation"
+    __tablename__: str = "annotation"
     id: Optional[int] = Field(default=None, primary_key=True)
     sequence_id: int = Field(foreign_key="sequence.id", index=True)
 

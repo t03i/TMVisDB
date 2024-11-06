@@ -2,16 +2,17 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+from pathlib import Path
 from typing import Dict, Any
 
 from .definitions import DatabaseType
-from .taxonomy_enums import SK_CLADE_MAPPING
+from .taxonomy_enums import SK_CLADE_MAPPING, SuperKingdom, Clade
 from .models import AnnotationLegend, LabelInfo
 from app.core.config import settings
 
 
 def load_legend_data() -> Dict[str, Any]:
-    legend_path = settings.SHARED_DIR_PATH / "legend.json"
+    legend_path: Path = settings.SHARED_DIR_PATH / "legend.json"
     with open(legend_path, "r") as f:
         return json.load(f)
 
@@ -22,7 +23,8 @@ LEGEND_DATA = load_legend_data()
 def get_database_legend(database: DatabaseType) -> AnnotationLegend:
     db_name = database.value
     if db_name not in LEGEND_DATA:
-        return None
+        # Return empty legend instead of None to match return type
+        return AnnotationLegend(name="", description="", labels=[])
 
     db_legend = LEGEND_DATA[db_name]
     return AnnotationLegend(
@@ -35,7 +37,7 @@ def get_database_legend(database: DatabaseType) -> AnnotationLegend:
     )
 
 
-def get_all_taxonomies() -> SK_CLADE_MAPPING:
+def get_all_taxonomies() -> dict[SuperKingdom, list[Clade]]:
     return SK_CLADE_MAPPING
 
 

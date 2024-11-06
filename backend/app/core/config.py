@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from typing import Annotated, Any, Literal
-
+from pathlib import Path
 from pydantic import (
     AnyUrl,
     BeforeValidator,
@@ -48,12 +48,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "TMVis"
     SENTRY_DSN: HttpUrl | None = None
 
-    SQLITE_DATABASE_PATH: FilePath = "data/tmvis.db"
-    SHARED_DIR_PATH: DirectoryPath = "shared/"
+    SQLITE_DATABASE_PATH: FilePath = Path("data/tmvis.db")
+    SHARED_DIR_PATH: DirectoryPath = Path("shared/")
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQL_ALCHEMY_DB_URL(self) -> AnyUrl:
+    def SQL_ALCHEMY_DB_URL(self) -> Annotated[str, AnyUrl]:
         return f"sqlite:///{self.SQLITE_DATABASE_PATH}"
 
 
