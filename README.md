@@ -143,9 +143,9 @@ Apache-2.0 License - see [LICENSE](LICENSE.txt) for details
 
 ## Resources
 
-- [Documentation](https://docs.tmvisdb.org)
-- [API Reference](https://api.tmvisdb.org)
-- [Issue Tracker](https://github.com/your-org/tmvisdb/issues)
+- [Issue Tracker](https://github.com/t03i/tmvisdb/issues)
+- [Discussions](https://github.com/t03i/tmvisdb/discussions)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Acknowledgments
 
