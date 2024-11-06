@@ -5,6 +5,23 @@
         }
     ],
     "settings": {
-        "editor.defaultFormatter": "svelte.svelte-vscode"
+        "editor.defaultFormatter": "svelte.svelte-vscode",
+        "cSpell.words": [
+            "bibtex",
+            "Foldseek",
+            "Membranome",
+            "skeletonlabs",
+            "tanstack",
+            "tmvisdb",
+            "transmembrane",
+            "bioRxiv",
+            "DOI",
+            "UniProt",
+            "TopDB",
+            "TMAlphaFold",
+            "pLDDT",
+            "AlphaFold",
+            "bioinformatics"
+        ]
     }
 }
