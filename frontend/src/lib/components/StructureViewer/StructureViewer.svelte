@@ -37,12 +37,16 @@
 
     // Create mutation observer to watch for viewer instance
     observer = new MutationObserver(async (mutations) => {
-      if (viewerElement?.viewerInstance?.canvas && viewerElement?.viewerInstance?.plugin) {
+      if (viewerElement?.viewerInstance) {
         observer.disconnect();
-        isViewerAvailable = true;
-        dispatch('viewerReady');
-        await updateBackground();
-        await updateSelection(get(state.selectionStore));
+        viewerElement.viewerInstance.events.loadComplete.subscribe((success: boolean) => {
+        if (success) {
+          isViewerAvailable = true;
+          dispatch('viewerReady');
+          updateBackground();
+          updateSelection(get(state.selectionStore));
+        }
+      });
       }
     });
 
@@ -151,6 +155,7 @@
         keepColors,
         keepRepresentations
       });
+      console.log("select", residues, color, nonSelectedColor, structureId, structureNumber, keepColors, keepRepresentations);
     }
   }
 
