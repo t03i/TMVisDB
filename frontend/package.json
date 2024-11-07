@@ -2,7 +2,7 @@
 	"name": "frontend",
 	"version": "1.0.0",
 	"private": true,
-	"packageManager": "pnpm@9.13.3",
+	"packageManager": "pnpm@9.12.3",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -12,16 +12,16 @@
 		"postinstall": "svelte-kit sync"
 	},
 	"devDependencies": {
-		"@skeletonlabs/skeleton": "^2.10.2",
+		"@skeletonlabs/skeleton": "^2.10.3",
 		"@skeletonlabs/tw-plugin": "^0.4.0",
-		"@sveltejs/adapter-auto": "^3.3.0",
-		"@sveltejs/adapter-cloudflare": "^4.7.3",
-		"@sveltejs/kit": "^2.7.2",
+		"@sveltejs/adapter-auto": "^3.3.1",
+		"@sveltejs/adapter-cloudflare": "^4.7.4",
+		"@sveltejs/kit": "^2.8.0",
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
-		"@tanstack/svelte-query-devtools": "^5.59.16",
-		"@types/node": "^22.7.9",
+		"@tanstack/svelte-query-devtools": "^5.59.20",
+		"@types/node": "^22.9.0",
 		"@vincjo/datatables": "^1.14.10",
 		"autoprefixer": "^10.4.20",
 		"prettier": "^3.3.3",
@@ -42,16 +42,20 @@
 		"@citation-js/plugin-csl": "^0.7.14",
 		"@citation-js/plugin-doi": "^0.7.16",
 		"@citation-js/plugin-ris": "^0.7.16",
-		"@floating-ui/dom": "^1.6.11",
+		"@floating-ui/dom": "^1.6.12",
 		"@nightingale-elements/nightingale-interpro-track": "^5.2.0",
 		"@nightingale-elements/nightingale-manager": "^5.2.0",
 		"@nightingale-elements/nightingale-navigation": "^5.2.0",
 		"@nightingale-elements/nightingale-saver": "^5.2.0",
 		"@nightingale-elements/nightingale-sequence": "^5.2.0",
 		"@nightingale-elements/nightingale-track": "^5.2.0",
-		"@tanstack/svelte-query": "^5.59.16",
+		"@tanstack/svelte-query": "^5.59.20",
 		"axios": "^1.7.7",
 		"iconify-icon": "^2.1.0",
 		"pdbe-molstar": "^3.3.0"
+	},
+	"optionalDependencies": {
+		"@rollup/rollup-linux-x64-gnu": "^4.24.4",
+		"rollup": "^4.24.4"
 	}
 }
