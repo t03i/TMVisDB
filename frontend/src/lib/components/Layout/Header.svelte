@@ -13,7 +13,7 @@
   gridColumns="grid-cols-3"
   slotDefault="place-self-center"
   slotTrail="place-content-end"
-  class="sticky top-0 z-100 shadow-lg"
+  class="sticky top-0 z-50 shadow-lg"
 >
   <svelte:fragment slot="lead">
     <a href="/" class="inline-block">
