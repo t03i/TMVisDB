@@ -14,6 +14,6 @@ backend/tools/
 */dist
 */.vscode
 
-*/node_modules
+frontend/node_modules
 frontend/*/shared/
 frontend/.svelte-kit
