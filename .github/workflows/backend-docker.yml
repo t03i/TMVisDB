@@ -2,71 +2,72 @@ name: Docker Build and Push to ghcr.io
 
 on:
     push:
-      branches: [ "main" ]
-      paths:
-        - 'backend/**'
+        branches: ["main"]
+        paths:
+            - "backend/**"
     pull_request:
-      branches: [ "main" ]
-      paths:
-        - 'backend/**'
+        branches: ["main"]
+        paths:
+            - "backend/**"
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-backend
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}-backend
 
 jobs:
-  build-push-deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    build-push-deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=ref,event=branch
+                      type=semver,pattern={{version}}
+                      type=semver,pattern={{major}}.{{minor}}
+                      type=semver,pattern={{major}}.{{minor}}.{{patch}}
+                      type=raw,value=latest
 
-    - name: Go Build Cache for Docker
-      uses: actions/cache@v4
-      with:
-        path: uv-cache
-        key: ${{ runner.os }}-uv-cache-${{ hashFiles('backend/uv.lock') }}
+            - name: Go Build Cache for Docker
+              uses: actions/cache@v4
+              with:
+                  path: uv-cache
+                  key: ${{ runner.os }}-uv-cache-${{ hashFiles('backend/uv.lock') }}
 
-    - name: inject cache into docker
-      uses: reproducible-containers/buildkit-cache-dance@v3.1.0
-      with:
-        cache-map: |
-            {
-             "uv-cache": "/root/.cache/uv"
-             }
-        skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+            - name: inject cache into docker
+              uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+              with:
+                  cache-map: |
+                      {
+                       "uv-cache": "/root/.cache/uv"
+                       }
+                  skip-extraction: ${{ steps.cache.outputs.cache-hit }}
 
-    - name: Build and push
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        file: ./backend.Dockerfile
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-        push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+            - name: Build and push
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: ./backend.Dockerfile
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.meta.outputs.tags }}
+                  labels: ${{ steps.meta.outputs.labels }}

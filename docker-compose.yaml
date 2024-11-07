@@ -39,7 +39,7 @@ services:
     labels:
       caddy: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
       caddy.@match.path: /api /api/* /docs /docs/* /redoc /redoc/*
-      caddy.reverse_proxy: "@match backend:8000"
+      caddy.reverse_proxy_0: "@match backend:8000"
 
 volumes:
   caddy-data:

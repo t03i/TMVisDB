@@ -20,11 +20,22 @@ services:
     restart: "always"
     networks:
       - caddy
+    develop:
+      watch:
+        - action: sync
+          path: frontend/src/
+          target: /app/src/
+        - action: rebuild
+          path: frontend/package.json
+        - action: rebuild
+          path: frontend/pnpm-lock.yaml
     command: ["pnpm", "dev", "--port", "5173", "--host", "0.0.0.0"]
     env_file:
       - .env
     volumes:
       - ./frontend:/app
+      - ./shared:/app/src/lib/assets/shared
+      - notused:/app/node_modules
     build:
       context: .
       dockerfile: frontend.Dockerfile
@@ -32,5 +43,7 @@ services:
     platform: linux/amd64
     labels:
       caddy: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
-      caddy.@not_api.path.not: /api /api/* /docs /docs/* /redoc /redoc/*
-      caddy.reverse_proxy: "@not_api backend:5173"
+      caddy.reverse_proxy_1: "frontend:5173"
+
+volumes:
+  notused:

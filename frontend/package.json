@@ -53,9 +53,5 @@
 		"axios": "^1.7.7",
 		"iconify-icon": "^2.1.0",
 		"pdbe-molstar": "^3.3.0"
-	},
-	"optionalDependencies": {
-		"@rollup/rollup-linux-x64-gnu": "^4.24.4",
-		"rollup": "^4.24.4"
 	}
 }
