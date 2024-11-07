@@ -27,6 +27,7 @@ const config: Config = {
     MAINTENANCE_MODE: PUBLIC_MAINTENANCE_MODE.toLowerCase() === 'true' || false
 };
 axios.defaults.baseURL = config.API_BASE_URL;
+// TODO: fix this for server side rendering
 
 Object.freeze(config);
 export default config;

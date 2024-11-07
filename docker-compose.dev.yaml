@@ -14,6 +14,11 @@ services:
         - action: rebuild
           path: backend/pyproject.toml
     command: ["fastapi", "dev", "--host", "0.0.0.0", "app/main.py", "--port", "8000"]
+    labels:
+      caddy_0: http://localhost
+      caddy_0.@match.path: /api /api/* /docs /docs/* /redoc /redoc/*
+      caddy_0.reverse_proxy_0: "@match backend:8000"
+
 
   frontend:
     image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
@@ -42,8 +47,8 @@ services:
       target: dev
     platform: linux/amd64
     labels:
-      caddy: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
-      caddy.reverse_proxy_1: "frontend:5173"
+      caddy_0: http://localhost
+      caddy_0.reverse_proxy_1: "frontend:5173"
 
 volumes:
   notused:
