@@ -1,3 +1,4 @@
+name: Build and Release to Production
 on:
     push:
         branches:
@@ -133,8 +134,8 @@ jobs:
     release-docker-frontend:
         needs: [release-github, build-frontend-docker, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
-        uses: ./.github/workflows/docker-release.yml
         secrets: inherit
+        uses: ./.github/workflows/docker-release.yml
         with:
             release_tag: ${{ needs.determine-release.outputs.tag }}
             image_name: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
