@@ -48,5 +48,5 @@ jobs:
               with:
                   include-hidden-files: true
                   name: frontend-build
-                  path: .svelte-kit/cloudflare/
+                  path: .svelte-kit/cloudflare/*
                   retention-days: 1
