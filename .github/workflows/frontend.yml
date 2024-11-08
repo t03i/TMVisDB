@@ -34,7 +34,7 @@ jobs:
                       -v ${{ github.workspace }}/frontend:/app
                       -v ${{ github.workspace }}/shared:/app/src/lib/assets/shared
                       -e NODE_ENV=production
-                  run: svelte-kit sync  && pnpm run build
+                  run: pnpm execsvelte-kit sync  && pnpm run build
 
             - name: Upload build artifact
               id: build-artifact
