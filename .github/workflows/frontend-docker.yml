@@ -61,5 +61,5 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
                   push: true
-                  tags: main-dev
+                  tags: ${{ vars.FRONTEND_IMAGE_NAME }}:main-dev
                   labels: ${{ steps.meta.outputs.labels }}
