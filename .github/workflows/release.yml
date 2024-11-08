@@ -49,6 +49,8 @@ jobs:
                       uv-tools-${{ runner.os }}
 
             - name: Install Python Semantic Release
+              env:
+                  UV_TOOL_DIR: /tmp/release-tool-bin
               run: uv tool install python-semantic-release@v9.11.1
 
             - name: Run Semantic Release
