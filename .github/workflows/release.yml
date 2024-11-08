@@ -61,8 +61,8 @@ jobs:
                   echo "Checking for release and setting version in files"
                   output=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --commit --push --tag --changelog --no-vcs-release)
                   echo "$output"
-                  version=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml --noop version --print-last-released-tag )
-                  if echo "$output" | grep -q "No release will be made"; then
+                  version=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml --noop version --print-last-released-tag 2>/dev/null )
+                  if echo "$output" | grep -q "^No release will be made"; then
                     echo "release_needed=false" >> $GITHUB_OUTPUT
                   else
                     echo "release_needed=true" >> $GITHUB_OUTPUT
