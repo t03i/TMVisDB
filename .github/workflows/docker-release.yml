@@ -3,62 +3,43 @@ name: Create Docker Releases
 on:
     workflow_call:
         inputs:
-            tag:
+            release_tag:
+                required: true
+                type: string
+            image_name:
+                required: true
+                type: string
+            old_tag:
                 required: true
                 type: string
 
 jobs:
-    release:
+    tag:
         runs-on: ubuntu-latest
         environment: production
-        env:
-            FRONTEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
-            BACKEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
-
+        outputs:
+            tags: ${{ steps.meta-frontend.outputs.tags }}
         steps:
-            - name: Login to Docker Registry
-              uses: docker/login-action@v3
-              with:
-                  registry: ${{ vars.REGISTRY }}
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-
             - name: Extract Frontend metadata
               id: meta-frontend
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ env.FRONTEND_IMAGE }}
+                  images: ${{ inputs.image_name }}
                   tags: |
-                      type=semver,pattern={{version}},value=${{ inputs.tag }}
-                      type=semver,pattern={{major}}.{{minor}},value=${{ inputs.tag }}
-                      type=semver,pattern={{major}},value=${{ inputs.tag }}
+                      type=semver,pattern={{version}},value=${{ inputs.release_tag }}
+                      type=semver,pattern={{major}}.{{minor}},value=${{ inputs.release_tag }}
+                      type=semver,pattern={{major}},value=${{ inputs.release_tag }}
                       type=raw,value=latest
-
-            - name: Retag and Push Frontend Image
-              run: |
-                  docker pull ${{ env.FRONTEND_IMAGE }}:main-dev
-                  for tag in ${{ steps.meta-frontend.outputs.tags }}; do
-                    echo "docker tag ${{ env.FRONTEND_IMAGE }}:main-dev $tag"
-                    docker tag "${{ env.BACKEND_IMAGE }}:main" "$tag"
-                    docker push "$tag"
-                  done
-
-            - name: Extract Backend metadata
-              id: meta-backend
-              uses: docker/metadata-action@v5
-              with:
-                  images: ${{ env.BACKEND_IMAGE }}
-                  tags: |
-                      type=semver,pattern={{version}},value=${{ inputs.tag }}
-                      type=semver,pattern={{major}}.{{minor}},value=${{ inputs.tag }}
-                      type=semver,pattern={{major}},value=${{ inputs.tag }}
-                      type=raw,value=latest
-
-            - name: Retag and Push Backend Image
-              run: |
-                  docker pull ${{ env.BACKEND_IMAGE }}:main
-                  for tag in ${{ steps.meta-backend.outputs.tags }}; do
-                    echo "docker tag ${{ env.FRONTEND_IMAGE }}:main $tag"
-                    docker tag "${{ env.BACKEND_IMAGE }}:main" "$tag"
-                    docker push "$tag"
-                  done
+    retag:
+        runs-on: ubuntu-latest
+        needs: tag
+        strategy:
+            matrix:
+                tags: ${{ needs.tag.outputs.tags }}
+        steps:
+            - name: Pull Image
+              run: docker pull ${{ inputs.image_name }}:${{ inputs.old_tag }}
+            - name: Retag Image
+              run: docker tag ${{ inputs.image_name }}:${{ inputs.old_tag }} ${{ matrix.tags }}
+            - name: Push Image
+              run: docker push ${{ matrix.tags }}

@@ -89,7 +89,7 @@ jobs:
             tag: ${{ needs.determine-release.outputs.tag }}
         secrets: inherit
 
-    github-release:
+    release-github:
         needs: [build-backend-docker, build-frontend, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
         runs-on: ubuntu-latest
@@ -106,10 +106,22 @@ jobs:
                   tag_name: ${{ needs.determine-release.outputs.tag }}
                   body_path: ${{ github.workspace }}-CHANGELOG.md
 
-    docker-release:
-        needs: [build-backend-docker, build-frontend-docker, determine-release]
+    release-docker-backend:
+        needs: [build-backend-docker, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
         uses: ./.github/workflows/docker-release.yml
-        with:
-            tag: ${{ needs.determine-release.outputs.tag }}
         secrets: inherit
+        with:
+            release_tag: ${{ needs.determine-release.outputs.tag }}
+            image_name: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
+            old_tag: main
+
+    release-docker-frontend:
+        needs: [build-frontend-docker, determine-release]
+        if: needs.determine-release.outputs.release_needed == 'true'
+        uses: ./.github/workflows/docker-release.yml
+        secrets: inherit
+        with:
+            release_tag: ${{ needs.determine-release.outputs.tag }}
+            image_name: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
+            old_tag: main-dev
