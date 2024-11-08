@@ -39,8 +39,8 @@ jobs:
                   docker pull ${{ env.FRONTEND_IMAGE }}:main-dev
                   for tag in ${{ steps.meta-frontend.outputs.tags }}; do
                     echo "docker tag ${{ env.FRONTEND_IMAGE }}:main-dev $tag"
-                    docker tag ${{ env.FRONTEND_IMAGE }}:main-dev $tag
-                    docker push $tag
+                    docker tag "${{ env.BACKEND_IMAGE }}:main" "$tag"
+                    docker push "$tag"
                   done
 
             - name: Extract Backend metadata
@@ -58,6 +58,6 @@ jobs:
               run: |
                   docker pull ${{ env.BACKEND_IMAGE }}:main
                   for tag in ${{ steps.meta-backend.outputs.tags }}; do
-                    docker tag ${{ env.BACKEND_IMAGE }}:main $tag
-                    docker push $tag
+                    docker tag "${{ env.BACKEND_IMAGE }}:main" "$tag"
+                    docker push "$tag"
                   done
