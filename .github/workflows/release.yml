@@ -108,7 +108,7 @@ jobs:
               with:
                   files: dist/cloudflare/*
                   tag_name: ${{ needs.determine-release.outputs.tag }}
-                  body_path: ${{ github.workspace }}-CHANGELOG.md
+                  body_path: CHANGELOG.md
 
     release-docker-backend:
         needs: [release-github, build-backend-docker, determine-release]
