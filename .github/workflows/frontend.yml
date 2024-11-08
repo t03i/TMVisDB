@@ -34,6 +34,12 @@ jobs:
                       -v ${{ github.workspace }}/frontend:/app
                       -v ${{ github.workspace }}/shared:/app/src/lib/assets/shared
                       -e NODE_ENV=production
+                      -e PUBLIC_API_URL=https://api-tmvisdb.rostlab.org
+                      -e PUBLIC_GITHUB_REPO=t03i/TMvisDB
+                      -e PUBLIC_MIN_PROTEIN_LENGTH=16
+                      -e PUBLIC_MAX_PROTEIN_LENGTH=5500
+                      -e PUBLIC_MAINTENANCE_MODE=false
+                      -e PUBLIC_PROJECT_NAME=TMvisDB
                   run: pnpm exec svelte-kit sync  && pnpm run build
 
             - name: Upload build artifact
