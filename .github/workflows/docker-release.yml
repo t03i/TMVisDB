@@ -58,6 +58,7 @@ jobs:
               run: |
                   docker pull ${{ env.BACKEND_IMAGE }}:main
                   for tag in ${{ steps.meta-backend.outputs.tags }}; do
+                    echo "docker tag ${{ env.FRONTEND_IMAGE }}:main $tag"
                     docker tag "${{ env.BACKEND_IMAGE }}:main" "$tag"
                     docker push "$tag"
                   done
