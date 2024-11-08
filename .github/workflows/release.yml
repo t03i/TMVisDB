@@ -107,7 +107,7 @@ jobs:
                   body_path: ${{ github.workspace }}-CHANGELOG.md
 
     release-docker-backend:
-        needs: [build-backend-docker, determine-release]
+        needs: [release-github, build-backend-docker, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
         uses: ./.github/workflows/docker-release.yml
         secrets: inherit
@@ -117,7 +117,7 @@ jobs:
             old_tag: main
 
     release-docker-frontend:
-        needs: [build-frontend-docker, determine-release]
+        needs: [release-github, build-frontend-docker, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
         uses: ./.github/workflows/docker-release.yml
         secrets: inherit
