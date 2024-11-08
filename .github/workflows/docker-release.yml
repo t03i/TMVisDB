@@ -1,0 +1,58 @@
+on:
+    workflow_call:
+        inputs:
+            tag:
+                required: true
+                type: string
+
+jobs:
+
+
+    release:
+        runs-on: ubuntu-latest
+        environment: production
+        env:
+            FRONTEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
+            BACKEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
+
+        steps:
+            - name: Extract Frontend metadata
+              id: meta-frontend
+              uses: docker/metadata-action@v5
+              with:
+                images: ${{ env.FRONTEND_IMAGE }}
+                tags: |
+                    type=semver,pattern={{version}},value=${{ inputs.tag }}
+                    type=semver,pattern={{major}}.{{minor}},value=${{ inputs.tag }}
+                    type=semver,pattern={{major}},value=${{ inputs.tag }}
+                    type=raw,value=latest
+
+            - name: Retag Frontend Image
+              uses: docker/build-push-action@v6
+              with:
+                  push: true
+                  tags: ${{ steps.meta-frontend.outputs.tags }}
+                  labels: ${{ steps.meta-frontend.outputs.labels }}
+                  pull: true
+                  target: dev
+                  cache-from: ${{ env.FRONTEND_IMAGE }}:main-dev
+
+            - name: Extract Backend metadata
+              id: meta-backend
+              uses: docker/metadata-action@v5
+              with:
+                images: ${{ env.BACKEND_IMAGE }}
+                tags: |
+                    type=semver,pattern={{version}},value=${{ inputs.tag }}
+                    type=semver,pattern={{major}}.{{minor}},value=${{ inputs.tag }}
+                    type=semver,pattern={{major}},value=${{ inputs.tag }}
+                    type=raw,value=latest
+
+            - name: Retag Backend Image
+              uses: docker/build-push-action@v6
+              with:
+                  push: true
+                  tags: ${{ steps.meta-backend.outputs.tags }}
+                  labels: ${{ steps.meta-backend.outputs.labels }}
+                  pull: true
+                  cache-from: ${{ env.BACKEND_IMAGE }}:main

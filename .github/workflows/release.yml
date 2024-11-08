@@ -4,15 +4,16 @@ on:
     push:
         branches:
             - main
+
 permissions:
-  contents: read
+    id-token: write
+    contents: write
+    packages: write
 
 jobs:
     determine-release:
         runs-on: ubuntu-latest
-        concurrency: release
-        permissions:
-          contents: read
+
         outputs:
           release_needed: ${{ steps.semantic_release.outputs.release_needed }}
           tag: ${{ steps.semantic_release.outputs.tag }}
@@ -56,9 +57,9 @@ jobs:
               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             run: |
               echo "Checking for release and setting version in files"
-              output=$(uv tool run --from python-semantic-release semantic-release version --no-commit --no-push --no-vcs-release --print)
+              output=$(uv tool run --from python-semantic-release semantic-release version --commit --push --tag --changelog --no-vcs-release --print)
               echo "$output"
-              version=$(uv tool run --from python-semantic-release semantic-release version --no-commit --no-push --no-vcs-release --print-last-released-tag)
+              version=$(uv tool run --from python-semantic-release semantic-release --noop version --print-last-released-tag)
               if echo "$output" | grep -q "No release will be made"; then
                 echo "release_needed=false" >> $GITHUB_OUTPUT
               else
@@ -66,22 +67,51 @@ jobs:
               fi
               echo "tag=$version" >> $GITHUB_OUTPUT
 
-    trigger-builds:
+    build-frontend-docker:
         needs: determine-release
         if: needs.determine-release.outputs.release_needed == 'true'
-        runs-on: ubuntu-latest
-        permissions:
-          id-token: write
-          contents: write
-        steps:
-          - name: Trigger Python Build
-            uses: peter-evans/repository-dispatch@v3
-            with:
-              event-type: trigger-python-build
-              client-payload: '{"tag": "${{ needs.determine-release.outputs.tag }}"}'
+        uses: ./.github/workflows/frontend-docker.yml
+        with:
+            tag: ${{ needs.determine-release.outputs.tag }}
+        secrets: inherit
 
-          - name: Trigger Docker Build
-            uses: peter-evans/repository-dispatch@v3
-            with:
-              event-type: trigger-docker-build
-              client-payload: '{"tag": "${{ needs.determine-release.outputs.tag }}"}'
+    build-backend-docker:
+        needs: determine-release
+        if: needs.determine-release.outputs.release_needed == 'true'
+        uses: ./.github/workflows/backend-docker.yml
+        with:
+            tag: ${{ needs.determine-release.outputs.tag }}
+        secrets: inherit
+
+    build-frontend:
+        needs: [build-frontend-docker, determine-release]
+        if: needs.determine-release.outputs.release_needed == 'true'
+        uses: ./.github/workflows/frontend.yml
+        with:
+            tag: ${{ needs.determine-release.outputs.tag }}
+        secrets: inherit
+
+    github-release:
+        needs: [build-backend-docker, build-frontend, determine-release]
+        if: needs.determine-release.outputs.release_needed == 'true'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Build Artifacts
+              uses: actions/download-artifact@v4
+              with:
+                name: frontend-build
+                path: dist/cloudflare/
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                files: dist/cloudflare/*
+                tag_name: ${{ needs.determine-release.outputs.tag }}
+                body_path: ${{ github.workspace }}-CHANGELOG.md
+
+    docker-release:
+        needs: [build-backend-docker, build-frontend-docker, determine-release]
+        if: needs.determine-release.outputs.release_needed == 'true'
+        uses: ./.github/workflows/docker-release.yml
+        with:
+            tag: ${{ needs.determine-release.outputs.tag }}
+        secrets: inherit

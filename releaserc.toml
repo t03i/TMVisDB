@@ -6,7 +6,7 @@ commit_parser = "angular"
 logging_use_named_masks = false
 major_on_zero = true
 allow_zero_version = true
-no_git_verify = false
+no_git_verify = true
 tag_format = "v{version}"
 version_toml = [
     "backend/pyproject.toml:project.version"
@@ -15,6 +15,8 @@ version_variables = [
     "backend/app/__init__.py:__version__",
     "frontend/package.json:version"
 ]
+# Problem with uv lock https://github.com/astral-sh/uv/issues/7533#issuecomment-2400922158
+build_command = "cd backend && uv lock && git add uv.lock"
 
 [semantic_release.branches.main]
 match = "(main|master)"
@@ -55,13 +57,3 @@ minor_tags = ["feat"]
 patch_tags = ["fix", "perf"]
 allowed_tags = ["feat", "fix", "perf", "build", "chore", "ci", "docs", "style", "refactor", "test"]
 default_bump_level = 0
-
-[semantic_release.remote]
-name = "origin"
-type = "github"
-ignore_token_for_push = false
-insecure = false
-
-[semantic_release.publish]
-dist_glob_patterns = ["backend/dist/*", "frontend/.svelte-kit/cloudflare/*"]
-upload_to_vcs_release = true
