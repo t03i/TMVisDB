@@ -34,7 +34,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Trigger Docker build if needed
-              if: needs.check-changes.outputs.needs_docker_build == 'true'
+              if: true || needs.check-changes.outputs.needs_docker_build == 'true'
               uses: peter-evans/repository-dispatch@v3
               with:
                   event-type: build-docker-image
