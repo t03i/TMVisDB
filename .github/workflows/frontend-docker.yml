@@ -1,4 +1,4 @@
-name: Docker Build and Push to ghcr.io
+name: Build Frontend Docker Image
 
 on:
   workflow_call:

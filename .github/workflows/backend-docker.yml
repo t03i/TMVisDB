@@ -1,4 +1,4 @@
-name: Backend Release Workflow
+name: Build Backend Docker Image
 
 on:
     workflow_call:

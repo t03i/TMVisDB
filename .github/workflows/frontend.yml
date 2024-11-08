@@ -1,3 +1,5 @@
+name: Build Frontend
+
 on:
     workflow_call:
         inputs:

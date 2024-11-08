@@ -1,4 +1,3 @@
-name: Determine Release Workflow
 
 on:
     push:
