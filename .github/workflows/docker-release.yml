@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
         environment: production
         outputs:
-            tags: ${{ steps.meta-frontend.outputs.json.tags }}
+            matrix: ${{ steps.meta-frontend.outputs.json }}
         steps:
             - name: Extract Frontend metadata
               id: meta-frontend
@@ -35,7 +35,7 @@ jobs:
         needs: tag
         strategy:
             matrix:
-                tags: ${{ fromJson(needs.tag.outputs.tags) }}
+                tags: ${{ fromJson(needs.tag.outputs.matrix.tags) }}
         steps:
             - name: Pull Image
               run: docker pull ${{ inputs.image_name }}:${{ inputs.old_tag }}
