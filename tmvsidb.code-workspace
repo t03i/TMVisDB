@@ -22,6 +22,8 @@
             "bibtex",
             "bioinformatics",
             "bioRxiv",
+            "Datatable",
+            "datatables",
             "DOI",
             "fastapi",
             "Foldseek",
@@ -42,7 +44,8 @@
             "tmvisdb",
             "TopDB",
             "transmembrane",
-            "UniProt"
+            "UniProt",
+            "vincjo"
         ],
         "editor.formatOnSave": true
     }

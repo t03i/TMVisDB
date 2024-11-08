@@ -54,7 +54,7 @@
     const params: Record<string, string> = {};
 
     Object.entries(filters).forEach(([key, value]) => {
-      const defaultValue = defaultFilters[key];
+      const defaultValue = defaultFilters[key as keyof typeof defaultFilters];
       if (value !== defaultValue) {
         const paramKey = key.replace("filter", "").toLowerCase();
         params[paramKey] = String(value);
@@ -83,12 +83,14 @@
       const paramValue = params.get(paramKey);
       if (paramValue !== null) {
         if (key === "filterTopology") {
-          filters[key] = paramValue as Topology;
+          // @ts-ignore
+          filters[key] = paramValue;
         } else if (key === "filterMinLength" || key === "filterMaxLength") {
           filters[key] = parseInt(paramValue);
         } else if (key === "filterSignalPeptide") {
           filters[key] = paramValue !== "false";
         } else {
+          // @ts-ignore
           filters[key] = paramValue;
         }
       }
@@ -98,6 +100,7 @@
   // Check if current state matches default state
   function isDefaultState(): boolean {
     return Object.keys(defaultFilters).every(
+      // @ts-ignore
       (key) => key === "filterType" || filters[key] === defaultFilters[key],
     );
   }

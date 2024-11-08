@@ -35,6 +35,7 @@
     Object.entries(trackData).forEach(([sourceDB, features]) => {
       const track = trackElements[sourceDB as SourceDB];
       if (track) {
+        // @ts-ignore
         track.data = features;
       }
     });
@@ -113,6 +114,7 @@
             >
               {KEY_TO_DISPLAY_NAME[sourceDB]}
             </div>
+
             <nightingale-track
               bind:this={trackElements[sourceDB]}
               id={"track-" + sourceDB}

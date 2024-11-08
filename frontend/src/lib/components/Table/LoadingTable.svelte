@@ -55,9 +55,3 @@
     {/each}
   </tbody>
 </table>
-
-<style>
-  .placeholder {
-    @apply h-4 w-full rounded bg-gray-300;
-  }
-</style>

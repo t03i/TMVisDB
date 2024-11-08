@@ -23,9 +23,8 @@
 
   let handler: DataHandler<any>;
   let rows: Readable<any[]>;
-
   onMount(() => {
-    handler = new DataHandler([], {
+    handler = new DataHandler<any>([], {
       rowsPerPage,
     });
     rows = handler.getRows();

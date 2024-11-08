@@ -1,5 +1,6 @@
 <script lang="ts">
   import config from "$lib/config";
+  // @ts-ignore
   import overview from "$lib/assets/overview.png";
 </script>
 

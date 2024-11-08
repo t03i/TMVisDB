@@ -112,9 +112,8 @@ function annotationToNightingaleFeature(
   annotation: PublicAnnotation,
 ): Feature | null {
   const sourceDB = annotation.source_db.toLowerCase() as SourceDB;
-  const label = annotation.label;
-  const labelDescription =
-    legendData[sourceDB]?.labels[label]?.description || "Unknown";
+  const label = annotation.label as keyof (typeof legendData)[typeof sourceDB]['labels'];
+  const labelDescription = legendData[sourceDB]?.labels[label]['description'] || "Unknown";
 
   return {
     accession: `${sourceDB}-${label}-${annotation.start}-${annotation.end}`,
@@ -132,7 +131,6 @@ function annotationToNightingaleFeature(
       },
     ],
     tooltipContent: `${labelDescription}`,
-    sourceDB: annotation.source_db,
   };
 }
 
@@ -173,8 +171,9 @@ export function annotationToStructureSelection(
     const dbQueries: LabeledSelectionQuery[] = [];
 
     for (const annotation of dbAnnotations) {
-      const label = annotation.label;
-      const labelInfo = legendData[sourceDB]?.labels[label];
+      const sourceDbKey = sourceDB as keyof typeof legendData;
+      const label = annotation.label as keyof (typeof legendData)[typeof sourceDbKey]['labels'];
+      const labelInfo = legendData[sourceDbKey]?.labels[label];
       if (!labelInfo) continue;
 
       dbQueries.push({
@@ -182,7 +181,7 @@ export function annotationToStructureSelection(
         start_residue_number: annotation.start,
         end_residue_number: annotation.end,
         focus: false,
-        tooltip: labelInfo.description,
+        tooltip: labelInfo['description'],
       });
     }
 
@@ -208,14 +207,14 @@ export class AnnotationStyleManager {
   private generateCSSVars() {
     for (const sourceDB of SOURCE_DATABASES) {
       const labels = legendData[sourceDB].labels;
-      for (const label of Object.keys(labels)) {
+      for (const label  of Object.keys(labels)) {
         this.styles.set(
           `${dbLabelToCSSVar(sourceDB, label)}-dark`,
-          labels[label].color_dark,
+          labels[label as keyof typeof labels]['color_dark'],
         );
         this.styles.set(
           `${dbLabelToCSSVar(sourceDB, label)}-light`,
-          labels[label].color_light,
+          labels[label as keyof typeof labels]['color_light'],
         );
       }
     }
