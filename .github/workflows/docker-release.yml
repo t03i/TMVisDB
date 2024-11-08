@@ -16,6 +16,13 @@ jobs:
             BACKEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
 
         steps:
+            - name: Login to Docker Registry
+              uses: docker/login-action@v3
+              with:
+                registry: ${{ vars.REGISTRY }}
+                username: ${{ secrets.REGISTRY_USERNAME }}
+                password: ${{ secrets.REGISTRY_PASSWORD }}
+
             - name: Extract Frontend metadata
               id: meta-frontend
               uses: docker/metadata-action@v5
@@ -27,15 +34,13 @@ jobs:
                     type=semver,pattern={{major}},value=${{ inputs.tag }}
                     type=raw,value=latest
 
-            - name: Retag Frontend Image
-              uses: docker/build-push-action@v6
-              with:
-                  push: true
-                  tags: ${{ steps.meta-frontend.outputs.tags }}
-                  labels: ${{ steps.meta-frontend.outputs.labels }}
-                  pull: true
-                  target: dev
-                  cache-from: ${{ env.FRONTEND_IMAGE }}:main-dev
+            - name: Retag and Push Frontend Image
+              run: |
+                docker pull ${{ env.FRONTEND_IMAGE }}:main-dev
+                for tag in ${{ steps.meta-frontend.outputs.tags }}; do
+                  docker tag ${{ env.FRONTEND_IMAGE }}:main-dev $tag
+                  docker push $tag
+                done
 
             - name: Extract Backend metadata
               id: meta-backend
@@ -48,11 +53,10 @@ jobs:
                     type=semver,pattern={{major}},value=${{ inputs.tag }}
                     type=raw,value=latest
 
-            - name: Retag Backend Image
-              uses: docker/build-push-action@v6
-              with:
-                  push: true
-                  tags: ${{ steps.meta-backend.outputs.tags }}
-                  labels: ${{ steps.meta-backend.outputs.labels }}
-                  pull: true
-                  cache-from: ${{ env.BACKEND_IMAGE }}:main
+            - name: Retag and Push Backend Image
+              run: |
+                docker pull ${{ env.BACKEND_IMAGE }}:main
+                for tag in ${{ steps.meta-backend.outputs.tags }}; do
+                  docker tag ${{ env.BACKEND_IMAGE }}:main $tag
+                  docker push $tag
+                done
