@@ -28,8 +28,11 @@ jobs:
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
                 image: ${{vars.REGISTRY}}/${{ vars.FRONTEND_IMAGE_NAME }}:main-dev
-                options: -v ${{ github.workspace }}/frontend:/app -e NODE_ENV=production
-                run: pnpm run build
+                options: |
+                  -v ${{ github.workspace }}/frontend:/app
+                  -v ${{ github.workspace }}/shared:/app/src/lib/assets/shared
+                  -e NODE_ENV=production
+                run: pnpm run check && pnpm run build
 
             - name: Upload build artifact
               id: build-artifact
