@@ -8,7 +8,7 @@ on:
           type: string
 
 jobs:
-    build-push-deploy:
+    build:
         environment: production
         env:
             FRONTEND_IMAGE: ${{vars.REGISTRY}}/${{ vars.FRONTEND_IMAGE_NAME }}
@@ -61,5 +61,5 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
                   push: true
-                  tags: ${{ vars.FRONTEND_IMAGE_NAME }}:main-dev
+                  tags: ${{ env.FRONTEND_IMAGE }}:main-dev
                   labels: ${{ steps.meta.outputs.labels }}
