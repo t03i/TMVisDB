@@ -5,17 +5,13 @@ on:
         branches: ["main"]
         paths:
             - "backend/**"
-    pull_request:
-        branches: ["main"]
-        paths:
-            - "backend/**"
-env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.repository }}-backend
 
 jobs:
     build-push-deploy:
         runs-on: ubuntu-latest
+        environment: production
+        env:
+            BACKEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
         permissions:
             contents: read
             packages: write
@@ -30,7 +26,7 @@ jobs:
             - name: Log in to GitHub Container Registry
               uses: docker/login-action@v3
               with:
-                  registry: ${{ env.REGISTRY }}
+                  registry: ${{ vars.REGISTRY }}
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -38,7 +34,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  images: ${{ env.BACKEND_IMAGE }}
                   tags: |
                       type=ref,event=branch
                       type=semver,pattern={{version}}
@@ -68,6 +64,6 @@ jobs:
                   file: ./backend.Dockerfile
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
-                  push: ${{ github.event_name != 'pull_request' }}
+                  push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}

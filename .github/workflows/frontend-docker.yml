@@ -4,12 +4,11 @@ on:
     repository_dispatch:
         types: [build-docker-image]
 
-env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.repository }}-frontend
-
 jobs:
     build-push-deploy:
+        environment: production
+        env:
+            FRONTEND_IMAGE: ${{vars.REGISTRY}}/${{ vars.FRONTEND_IMAGE_NAME }}
         runs-on: ubuntu-latest
         permissions:
             contents: read
@@ -25,7 +24,7 @@ jobs:
             - name: Log in to GitHub Container Registry
               uses: docker/login-action@v3
               with:
-                  registry: ${{ env.REGISTRY }}
+                  registry: ${{ vars.REGISTRY }}
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,7 +32,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  images: ${{ env.FRONTEND_IMAGE }}
                   tags: |
                       type=ref,event=branch,suffix=-dev
                       type=semver,pattern={{version}},suffix=-dev
@@ -41,7 +40,7 @@ jobs:
                       type=semver,pattern={{major}}.{{minor}}.{{patch}},suffix=-dev
                       type=raw,value=latest
 
-            - name: Go Build Cache for Docker
+            - name: Build Cache for Docker
               uses: actions/cache@v4
               with:
                   path: pnpm-dev-cache
@@ -64,6 +63,6 @@ jobs:
                   target: dev
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
-                  push: ${{ github.event_name != 'pull_request' }}
+                  push: true
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}

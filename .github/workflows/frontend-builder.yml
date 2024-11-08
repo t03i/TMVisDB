@@ -6,10 +6,6 @@ on:
             - "frontend/**"
         branches: ["main"]
 
-env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.repository }}-frontend
-
 jobs:
     check-changes:
         runs-on: ubuntu-latest
@@ -44,6 +40,8 @@ jobs:
         needs: [check-changes]
         runs-on: ubuntu-latest
         environment: production
+        env:
+            FRONTEND_IMAGE: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
         permissions:
             contents: read
             deployments: write
@@ -60,10 +58,10 @@ jobs:
 
             - name: Build in Docker
               run: |
-                  docker pull ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest-dev
+                  docker pull ${{ env.FRONTEND_IMAGE }}:latest-dev
                   docker run --rm \
                   -v ${{ github.workspace }}/frontend:/app \
-                  ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest-dev \
+                  ${{ env.FRONTEND_IMAGE }}:latest-dev \
                   pnpm run build
 
             - name: Publish to Cloudflare Pages
