@@ -35,7 +35,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ env.BACKEND_IMAGE }}
+                  images: ${{ env.BACKEND_IMAGE }}:main
 
             - name: Go Build Cache for Docker
               uses: actions/cache@v4
@@ -62,5 +62,5 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
                   push: true
-                  tags: ${{ env.BACKEND_IMAGE }}:main
+                  tags: main
                   labels: ${{ steps.meta.outputs.labels }}

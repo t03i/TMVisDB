@@ -35,7 +35,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@v5
               with:
-                  images: ${{ env.FRONTEND_IMAGE }}
+                  images: ${{ env.FRONTEND_IMAGE }}:main-dev
 
             - name: Build Cache for Docker
               uses: actions/cache@v4
@@ -61,5 +61,5 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
                   push: true
-                  tags: ${{ env.FRONTEND_IMAGE }}:main-dev
+                  tags: main-dev
                   labels: ${{ steps.meta.outputs.labels }}
