@@ -107,11 +107,11 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: frontend-build
-                  path: dist/cloudflare/
+                  path: dist/
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
-                  files: dist/cloudflare/*
+                  files: dist/
                   tag_name: ${{ needs.determine-release.outputs.tag }}
                   body_path: CHANGELOG.md
 

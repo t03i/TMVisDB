@@ -42,11 +42,14 @@ jobs:
                       -e PUBLIC_PROJECT_NAME=${{ vars.PUBLIC_PROJECT_NAME }}
                   run: pnpm exec svelte-kit sync  && pnpm run build
 
+            - name: "Package build"
+              run: tar -cvf frontend-build.tar ${{ github.workspace }}/frontend/.svelte-kit/cloudflare/
+
             - name: Upload build artifact
               id: build-artifact
               uses: actions/upload-artifact@v4
               with:
                   include-hidden-files: true
                   name: frontend-build
-                  path: ${{ github.workspace }}/frontend/.svelte-kit/cloudflare/
+                  path: ${{ github.workspace }}/frontend-build.tar
                   retention-days: 1
