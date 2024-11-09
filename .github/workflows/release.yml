@@ -155,7 +155,9 @@ jobs:
         needs: [build-frontend, release-github]
         if: needs.determine-release.outputs.release_needed == 'true'
         runs-on: ubuntu-latest
-        environment: production
+        environment:
+            name: production
+            url: ${{ steps.deploy.outputs.deployment-url }}
         steps:
             - name: Download Build Artifacts
               uses: actions/download-artifact@v4
@@ -164,6 +166,7 @@ jobs:
                   path: dist/frontend/
             - name: Upload Build Artifacts
               uses: cloudflare/wrangler-action@v3
+              id: deploy
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
