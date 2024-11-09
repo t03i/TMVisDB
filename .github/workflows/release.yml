@@ -117,7 +117,7 @@ jobs:
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
-                  files: dist/
+                  files: dist/*
                   tag_name: ${{ needs.determine-release.outputs.tag }}
                   body_path: CHANGELOG.md
 
