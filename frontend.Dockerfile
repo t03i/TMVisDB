@@ -4,8 +4,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 RUN corepack enable
 WORKDIR /app
-RUN mkdir -p /pnpm/store /node_modules
-
 
 FROM base AS store
 RUN --mount=type=bind,source=frontend/package.json,target=package.json \
