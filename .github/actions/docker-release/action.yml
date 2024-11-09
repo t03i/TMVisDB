@@ -5,6 +5,9 @@ inputs:
   release_tag:
     description: "The new release tag (e.g. 1.2.3)"
     required: true
+  registry:
+    description: "The Docker registry to push the tags to"
+    required: true
   image_name:
     description: "The Docker image name to tag"
     required: true
@@ -15,8 +18,16 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Generate and apply tags
       shell: bash
+      env:
+        IMAGE: ${{ inputs.registry }}/${{ inputs.image_name }}
       run: |
         # Parse version components
         version="${{ inputs.release_tag }}"
@@ -24,11 +35,11 @@ runs:
         minor=$(echo $version | cut -d. -f2)
 
         # Pull the source image
-        docker pull ${{ inputs.image_name }}:${{ inputs.old_tag }}
+        docker pull $IMAGE:${{ inputs.old_tag }}
 
         # Create and push each tag
         for new_tag in "$version" "$major.$minor" "$major" "latest"; do
           echo "Creating tag: $new_tag"
-          docker tag ${{ inputs.image_name }}:${{ inputs.old_tag }} ${{ inputs.image_name }}:$new_tag
-          docker push ${{ inputs.image_name }}:$new_tag
+          docker tag $IMAGE:${{ inputs.old_tag }} $IMAGE:$new_tag
+          docker push $IMAGE:$new_tag
         done
