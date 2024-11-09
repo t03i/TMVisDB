@@ -113,11 +113,14 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: frontend-build
-                  path: dist/
+                  path: dist/frontend/
+            - name: Extract Build Artifacts
+              run: cd dist/ && tar -xvf frontend-build.tar -C frontend/
+
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
-                  files: dist/*
+                  files: dist/frontend-build.tar
                   tag_name: ${{ needs.determine-release.outputs.tag }}
                   body_path: CHANGELOG.md
 
@@ -155,10 +158,10 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: frontend-build
-                  path: dist/
+                  path: dist/frontend/
             - name: Upload Build Artifacts
               uses: cloudflare/wrangler-action@v3
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  command: pages deploy dist/ --project-name=tmvisdb
+                  command: pages deploy dist/frontend/ --project-name=tmvisdb
