@@ -59,23 +59,7 @@ jobs:
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
-                  echo "Checking for release and setting version in files"
-                  current_tag=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --print-tag --noop 2>/dev/null)
-                  last_tag=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --print-last-released-tag --noop 2>/dev/null)
-
-                  echo "DEBUG: Current tag would be: $current_tag"
-                  echo "DEBUG: Last released tag was: $last_tag"
-
-                  if [ "$current_tag" = "$last_tag" ]; then
-                    echo "DEBUG: No release needed - tags match"
-                    echo "release_needed=false" >> $GITHUB_OUTPUT
-                  else
-                    echo "DEBUG: Release is needed - tags differ"
-                    echo "release_needed=true" >> $GITHUB_OUTPUT
-                    # Run the actual version command to create the release
-                    uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --commit --push --tag --changelog --no-vcs-release
-                  fi
-                  echo "tag=$current_tag" >> $GITHUB_OUTPUT
+                  ./scripts/release-needed.sh
 
     build-frontend-docker:
         needs: determine-release
