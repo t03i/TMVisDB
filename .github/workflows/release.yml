@@ -60,20 +60,22 @@ jobs:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   echo "Checking for release and setting version in files"
-                  output=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --commit --push --tag --changelog --no-vcs-release)
-                  echo "DEBUG: Output is:"
-                  echo "$output"
-                  version=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml --noop version --print-last-released-tag 2>/dev/null)
+                  current_tag=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --print-tag --noop 2>/dev/null)
+                  last_tag=$(uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --print-last-released-tag --noop 2>/dev/null)
 
-                  # More robust check using case-insensitive grep and partial match
-                  if echo "$output" | grep -i "no release will be made\|no release necessary" > /dev/null; then
-                    echo "DEBUG: No release needed detected"
+                  echo "DEBUG: Current tag would be: $current_tag"
+                  echo "DEBUG: Last released tag was: $last_tag"
+
+                  if [ "$current_tag" = "$last_tag" ]; then
+                    echo "DEBUG: No release needed - tags match"
                     echo "release_needed=false" >> $GITHUB_OUTPUT
                   else
-                    echo "DEBUG: Release is needed"
+                    echo "DEBUG: Release is needed - tags differ"
                     echo "release_needed=true" >> $GITHUB_OUTPUT
+                    # Run the actual version command to create the release
+                    uv tool run --from python-semantic-release semantic-release -c releaserc.toml version --commit --push --tag --changelog --no-vcs-release
                   fi
-                  echo "tag=$version" >> $GITHUB_OUTPUT
+                  echo "tag=$current_tag" >> $GITHUB_OUTPUT
 
     build-frontend-docker:
         needs: determine-release
