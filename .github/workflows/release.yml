@@ -116,8 +116,8 @@ jobs:
                   path: dist/frontend/
             - name: Display structure of downloaded files
               run: ls -R dist/frontend/
-            - name: Extract Build Artifacts
-              run: cd dist/ && tar -xvf frontend-build.tar -C frontend/
+            - name: Create Frontend Build Archive
+              run: cd dist/ && tar -czf frontend-build.tar frontend/
 
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
