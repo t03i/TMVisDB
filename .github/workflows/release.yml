@@ -146,7 +146,7 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
     release-cloudflare:
-        needs: [release-frontend, release-github]
+        needs: [build-frontend, release-github]
         if: needs.determine-release.outputs.release_needed == 'true'
         runs-on: ubuntu-latest
         environment: production
