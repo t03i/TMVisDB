@@ -17,29 +17,21 @@ jobs:
     tag:
         runs-on: ubuntu-latest
         environment: production
-        outputs:
-            matrix: ${{ steps.meta-frontend.outputs.json }}
+
         steps:
-            - name: Extract Frontend metadata
-              id: meta-frontend
-              uses: docker/metadata-action@v5
-              with:
-                  images: ${{ inputs.image_name }}
-                  tags: |
-                      type=semver,pattern={{version}},value=${{ inputs.release_tag }}
-                      type=semver,pattern={{major}}.{{minor}},value=${{ inputs.release_tag }}
-                      type=semver,pattern={{major}},value=${{ inputs.release_tag }}
-                      type=raw,value=latest
-    retag:
-        runs-on: ubuntu-latest
-        needs: tag
-        strategy:
-            matrix:
-                tags: ${{ fromJson(needs.tag.outputs.matrix.tags) }}
-        steps:
-            - name: Pull Image
-              run: docker pull ${{ inputs.image_name }}:${{ inputs.old_tag }}
-            - name: Retag Image
-              run: docker tag ${{ inputs.image_name }}:${{ inputs.old_tag }} ${{ matrix.tags }}
-            - name: Push Image
-              run: docker push ${{ matrix.tags }}
+            - name: Generate and apply tags
+              run: |
+                  # Parse version components
+                  version="${{ inputs.release_tag }}"
+                  major=$(echo $version | cut -d. -f1)
+                  minor=$(echo $version | cut -d. -f2)
+
+                  # Pull the source image
+                  docker pull ${{ inputs.image_name }}:${{ inputs.old_tag }}
+
+                  # Create and push each tag
+                  for new_tag in "$version" "$major.$minor" "$major" "latest"; do
+                    echo "Creating tag: $new_tag"
+                    docker tag ${{ inputs.image_name }}:${{ inputs.old_tag }} ${{ inputs.image_name }}:$new_tag
+                    docker push ${{ inputs.image_name }}:$new_tag
+                  done
