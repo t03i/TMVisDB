@@ -125,6 +125,7 @@ jobs:
         runs-on: ubuntu-latest
         environment: production
         steps:
+            - uses: actions/checkout@v4
             - name: Create Frontend Docker Release
               uses: ./.github/actions/docker-release
               with:
