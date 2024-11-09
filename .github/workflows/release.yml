@@ -114,8 +114,7 @@ jobs:
               with:
                   name: frontend-build
                   path: dist/frontend/
-            - name: Display structure of downloaded files
-              run: ls -R dist/frontend/
+
             - name: Create Frontend Build Archive
               run: cd dist/ && tar -czf frontend-build.tar frontend/
 
