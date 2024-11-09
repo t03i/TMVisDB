@@ -121,24 +121,19 @@ jobs:
                   tag_name: ${{ needs.determine-release.outputs.tag }}
                   body_path: CHANGELOG.md
 
-    release-docker-backend:
+    release-docker:
+        runs-on: ubuntu-latest
         environment: production
-        needs: [release-github, build-backend-docker, determine-release]
-        if: needs.determine-release.outputs.release_needed == 'true'
-        uses: ./.github/workflows/docker-release.yml
-        secrets: inherit
-        with:
-            release_tag: ${{ needs.determine-release.outputs.tag }}
-            image_name: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
-            old_tag: main
-
-    release-docker-frontend:
-        environment: production
-        needs: [release-github, build-frontend-docker, determine-release]
-        if: needs.determine-release.outputs.release_needed == 'true'
-        secrets: inherit
-        uses: ./.github/workflows/docker-release.yml
-        with:
-            release_tag: ${{ needs.determine-release.outputs.tag }}
-            image_name: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
-            old_tag: main-dev
+        steps:
+            - name: Create Frontend Docker Release
+              uses: ./.github/actions/docker-release
+              with:
+                  release_tag: ${{ needs.determine-release.outputs.tag }}
+                  image_name: ${{ vars.REGISTRY }}/${{ vars.FRONTEND_IMAGE_NAME }}
+                  old_tag: main-dev
+            - name: Create Backend Docker Release
+              uses: ./.github/actions/docker-release
+              with:
+                  release_tag: ${{ needs.determine-release.outputs.tag }}
+                  image_name: ${{ vars.REGISTRY }}/${{ vars.BACKEND_IMAGE_NAME }}
+                  old_tag: main

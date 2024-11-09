@@ -1,0 +1,34 @@
+name: "Docker Release Tagger"
+description: "Creates and pushes multiple Docker tags for semantic versioning"
+
+inputs:
+  release_tag:
+    description: "The new release tag (e.g. 1.2.3)"
+    required: true
+  image_name:
+    description: "The Docker image name to tag"
+    required: true
+  old_tag:
+    description: "The existing tag to base the new tags on"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate and apply tags
+      shell: bash
+      run: |
+        # Parse version components
+        version="${{ inputs.release_tag }}"
+        major=$(echo $version | cut -d. -f1)
+        minor=$(echo $version | cut -d. -f2)
+
+        # Pull the source image
+        docker pull ${{ inputs.image_name }}:${{ inputs.old_tag }}
+
+        # Create and push each tag
+        for new_tag in "$version" "$major.$minor" "$major" "latest"; do
+          echo "Creating tag: $new_tag"
+          docker tag ${{ inputs.image_name }}:${{ inputs.old_tag }} ${{ inputs.image_name }}:$new_tag
+          docker push ${{ inputs.image_name }}:$new_tag
+        done
