@@ -122,6 +122,8 @@ jobs:
                   body_path: CHANGELOG.md
 
     release-docker:
+        needs: [release-github, determine-release]
+        if: needs.determine-release.outputs.release_needed == 'true'
         runs-on: ubuntu-latest
         environment: production
         steps:
