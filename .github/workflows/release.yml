@@ -122,6 +122,7 @@ jobs:
                   body_path: CHANGELOG.md
 
     release-docker-backend:
+        environment: production
         needs: [release-github, build-backend-docker, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
         uses: ./.github/workflows/docker-release.yml
@@ -132,6 +133,7 @@ jobs:
             old_tag: main
 
     release-docker-frontend:
+        environment: production
         needs: [release-github, build-frontend-docker, determine-release]
         if: needs.determine-release.outputs.release_needed == 'true'
         secrets: inherit
