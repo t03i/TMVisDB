@@ -14,6 +14,12 @@ inputs:
   old_tag:
     description: "The existing tag to base the new tags on"
     required: true
+  username:
+    description: "The username to use for the Docker registry"
+    required: true
+  password:
+    description: "The password to use for the Docker registry"
+    required: true
 
 runs:
   using: "composite"
@@ -22,8 +28,8 @@ runs:
       uses: docker/login-action@v3
       with:
         registry: ${{ inputs.registry }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
     - name: Generate and apply tags
       shell: bash
       env:
