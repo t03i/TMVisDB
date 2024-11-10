@@ -12,7 +12,13 @@ def custom_generate_unique_id(route: APIRoute):
 
 
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
-    sentry_sdk.init(dsn=str(settings.SENTRY_DSN), enable_tracing=True)
+    sentry_sdk.init(
+        dsn=str(settings.SENTRY_DSN),
+        traces_sample_rate=settings.SENTRY_TRACES_SAMPLE_RATE,
+        _experiments={
+            "continuous_profiling_auto_start": True,
+        },
+    )
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

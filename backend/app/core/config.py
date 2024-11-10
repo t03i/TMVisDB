@@ -47,6 +47,7 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str = "TMVis"
     SENTRY_DSN: HttpUrl | None = None
+    SENTRY_TRACES_SAMPLE_RATE: float = 1.0
 
     SQLITE_DATABASE_PATH: FilePath = Path("data/tmvis.db")
     SHARED_DIR_PATH: DirectoryPath = Path("shared/")
