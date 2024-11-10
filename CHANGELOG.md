@@ -1,6 +1,37 @@
 # CHANGELOG
 
 
+## v1.0.2 (2024-11-10)
+
+### Bug Fixes
+
+- Improve sentry integration ([#5](https://github.com/t03i/TMVisDB/pull/5),
+  [`0f21dda`](https://github.com/t03i/TMVisDB/commit/0f21dda1691ae317983052ae1160a9a302863420))
+
+### Build System
+
+- Fix push
+  ([`0895411`](https://github.com/t03i/TMVisDB/commit/08954119a0f0c903f43976ad6740151e6dfb3e64))
+
+- Update to manual push
+  ([`f593325`](https://github.com/t03i/TMVisDB/commit/f5933255f91b91b19a1da1da0e413afa06c23178))
+
+- Add ssh deploy key
+  ([`b686213`](https://github.com/t03i/TMVisDB/commit/b686213acbd7684efe0cfd0bb47f7d7c316cfa1e))
+
+- Improve psr error logging
+  ([`210553b`](https://github.com/t03i/TMVisDB/commit/210553b44df727c931ef8085c720fd6d5959e944))
+
+- Fix command true issue
+  ([`1d69749`](https://github.com/t03i/TMVisDB/commit/1d6974901f3f16d288cd04f95b3ae8c12e59ffa7))
+
+- Add production compose override ([#4](https://github.com/t03i/TMVisDB/pull/4),
+  [`2021bcb`](https://github.com/t03i/TMVisDB/commit/2021bcb934d97beaa0f4fa7eb3c2b76328364712))
+
+- Change script name
+  ([`72f772a`](https://github.com/t03i/TMVisDB/commit/72f772a11568c3e445330cb526bdbf980881453c))
+
+
 ## v1.0.1 (2024-11-10)
 
 ### Bug Fixes
