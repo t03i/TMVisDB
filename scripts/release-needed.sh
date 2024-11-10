@@ -22,7 +22,7 @@ run_semantic_release() {
 }
 
 echo "1️⃣ Getting current tag (would-be release)..."
-current_tag=$(run_semantic_release "version --print-tag")
+current_tag=$(run_semantic_release "version --changelog --commit --push --tag --no-vcs-release --print-tag")
 echo "   Current tag would be: '$current_tag'"
 
 echo "2️⃣ Getting last released tag..."
