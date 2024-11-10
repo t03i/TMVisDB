@@ -6,7 +6,7 @@
 # Make script exit on any error
 set -e
 
-echo "🔍 Debug Script for Semantic Release Check"
+echo "🔍 Semantic Release Check"
 echo "----------------------------------------"
 
 # Function to run semantic-release command with common parameters
