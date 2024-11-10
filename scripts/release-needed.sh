@@ -22,7 +22,7 @@ run_semantic_release() {
 }
 
 echo "1️⃣ Getting current tag (would-be release)..."
-current_tag=$(run_semantic_release "version --changelog --commit --push --tag --no-vcs-release --print-tag")
+current_tag=$(run_semantic_release "version --no-vcs-release --print-tag "true")
 echo "   Current tag would be: '$current_tag'"
 
 echo "2️⃣ Getting last released tag..."
@@ -37,6 +37,8 @@ if [ "$current_tag" = "$last_tag" ]; then
     echo "tag=$last_tag" >> $GITHUB_OUTPUT
 else
     echo "🚀 Result: Release is needed - tags differ"
+    echo "📝 Creating changelog and tag..."
+    run_semantic_release "version --commit --push --tag --changelog --no-vcs-release"
     release_needed="true"
     echo "release_needed=true" >> $GITHUB_OUTPUT
     echo "tag=$current_tag" >> $GITHUB_OUTPUT
