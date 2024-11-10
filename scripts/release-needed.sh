@@ -44,7 +44,7 @@ else
     echo "🚀 Result: Release is needed - tags differ"
     echo "📝 Creating changelog and tag..."
     run_semantic_release "version --commit --no-push --tag --changelog --no-vcs-release"
-    git push --follow-tags
+    git push origin HEAD:${GITHUB_REF_NAME} --follow-tags
     release_needed="true"
     echo "release_needed=true" >> $GITHUB_OUTPUT
     echo "tag=$current_tag" >> $GITHUB_OUTPUT
