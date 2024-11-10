@@ -12,7 +12,12 @@ echo "----------------------------------------"
 # Function to run semantic-release command with common parameters
 run_semantic_release() {
     local args=$1
-    uv tool run --from python-semantic-release semantic-release --noop -c releaserc.toml $args 2>/dev/null || true
+    local noop=${2:-}
+    local cmd="uv tool run --from python-semantic-release semantic-release -c releaserc.toml $args"
+    if [ -n "$noop" ]; then
+        cmd="$cmd --noop"
+    fi
+    $cmd 2>/dev/null || true
 }
 
 echo "1️⃣ Getting current tag (would-be release)..."
@@ -20,7 +25,7 @@ current_tag=$(run_semantic_release "version --print-tag")
 echo "   Current tag would be: '$current_tag'"
 
 echo "2️⃣ Getting last released tag..."
-last_tag=$(run_semantic_release "version --print-last-released-tag")
+last_tag=$(run_semantic_release "version --print-last-released-tag" "true")
 echo "   Last released tag was: '$last_tag'"
 
 echo "----------------------------------------"
