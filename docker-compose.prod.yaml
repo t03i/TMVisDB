@@ -1,0 +1,15 @@
+services:
+    watchtower:
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        command: --interval 300 --cleanup --label-enable
+        restart: always
+        networks:
+            - caddy
+        labels:
+            - "com.centurylinklabs.watchtower.enable=true"
+
+    backend:
+        labels:
+            - "com.centurylinklabs.watchtower.enable=true"

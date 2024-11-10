@@ -1,49 +1,61 @@
 services:
-  caddy:
-    image: lucaslorentz/caddy-docker-proxy:2.9
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    environment:
-      - CADDY_INGRESS_NETWORKS=caddy-public
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - caddy-data:/data
-      - caddy-config:/config
-    networks:
-      - caddy
+    caddy:
+        image: lucaslorentz/caddy-docker-proxy:2.9
+        ports:
+            - 80:80
+            - 443:443
+        restart: always
+        environment:
+            - CADDY_INGRESS_NETWORKS=caddy
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - caddy-data:/data
+            - caddy-config:/config
+        networks:
+            - caddy
+        labels:
+            caddy_0.email: ${CERT_EMAIL}
 
-  backend:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
-    restart: always
-    networks:
-      - caddy
-    command: ["fastapi", "run", "--host", "0.0.0.0", "app/main.py", "--proxy-headers","--port", "8000"]
-    env_file:
-      - .env
-    environment:
-      - DOMAIN=${API_DOMAIN}
-      - ENVIRONMENT=${NODE_ENV}
-      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
-      - SENTRY_DSN=${SENTRY_DSN}
-      - SQLITE_DATABASE_PATH=${SQLITE_DATABASE_PATH}
-    volumes:
-      - ./backend/data/tmvis.db:/app/data/tmvis.db:ro
-    build:
-      context: .
-      dockerfile: backend.Dockerfile
-      args:
-        INSTALL_DEV: false
-    platform: linux/amd64
-    labels:
-      caddy_0: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
-      caddy_0.reverse_proxy_0: "backend:8000"
+    backend:
+        image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
+        restart: always
+        networks:
+            - caddy
+        command:
+            [
+                "fastapi",
+                "run",
+                "--host",
+                "0.0.0.0",
+                "app/main.py",
+                "--proxy-headers",
+                "--port",
+                "8000",
+            ]
+        env_file:
+            - .env
+        environment:
+            - DOMAIN=${API_DOMAIN}
+            - ENVIRONMENT=${NODE_ENV}
+            - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+            - SENTRY_DSN=${SENTRY_DSN}
+            - SQLITE_DATABASE_PATH=${SQLITE_DATABASE_PATH}
+        volumes:
+            - ./backend/data/tmvis.db:/app/data/tmvis.db:ro
+        build:
+            context: .
+            dockerfile: backend.Dockerfile
+            args:
+                INSTALL_DEV: false
+        platform: linux/amd64
+        labels:
+            caddy_0: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
+            caddy_0.reverse_proxy_0: "{{upstreams 8000}}"
 
 volumes:
-  caddy-data:
-  caddy-config:
+    caddy-data:
+    caddy-config:
 
 networks:
-  caddy:
-    external: false
+    caddy:
+        external: false
