@@ -8,7 +8,7 @@ dependencies = [
     "fastapi[standard]>=0.114.0",
     "pydantic-settings>=2.4.0",
     "pydantic>=2.9.0",
-    "sentry-sdk>=2.14.0",
+    "sentry-sdk[fastapi]>=2.14.0",
     "sqlmodel>=0.0.22",
 ]
 
