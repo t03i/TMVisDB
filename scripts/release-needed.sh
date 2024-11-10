@@ -18,7 +18,7 @@ run_semantic_release() {
         cmd="$cmd --noop"
     fi
     cmd="$cmd $args"
-    $cmd 2>/dev/null || true
+    $cmd 2>/dev/null
 }
 
 echo "1️⃣ Getting current tag (would-be release)..."
