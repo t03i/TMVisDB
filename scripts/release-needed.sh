@@ -43,7 +43,8 @@ if [ "$current_tag" = "$last_tag" ]; then
 else
     echo "🚀 Result: Release is needed - tags differ"
     echo "📝 Creating changelog and tag..."
-    run_semantic_release "version --commit --push --tag --changelog --no-vcs-release"
+    run_semantic_release "version --commit --no-push --tag --changelog --no-vcs-release"
+    git push --follow-tags
     release_needed="true"
     echo "release_needed=true" >> $GITHUB_OUTPUT
     echo "tag=$current_tag" >> $GITHUB_OUTPUT
