@@ -13,10 +13,11 @@ echo "----------------------------------------"
 run_semantic_release() {
     local args=$1
     local noop=${2:-}
-    local cmd="uv tool run --from python-semantic-release semantic-release -c releaserc.toml $args"
+    local cmd="uv tool run --from python-semantic-release semantic-release -c releaserc.toml"
     if [ -n "$noop" ]; then
         cmd="$cmd --noop"
     fi
+    cmd="$cmd version $args"
     $cmd 2>/dev/null || true
 }
 
