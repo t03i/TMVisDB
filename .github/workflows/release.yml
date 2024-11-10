@@ -12,7 +12,7 @@ permissions:
 jobs:
     determine-release:
         runs-on: ubuntu-latest
-
+        environment: production
         outputs:
             release_needed: ${{ steps.semantic_release.outputs.release_needed }}
             tag: ${{ steps.semantic_release.outputs.tag }}
@@ -20,11 +20,13 @@ jobs:
             UV_TOOL_DIR: /tmp/.uv-tool
 
         steps:
+            # https://github.com/orgs/community/discussions/25305#discussioncomment-10728028
             - name: Checkout Repository
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
                   ref: ${{ github.sha }}
+                  ssh-key: ${{ secrets.GH_DEPLOY_SSH_KEY }}
 
             - name: Force correct release branch
               run: |
@@ -58,6 +60,7 @@ jobs:
               id: semantic_release
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
               run: |
                   ./scripts/release-needed.sh
 
