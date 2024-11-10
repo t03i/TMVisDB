@@ -17,7 +17,7 @@ run_semantic_release() {
     if [ -n "$noop" ]; then
         cmd="$cmd --noop"
     fi
-    cmd="$cmd version $args"
+    cmd="$cmd $args"
     $cmd 2>/dev/null || true
 }
 
