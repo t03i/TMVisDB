@@ -12,4 +12,19 @@ services:
 
     backend:
         labels:
-            - "com.centurylinklabs.watchtower.enable=true"
+          com.centurylinklabs.watchtower.enable: "true"
+          caddy.log: "{}"
+          caddy.log.level: error
+          caddy.log.output: file /var/log/caddy.log
+          caddy.log.output.roll_size: 10MiB
+          caddy.log.output.roll_keep: 10
+          caddy.log.output.roll_keep_for: 720h
+        volumes:
+            - tmvis_data:/app/data
+
+volumes:
+    tmvis_data:
+      driver_opts:
+        type: "nfs"
+        o: "addr=$NAS_ADDR,nolock,soft,rw,acl,nfsvers=3"
+        device: ":$NAS_PATH"

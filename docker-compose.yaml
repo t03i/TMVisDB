@@ -11,6 +11,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - caddy-data:/data
             - caddy-config:/config
+            - caddy-log:/var/log
         networks:
             - caddy
         labels:
