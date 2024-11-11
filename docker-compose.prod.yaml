@@ -21,7 +21,7 @@ services:
           caddy_0.log.output.roll_size: 10MiB
           caddy_0.log.output.roll_keep: 10
           caddy_0.log.output.roll_keep_for: 720h
-        volumes:
+        volumes: !override
             - tmvis_data:/app/data
 
 volumes:

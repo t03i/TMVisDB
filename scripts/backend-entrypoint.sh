@@ -12,11 +12,11 @@ fi
 
 echo "Starting with UID: $PUID, GID: $PGID"
 
-groupadd -g "$PGID" usergroup
-useradd -u "$PUID" -g "$PGID" -m -s /bin/bash user
+getent group usergroup >/dev/null 2>&1 || groupadd -g "$PGID" usergroup
+getent passwd user >/dev/null 2>&1 || useradd -u "$PUID" -g "$PGID" -m -s /bin/bash user
 
 # Change ownership of the volume
 chown -R user:usergroup /app
 
 # Execute the command as user
-exec gosu user "sh -c '$@'"
+exec gosu user "$@"

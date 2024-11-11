@@ -13,7 +13,7 @@ services:
           target: /app/app/
         - action: rebuild
           path: backend/pyproject.toml
-    command: "fastapi DEV --host 0.0.0.0 --port 8000 app/main.py"
+    command: ["fastapi", "dev", "--host", "0.0.0.0", "--port", "8000", "app/main.py"]
     labels:
       caddy_0: http://localhost
       caddy_0.@match.path: /api /api/* /docs /docs/* /redoc /redoc/*
