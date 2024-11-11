@@ -22,6 +22,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Copy the project into the image
 ADD backend/ /app/
 ADD shared/ /app/shared
+RUN mkdir -p /app/data
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
