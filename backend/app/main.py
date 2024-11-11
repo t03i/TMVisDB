@@ -1,3 +1,5 @@
+import logging
+
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
@@ -20,6 +22,8 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
         },
     )
 
+logging.getLogger("uvicorn.access").setLevel(level=logging.WARNING)
+logging.getLogger("uvicorn.error").setLevel(level=logging.WARNING)
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",

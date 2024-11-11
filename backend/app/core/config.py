@@ -3,6 +3,7 @@
 
 from typing import Annotated, Any, Literal
 from pathlib import Path
+import logging
 from pydantic import (
     AnyUrl,
     BeforeValidator,
@@ -33,8 +34,15 @@ class Settings(BaseSettings):
     MIN_PROTEIN_LENGTH: int = 16
     MAX_PROTEIN_LENGTH: int = 5500
 
-    @computed_field  # type: ignore[prop-decorator]
+    LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+
     @property
+    @computed_field  # type: ignore[prop-decorator]
+    def log_level(self) -> int:
+        return getattr(logging, self.LOG_LEVEL)
+
+    @property
+    @computed_field  # type: ignore[prop-decorator]
     def server_host(self) -> str:
         # Use HTTPS for anything other than local development
         if self.ENVIRONMENT == "local":
@@ -52,7 +60,6 @@ class Settings(BaseSettings):
     SQLITE_DATABASE_PATH: FilePath = Path("data/tmvis.db")
     SHARED_DIR_PATH: DirectoryPath = Path("shared/")
 
-    @computed_field  # type: ignore[prop-decorator]
     @property
     def SQL_ALCHEMY_DB_URL(self) -> Annotated[str, AnyUrl]:
         return f"sqlite:///{self.SQLITE_DATABASE_PATH}"
