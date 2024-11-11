@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.4 (2024-11-11)
+
+### Bug Fixes
+
+- **backend**: Add data path
+  ([`fba9486`](https://github.com/t03i/TMVisDB/commit/fba9486f276c95db2ca2a47aa716d6be97ee4ee0))
+
+
 ## v1.0.3 (2024-11-11)
 
 ### Bug Fixes
