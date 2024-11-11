@@ -16,7 +16,7 @@ groupadd -g "$PGID" usergroup
 useradd -u "$PUID" -g "$PGID" -m -s /bin/bash user
 
 # Change ownership of the volume
-chown -R user:usergroup /project
+chown -R user:usergroup /app
 
 # Execute the command as user
 exec gosu user "sh -c '$@'"
