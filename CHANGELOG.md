@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.6 (2024-11-11)
+
+### Bug Fixes
+
+- **backend**: Hotfix for compose issues
+  ([`4e38ce0`](https://github.com/t03i/TMVisDB/commit/4e38ce06da461a04f58240b935814f0d732bc4a9))
+
+
 ## v1.0.5 (2024-11-11)
 
 ### Bug Fixes
