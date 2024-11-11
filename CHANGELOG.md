@@ -1,9 +1,15 @@
 # CHANGELOG
 
 
+## v1.0.8 (2024-11-11)
+
+
 ## v1.0.7 (2024-11-11)
 
 ### Bug Fixes
+
+- Hotfix wrong path
+  ([`b7da4e1`](https://github.com/t03i/TMVisDB/commit/b7da4e10e5cb1d1db19ae30ea6d164684c4ee66c))
 
 - Update build deps
   ([`2cc1bc4`](https://github.com/t03i/TMVisDB/commit/2cc1bc45696e870711f1d49e49f0f7350318e6b9))
