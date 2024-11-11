@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.3 (2024-11-11)
+
+### Bug Fixes
+
+- **backend**: Force data directory
+  ([`86bb193`](https://github.com/t03i/TMVisDB/commit/86bb1931327c4833d334044a684a992859e04f71))
+
+
 ## v1.0.2 (2024-11-10)
 
 ### Bug Fixes
@@ -175,37 +183,37 @@
 
 ### Bug Fixes
 
-- Resolve some ts issues
+- **frontend**: Resolve some ts issues
   ([`ddaa765`](https://github.com/t03i/TMVisDB/commit/ddaa7653e092ab6ac561616eaf9125db59911ab2))
 
-- Remove obsolete variable
+- **build**: Remove obsolete variable
   ([`df6492b`](https://github.com/t03i/TMVisDB/commit/df6492b0b769e852fa255c040cb7fe28b2e663d5))
 
 - Image name
   ([`c27a3d3`](https://github.com/t03i/TMVisDB/commit/c27a3d36fc16bd3156c6e3a92f39e04c094e6ad2))
 
-- Update z-index to proper tailwind value
+- **frontend**: Update z-index to proper tailwind value
   ([`6eea305`](https://github.com/t03i/TMVisDB/commit/6eea3054a8d16bb5f2aa5954a801f38dc14c0162))
 
-- Css var name generation
+- **frontend**: Css var name generation
   ([`7e68cdc`](https://github.com/t03i/TMVisDB/commit/7e68cdc4ea945854d5890b76384715bac13427a2))
 
-- Fix linting issues
+- **backend**: Fix linting issues
   ([`8d39ac7`](https://github.com/t03i/TMVisDB/commit/8d39ac772c1fa9c2aed537cd0f99fe91e175d0ab))
 
-- Fix obsolete logging and functions
+- **frontend**: Fix obsolete logging and functions
   ([`e39e171`](https://github.com/t03i/TMVisDB/commit/e39e1713fe39791726c97aabb9ea30c65baacfdb))
 
-- Remove import bugs
+- **frontend**: Remove import bugs
   ([`6d9aad4`](https://github.com/t03i/TMVisDB/commit/6d9aad472af703b60ab4734bfb8582ee37f581aa))
 
-- Add missing titles
+- **frontend**: Add missing titles
   ([`baedff4`](https://github.com/t03i/TMVisDB/commit/baedff4d2cca50c133d90381c95fb316cd61d323))
 
-- Correct issue templates
+- **frontend**: Correct issue templates
   ([`fa6f96a`](https://github.com/t03i/TMVisDB/commit/fa6f96a3d1d1d313e6e54fbd771b4d0e679f2b7a))
 
-- Correct TMvisDB header
+- **(frontend)**: Correct TMvisDB header
   ([`0ff2208`](https://github.com/t03i/TMVisDB/commit/0ff220859c05d703b200756242c2a00c00d26c16))
 
 - Correct error handling for missing db connection
@@ -272,25 +280,25 @@ https://stackoverflow.com/a/77157818
 - Create automatic release pipeline
   ([`1fa874b`](https://github.com/t03i/TMVisDB/commit/1fa874b83757fce3de4075bb7f4cf61057f54ca5))
 
-- Improve layer caching
+- **frontend**: Improve layer caching
   ([`3925cd1`](https://github.com/t03i/TMVisDB/commit/3925cd1af117ac6033a56bffd6bab4e976f17586))
 
-- Update docker compose to work locally
+- **frontend**: Update docker compose to work locally
   ([`061044d`](https://github.com/t03i/TMVisDB/commit/061044da2c180076c943301d77ac2cdc4bb58e78))
 
-- Add frontend docker
+- **frontend**: Add frontend docker
   ([`457087e`](https://github.com/t03i/TMVisDB/commit/457087e8da68ca4fe196bac836c0d51d0be4f314))
 
-- Add frontend docker
+- **frontend**: Add frontend docker
   ([`3afec3d`](https://github.com/t03i/TMVisDB/commit/3afec3d069e8873d01dce5b9419b0bc35d78bff5))
 
-- Update dependencies
+- **frontend**: Update dependencies
   ([`73437a0`](https://github.com/t03i/TMVisDB/commit/73437a0fa7b3b280200f1f1346e9e69e58ab8129))
 
-- Add package manager
+- **frontend**: Add package manager
   ([`76592bf`](https://github.com/t03i/TMVisDB/commit/76592bfae29ddfa4f668c4fa4ed695f45730e98d))
 
-- Move to caddy proxy
+- **backend**: Move to caddy proxy
   ([`599f011`](https://github.com/t03i/TMVisDB/commit/599f01189c1e0a23a05e64237b9c1816425686a6))
 
 - Document markdown fix
@@ -302,7 +310,7 @@ https://stackoverflow.com/a/77157818
 - Add multi-root workspace
   ([`7d45ad9`](https://github.com/t03i/TMVisDB/commit/7d45ad9340e4e6e0e1e6bc797ada3ef5bb795ea1))
 
-- Remove svelte-query-devtools
+- **frontend**: Remove svelte-query-devtools
   ([`01bd48b`](https://github.com/t03i/TMVisDB/commit/01bd48b80084dd4aaa2a06645218dd3f27fa60c8))
 
 Removed query tools from production
@@ -341,7 +349,7 @@ Removed query tools from production
 - Add production environment to frontend builder
   ([`be3daef`](https://github.com/t03i/TMVisDB/commit/be3daef6a5cfda44cbb4da4c8b413be12c5ca240))
 
-- Add basic docker workflow
+- **frontend**: Add basic docker workflow
   ([`99db8dd`](https://github.com/t03i/TMVisDB/commit/99db8ddb6dedb2b3c76c19d89561cb35d3be86b1))
 
 - Remove .env file
@@ -376,7 +384,7 @@ Removed query tools from production
 - Add basic README and LICENSE
   ([`46d74e5`](https://github.com/t03i/TMVisDB/commit/46d74e537be37d94b270994b9b5e014bfaf0d40a))
 
-- Remove hardcoded name from landing page
+- **frontend**: Remove hardcoded name from landing page
   ([`a1f85ef`](https://github.com/t03i/TMVisDB/commit/a1f85ef165ed1c913ef39a67f50146f2119b72e9))
 
 - Fix CoC linting
@@ -402,7 +410,7 @@ Removed query tools from production
 
 ### Features
 
-- Add structure color visualization ([#3](https://github.com/t03i/TMVisDB/pull/3),
+- **frontend**: Add structure color visualization ([#3](https://github.com/t03i/TMVisDB/pull/3),
   [`0d6eddd`](https://github.com/t03i/TMVisDB/commit/0d6eddd0231dcd393ddf7e3452476102ed659e95))
 
 * Add plugin check to readiness
@@ -437,31 +445,31 @@ General improvements to event handling for viewer loading
 
 * Dependency update
 
-- Add overview image
+- **frontend**: Add overview image
   ([`d3afe3c`](https://github.com/t03i/TMVisDB/commit/d3afe3cdb1441473e216f5ae0b7adc45c21a157a))
 
-- Add reference component and citation page
+- **frontend**: Add reference component and citation page
   ([`b0b1118`](https://github.com/t03i/TMVisDB/commit/b0b111844e58d175da4e3bfbcd6a4df741bd998e))
 
-- Add reference component
+- **frontend**: Add reference component
   ([`0c496a6`](https://github.com/t03i/TMVisDB/commit/0c496a62c88b0b847d59cd781aca735c76057147))
 
-- Add custom privacy notice
+- **frontend**: Add custom privacy notice
   ([`f0d5b39`](https://github.com/t03i/TMVisDB/commit/f0d5b39aa0640e25368dcffe26760bf15cf38d08))
 
-- Improve maintenance styling
+- **frontend**: Improve maintenance styling
   ([`f583fb8`](https://github.com/t03i/TMVisDB/commit/f583fb854fb1cbae7ad9ba5292aba325b638ce35))
 
-- Add bug label
+- **frontend**: Add bug label
   ([`3dd5365`](https://github.com/t03i/TMVisDB/commit/3dd536535a225bf6b9c45702dc18cc68c2934528))
 
-- Add missing lables for entity issues
+- **frontent**: Add missing lables for entity issues
   ([`f076932`](https://github.com/t03i/TMVisDB/commit/f076932809af89202a4809ea6b7fb9e081eabf98))
 
-- Add better GitHub support links
+- **frontend**: Add better GitHub support links
   ([`2cc41e2`](https://github.com/t03i/TMVisDB/commit/2cc41e25364b1a2aaa1fb44a04d0fcee850ee8aa))
 
-- Add maintenance mode
+- **frontend**: Add maintenance mode
   ([`1931e71`](https://github.com/t03i/TMVisDB/commit/1931e71867c8a3a4aaae11a31f305e875da5fd3c))
 
 - Add favicon and page titles
@@ -469,7 +477,7 @@ General improvements to event handling for viewer loading
 
 ### Performance Improvements
 
-- Dynamically load citation plugin to avoid large bundle
+- **frontend**: Dynamically load citation plugin to avoid large bundle
   ([`b08f285`](https://github.com/t03i/TMVisDB/commit/b08f285c46d3a3d0f2eb65d2fa0602a2c79e6744))
 
 - Change ro config to be more compatible with alembic
@@ -483,11 +491,11 @@ General improvements to event handling for viewer loading
 
 ### Refactoring
 
-- Remove maintenance message
+- **frontend**: Remove maintenance message
   ([`a2f422a`](https://github.com/t03i/TMVisDB/commit/a2f422ad4bb2e6fada3d01da809d10029d7f35ec))
 
-- Unify icons
+- **frontend**: Unify icons
   ([`4a73095`](https://github.com/t03i/TMVisDB/commit/4a7309590117e649c7b33951a1df4221807eb3c7))
 
-- Improve layout maintainability
+- **frontend**: Improve layout maintainability
   ([`1e67048`](https://github.com/t03i/TMVisDB/commit/1e670487ab56b310b663dac0487f560a742173b8))
