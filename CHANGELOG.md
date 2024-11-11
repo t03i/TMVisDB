@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.5 (2024-11-11)
+
+### Bug Fixes
+
+- Update production config
+  ([`60fe3ea`](https://github.com/t03i/TMVisDB/commit/60fe3ea58184a46bd47ba9882da449cdbbbdc863))
+
+
 ## v1.0.4 (2024-11-11)
 
 ### Bug Fixes
