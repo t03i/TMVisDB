@@ -1,9 +1,15 @@
 # CHANGELOG
 
 
+## v1.0.10 (2024-11-11)
+
+
 ## v1.0.9 (2024-11-11)
 
 ### Bug Fixes
+
+- **backend**: Move data to root
+  ([`53ae367`](https://github.com/t03i/TMVisDB/commit/53ae367bd388905e27461720ff8ad54b55bbe64b))
 
 - **backend**: Remove shell wrapping
   ([`3e42296`](https://github.com/t03i/TMVisDB/commit/3e42296e518b55519f83f4bb8baf1ab09a8e079e))
