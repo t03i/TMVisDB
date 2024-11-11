@@ -15,12 +15,12 @@ services:
     backend:
         labels:
           com.centurylinklabs.watchtower.enable: "true"
-          caddy.log: "{}"
-          caddy.log.level: error
-          caddy.log.output: file /var/log/caddy.log
-          caddy.log.output.roll_size: 10MiB
-          caddy.log.output.roll_keep: 10
-          caddy.log.output.roll_keep_for: 720h
+          caddy_0.log: "{}"
+          caddy_0.log.level: error
+          caddy_0.log.output: file /var/log/caddy.log
+          caddy_0.log.output.roll_size: 10MiB
+          caddy_0.log.output.roll_keep: 10
+          caddy_0.log.output.roll_keep_for: 720h
         volumes:
             - tmvis_data:/app/data
 

@@ -3,6 +3,14 @@
 FROM python:3.12-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
+# Add basic dependencies
+ARG TINI_VERSION="v0.19.0"
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gosu; \
+    rm -rf /var/lib/apt/lists/*; \
+    chmod +x /tini;
+
 # Configure UV
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
@@ -28,3 +36,9 @@ RUN mkdir -p /app/data
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=backend/uv.lock,target=uv.lock \
     bash -c "if [ $INSTALL_DEV == 'true' ] ; then uv sync --frozen ; else uv sync --frozen --no-dev --no-editable; fi"
+
+# Add entrypoint script
+COPY scripts/backend-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/tini", "--", "/entrypoint.sh"]
