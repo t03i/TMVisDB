@@ -9,7 +9,9 @@ services:
             - caddy
         labels:
             - "com.centurylinklabs.watchtower.enable=true"
-
+    caddy:
+        volumes:
+            - caddy-log:/var/log
     backend:
         labels:
           com.centurylinklabs.watchtower.enable: "true"
@@ -27,4 +29,5 @@ volumes:
       driver_opts:
         type: "nfs"
         o: "addr=$NAS_ADDR,nolock,soft,rw,acl,nfsvers=3"
-        device: ":$NAS_PATH"
+        device: "$NAS_PATH"
+    caddy-log:
