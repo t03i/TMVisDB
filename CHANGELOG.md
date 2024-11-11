@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.9 (2024-11-11)
+
+### Bug Fixes
+
+- **backend**: Remove shell wrapping
+  ([`3e42296`](https://github.com/t03i/TMVisDB/commit/3e42296e518b55519f83f4bb8baf1ab09a8e079e))
+
+
 ## v1.0.8 (2024-11-11)
 
 
