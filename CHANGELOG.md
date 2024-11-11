@@ -1,7 +1,20 @@
 # CHANGELOG
 
 
+## v1.1.0 (2024-11-11)
+
+
 ## v1.0.10 (2024-11-11)
+
+### Build System
+
+- Remove erroneous network name
+  ([`b54c42b`](https://github.com/t03i/TMVisDB/commit/b54c42b7db665422bce672347b5155340b23656a))
+
+### Features
+
+- Add log-level
+  ([`c78c125`](https://github.com/t03i/TMVisDB/commit/c78c125e16012dd30f0be0b8e6eea0355cc3e428))
 
 
 ## v1.0.9 (2024-11-11)
