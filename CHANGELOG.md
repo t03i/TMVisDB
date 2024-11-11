@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.0.7 (2024-11-11)
+
+### Bug Fixes
+
+- Update build deps
+  ([`2cc1bc4`](https://github.com/t03i/TMVisDB/commit/2cc1bc45696e870711f1d49e49f0f7350318e6b9))
+
+
 ## v1.0.6 (2024-11-11)
 
 ### Bug Fixes
