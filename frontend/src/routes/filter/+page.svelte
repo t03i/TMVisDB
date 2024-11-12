@@ -36,13 +36,13 @@
   let:isLoading
   let:error
 >
-  <div class="card">
+  <div class="card m-3 p-2">
     <FilterFormLoading {isLoading}>
       <FilterForm />
     </FilterFormLoading>
   </div>
 
-  <div class="card p-2">
+  <div class="card p-2 m-3">
     {#if isSuccessful}
       <h3 class="h3 mb-1 text-center">
         {params?.search_for ? "Filtered Proteins" : "Random Proteins"}
