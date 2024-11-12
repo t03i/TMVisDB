@@ -12,7 +12,7 @@ export const proteinTableHeaders: TableHeader<ProteinInfo>[] = [
     title: 'UniprotKB ID',
     sortable: true,
     filterable: true,
-    format: (row) => `<a class="anchor" href="${uniprot_entry_url(row.uniprot_accession)}">${row.uniprot_id}</a>`
+    format: (row) => `<span class='font-semibold'>${row.uniprot_id}</span>`
   },
   {
     key: 'seq_length',
