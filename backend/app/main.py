@@ -20,6 +20,7 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
         _experiments={
             "continuous_profiling_auto_start": True,
         },
+        ignore_errors=["CORSError", "cors"],
     )
 
 logging.getLogger("uvicorn.access").setLevel(level=logging.WARNING)
