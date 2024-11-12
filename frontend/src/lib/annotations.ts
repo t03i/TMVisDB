@@ -131,6 +131,7 @@ function annotationToNightingaleFeature(
       },
     ],
     tooltipContent: `${labelDescription}`,
+    sourceDB,
   };
 }
 
