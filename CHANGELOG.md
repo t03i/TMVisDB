@@ -1,7 +1,27 @@
 # CHANGELOG
 
 
+## v1.2.1 (2024-11-13)
+
+### Bug Fixes
+
+- Update environment for tagging
+  ([`2e5e57b`](https://github.com/t03i/TMVisDB/commit/2e5e57b929f8613509ce05c549f2769254002d92))
+
+### Build System
+
+- Restructure tagging to improve releasing.
+  ([`1537c76`](https://github.com/t03i/TMVisDB/commit/1537c7680fccd3c2555d2ea40c6850b57443e92e))
+
+Now tagging happens first and only then triggers the release.
+
+
 ## v1.2.0 (2024-11-13)
+
+### Code Style
+
+- Change pLDDT view name
+  ([`16b1413`](https://github.com/t03i/TMVisDB/commit/16b14136a5b72fdb9d823fac231f8cb128a73c25))
 
 ### Features
 
