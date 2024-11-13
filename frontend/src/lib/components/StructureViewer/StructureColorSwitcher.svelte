@@ -42,6 +42,7 @@
       value={activeSourceDB ?? ""}
       on:change={handleSelectionChange}
     >
+      <option value='alphafold'>pLDDT View</option>
       {#each availableSourceDBs as sourceDB}
         <option value={sourceDB}>{KEY_TO_DISPLAY_NAME[sourceDB]}</option>
       {/each}
