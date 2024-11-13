@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v1.2.0 (2024-11-13)
+
+### Features
+
+- **frontend**: Add pLDDT view
+  ([`23e0d01`](https://github.com/t03i/TMVisDB/commit/23e0d01655c43099c588a416a0b6ca2258eb5a8a))
+
+- **frontend**: Add annotation tooltip
+  ([`cc536d8`](https://github.com/t03i/TMVisDB/commit/cc536d8f56adde54d1645dfaf05193472e276514))
+
+
 ## v1.1.1 (2024-11-13)
 
 ### Bug Fixes

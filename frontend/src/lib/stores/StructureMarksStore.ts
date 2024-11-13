@@ -55,12 +55,13 @@ export interface LabeledSelectionQuery extends StructureSelectionQuery {
   label: string;
 }
 
+export type AnnotationProvider = SourceDB | 'alphafold';
 
 export class StructureViewerState {
   private highlight: Writable<HighlightState | null>;
   private selection: Writable<SelectionState | null>;
   private annotations: Readable<StructureSelectionData | null>;
-  private sourceDB: Writable<SourceDB | null>;
+  private annotationProvider: Writable<AnnotationProvider | null>;
   private activeAnnotations: Readable<LabeledSelectionQuery[] | null>;
 
   private annotationStyle: AnnotationStyleManager;
@@ -74,16 +75,19 @@ export class StructureViewerState {
     this.annotationStyle = annotationStyle;
     this.highlight = writable(null);
     this.selection = writable(null);
-    this.sourceDB = writable(null);
+    this.annotationProvider = writable(null);
 
-    this.activeAnnotations = derived([this.annotations, this.sourceDB], ([annotations, sourceDB]) => {
-      const dbAnnotations = annotations && sourceDB ? annotations[sourceDB] ?? null : null;
+    this.activeAnnotations = derived([this.annotations, this.annotationProvider], ([annotations, annotationProvider]) => {
+      if (annotationProvider === 'alphafold') {
+        return null;
+      }
+      const dbAnnotations = annotations && annotationProvider ? annotations[annotationProvider] ?? null : null;
       if (!dbAnnotations) return null;
       return dbAnnotations;
     });
 
-    derived([this.activeAnnotations, this.sourceDB], ([activeAnnotations, sourceDB]) => {
-      if (activeAnnotations && sourceDB) {
+    derived([this.activeAnnotations, this.annotationProvider], ([activeAnnotations, annotationProvider]) => {
+      if (activeAnnotations && annotationProvider && annotationProvider !== 'alphafold') {
         this.setSelectionWithColors({
           residues: activeAnnotations,
           color: undefined,
@@ -123,16 +127,16 @@ export class StructureViewerState {
   }
 
   private setSelectionWithColors(sel: SelectionState | null) {
-    const sourceDB = get(this.sourceDB);
-    if (sel && sourceDB) {
+    const sourceDB = get(this.annotationProvider);
+    if (sel && sourceDB && sourceDB !== 'alphafold') {
       const coloredAnnotations = this.colorAnnotations(sel.residues, sourceDB);
       const neutralColor = this.annotationStyle.getNeutralColor();
       this.selection.set({ residues: coloredAnnotations, color: sel.color, nonSelectedColor: neutralColor, structureId: sel.structureId, structureNumber: sel.structureNumber, keepColors: sel.keepColors, keepRepresentations: sel.keepRepresentations });
     }
   }
 
-  public setSourceDB(sourceDB: SourceDB | null) {
-    this.sourceDB.set(sourceDB);
+  public setSourceDB(sourceDB: AnnotationProvider | null) {
+    this.annotationProvider.set(sourceDB);
   }
 
   public clearSelection() {

@@ -155,6 +155,7 @@
         keepColors,
         keepRepresentations
       });
+      await viewerElement.viewerInstance.visual.tooltips({data: residues});
     }
   }
 
@@ -188,6 +189,7 @@
         keepColors: false,
         keepRepresentations: true
       });
+      await viewerElement.viewerInstance.visual.clearTooltips();
     }
   }
 </script>
@@ -206,6 +208,7 @@
       domain-annotation={true}
       hide-controls={true}
       sequence-panel={false}
+      alphafold-view={true}
     ></pdbe-molstar>
   {/if}
 </div>
