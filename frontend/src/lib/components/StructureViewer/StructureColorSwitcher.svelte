@@ -1,20 +1,19 @@
 <script lang="ts">
   import {
     KEY_TO_DISPLAY_NAME,
-    type SourceDB,
     type StructureSelectionData,
   } from "$lib/annotations";
-  import { StructureViewerState } from "$lib/stores/StructureMarksStore";
+  import { StructureViewerState, type AnnotationProvider } from "$lib/stores/StructureMarksStore";
 
 
   export let annotationStructureSelection: StructureSelectionData | null;
   export let structureState: StructureViewerState;
-  let activeSourceDB: SourceDB | null = null;
+  let activeSourceDB: AnnotationProvider | null = null;
 
 
   // Get available source databases from track data
   $: availableSourceDBs = annotationStructureSelection
-    ? (Object.keys(annotationStructureSelection) as SourceDB[])
+    ? (Object.keys(annotationStructureSelection) as AnnotationProvider[])
     : [];
 
   // Set default source DB to TMbed if available, otherwise first available
@@ -28,7 +27,7 @@
 
   function handleSelectionChange(event: Event) {
     const select = event.target as HTMLSelectElement;
-    const value = select.value as SourceDB | "";
+    const value = select.value as AnnotationProvider | "";
     const newSourceDB = value === "" ? null : value;
     structureState.setSourceDB(newSourceDB);
     activeSourceDB = newSourceDB;
@@ -42,6 +41,7 @@
       value={activeSourceDB ?? ""}
       on:change={handleSelectionChange}
     >
+      <option value='alphafold'>AlphaFold View</option>
       {#each availableSourceDBs as sourceDB}
         <option value={sourceDB}>{KEY_TO_DISPLAY_NAME[sourceDB]}</option>
       {/each}
