@@ -1,6 +1,38 @@
 # CHANGELOG
 
 
+## v1.1.1 (2024-11-13)
+
+### Bug Fixes
+
+- Add DB tooltip again
+  ([`59fce0f`](https://github.com/t03i/TMVisDB/commit/59fce0f502113201423ea4825c420d7aadd441cc))
+
+### Build System
+
+- Add watchtower notification settings
+  ([`c3a5585`](https://github.com/t03i/TMVisDB/commit/c3a5585218e09eea2e2673b674aa35ab1def32a4))
+
+### Chores
+
+- **backend**: Ignore CORSErrors for Sentry
+  ([`45483f1`](https://github.com/t03i/TMVisDB/commit/45483f18bb5b14876c5a8b5df5a15612f9ff4504))
+
+### Code Style
+
+- **frontend**: Switch to transparent svg
+  ([`154be51`](https://github.com/t03i/TMVisDB/commit/154be513fd6a061753965b4e5bc147ac098757b7))
+
+- Change name to beta barrel
+  ([`b6a1516`](https://github.com/t03i/TMVisDB/commit/b6a15162f6244fc873b48c883db02ee21831587f))
+
+- **frontend**: Remove uniprot accession link
+  ([`12b15da`](https://github.com/t03i/TMVisDB/commit/12b15da37d04940bc7ab76464bda812612dbf7ee))
+
+- Change theme to blue based
+  ([`ca76161`](https://github.com/t03i/TMVisDB/commit/ca761610131349096f4fc305da7965f9a02420d0))
+
+
 ## v1.1.0 (2024-11-11)
 
 
