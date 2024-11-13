@@ -1,103 +1,43 @@
 name: Build and Release to Production
 on:
     push:
-        branches:
-            - main
-
+        tags:
+            - "v*"
 permissions:
     id-token: write
     contents: write
     packages: write
 
 jobs:
-    determine-release:
-        runs-on: ubuntu-latest
-        environment: production
-        outputs:
-            release_needed: ${{ steps.semantic_release.outputs.release_needed }}
-            tag: ${{ steps.semantic_release.outputs.tag }}
-        env:
-            UV_TOOL_DIR: /tmp/.uv-tool
-
-        steps:
-            # https://github.com/orgs/community/discussions/25305#discussioncomment-10728028
-            - name: Checkout Repository
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-                  ref: ${{ github.sha }}
-                  ssh-key: ${{ secrets.GH_DEPLOY_SSH_KEY }}
-
-            - name: Force correct release branch
-              run: |
-                  git checkout -B ${{ github.ref_name }} ${{ github.sha }}
-
-            - name: Install uv
-              uses: astral-sh/setup-uv@v3
-              with:
-                  tool-bin-dir: "/tmp/tool-bin"
-
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version-file: "backend/pyproject.toml"
-
-            - name: Restore uv tools
-              uses: actions/cache@v4
-              with:
-                  path: /tmp/tool-bin
-                  key: uv-tools-${{ runner.os }}-psr-v9.11.1
-                  restore-keys: |
-                      uv-tools-${{ runner.os }}-psr-v9.11.1
-                      uv-tools-${{ runner.os }}
-
-            - name: Install Python Semantic Release
-              env:
-                  UV_TOOL_DIR: /tmp/release-tool-bin
-              run: uv tool install python-semantic-release@v9.11.1
-
-            - name: Run Semantic Release
-              id: semantic_release
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-              run: |
-                  ./scripts/release-needed.sh
-
     build-frontend-docker:
-        needs: determine-release
-        if: needs.determine-release.outputs.release_needed == 'true'
         uses: ./.github/workflows/frontend-docker.yml
         with:
-            tag: ${{ needs.determine-release.outputs.tag }}
+            tag: ${{ github.ref_name }}
         secrets: inherit
 
     build-backend-docker:
-        needs: determine-release
-        if: needs.determine-release.outputs.release_needed == 'true'
         uses: ./.github/workflows/backend-docker.yml
         with:
-            tag: ${{ needs.determine-release.outputs.tag }}
+            tag: ${{ github.ref_name }}
         secrets: inherit
 
     build-frontend:
-        needs: [build-frontend-docker, determine-release]
-        if: needs.determine-release.outputs.release_needed == 'true'
+        needs: [build-frontend-docker]
         uses: ./.github/workflows/frontend.yml
         with:
-            tag: ${{ needs.determine-release.outputs.tag }}
+            tag: ${{ github.ref_name }}
         secrets: inherit
 
     release-github:
-        needs: [build-backend-docker, build-frontend, determine-release]
-        if: needs.determine-release.outputs.release_needed == 'true'
+        needs: [build-backend-docker, build-frontend]
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-                  ref: ${{ needs.determine-release.outputs.tag }}
+                  ref: ${{ github.ref_name }}
+
             - name: Download Build Artifacts
               uses: actions/download-artifact@v4
               with:
@@ -111,12 +51,11 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   files: dist/frontend-build.tar
-                  tag_name: ${{ needs.determine-release.outputs.tag }}
+                  tag_name: ${{ github.ref_name }}
                   body_path: CHANGELOG.md
 
     release-docker:
-        needs: [release-github, determine-release]
-        if: needs.determine-release.outputs.release_needed == 'true'
+        needs: [release-github]
         runs-on: ubuntu-latest
         environment: production
         steps:
@@ -124,7 +63,7 @@ jobs:
             - name: Create Frontend Docker Release
               uses: ./.github/actions/docker-release
               with:
-                  release_tag: ${{ needs.determine-release.outputs.tag }}
+                  release_tag: ${{ github.ref_name }}
                   image_name: ${{ vars.FRONTEND_IMAGE_NAME }}
                   old_tag: main-dev
                   registry: ${{ vars.REGISTRY }}
@@ -133,7 +72,7 @@ jobs:
             - name: Create Backend Docker Release
               uses: ./.github/actions/docker-release
               with:
-                  release_tag: ${{ needs.determine-release.outputs.tag }}
+                  release_tag: ${{ github.ref_name }}
                   image_name: ${{ vars.BACKEND_IMAGE_NAME }}
                   old_tag: main
                   registry: ${{ vars.REGISTRY }}
@@ -141,8 +80,7 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
 
     release-cloudflare:
-        needs: [build-frontend, release-github, determine-release]
-        if: needs.determine-release.outputs.release_needed == 'true'
+        needs: [build-frontend, release-github]
         runs-on: ubuntu-latest
         environment:
             name: production
@@ -160,3 +98,17 @@ jobs:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
                   command: pages deploy dist/frontend/ --project-name=tmvisdb
+
+    release-sentry:
+        needs: [release-github]
+        environment: production
+        runs-on: ubuntu-latest
+        steps:
+            - name: Create Sentry release
+              uses: getsentry/action-release@v1
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+              with:
+                  environment: production
