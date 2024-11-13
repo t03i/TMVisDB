@@ -1,7 +1,7 @@
 <script lang="ts">
   import config from "$lib/config";
   // @ts-ignore
-  import overview from "$lib/assets/overview.png";
+  import overview from "$lib/assets/overview.svg";
 </script>
 
 <svelte:head>
@@ -23,7 +23,9 @@
   </p>
 
   <!-- TODO improve overview image-->
-  <img src={overview} alt="Overview of {config.APP_NAME}" />
+  <div class="flex place-content-center">
+    <img src={overview} alt="Overview of {config.APP_NAME}" class="md:w-2/3 w-full" />
+  </div>
 
   <div>
     <h2 class="h3">How to browse {config.APP_NAME}:</h2>
