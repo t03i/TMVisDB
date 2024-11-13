@@ -9,6 +9,10 @@ services:
             - caddy
         labels:
             - "com.centurylinklabs.watchtower.enable=true"
+        environment:
+            - WATCHTOWER_NOTIFICATIONS=shoutrrr
+            - WATCHTOWER_NOTIFICATIONS_HOSTNAME=$UPDATE_NOTIFICATION_HOST
+            - WATCHTOWER_NOTIFICATION_URL=$UPDATE_NOTIFICATION_URL
     caddy:
         volumes:
             - caddy-log:/var/log
