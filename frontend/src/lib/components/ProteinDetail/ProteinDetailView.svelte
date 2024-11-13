@@ -71,7 +71,7 @@
             </span>
           </div>
           <div class="flex items-center">
-            <span class="mr-2">Beta Strand:</span>
+            <span class="mr-2">Beta Barrel:</span>
             <span
               class="badge variant-filled-{proteinInfo.has_beta_strand
                 ? 'success'
