@@ -99,6 +99,11 @@
                 "description": "Alpha-Helix",
                 "color_dark": "rgba(var(--color-primary-400))",
                 "color_light": "rgba(var(--color-primary-500))"
+            },
+            "BS": {
+                "description": "Beta-Sheet",
+                "color_dark": "rgba(var(--color-secondary-400))",
+                "color_light": "rgba(var(--color-secondary-500))"
             }
         }
     },
@@ -111,6 +116,11 @@
                 "description": "Alpha-Helix",
                 "color_dark": "rgba(var(--color-primary-400))",
                 "color_light": "rgba(var(--color-primary-500))"
+            },
+            "BS": {
+                "description": "Beta-Sheet",
+                "color_dark": "rgba(var(--color-secondary-400))",
+                "color_light": "rgba(var(--color-secondary-500))"
             }
         }
     }

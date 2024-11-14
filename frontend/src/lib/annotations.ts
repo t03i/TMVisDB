@@ -113,6 +113,10 @@ function annotationToNightingaleFeature(
 ): Feature | null {
   const sourceDB = annotation.source_db.toLowerCase() as SourceDB;
   const label = annotation.label as keyof (typeof legendData)[typeof sourceDB]['labels'];
+  if (!legendData[sourceDB]?.labels[label]) {
+    console.log(`Label ${label} not found for sourceDB ${sourceDB}; This is a bug, please report it to the developers.`);
+    return null;
+  }
   const labelDescription = legendData[sourceDB]?.labels[label]['description'] || "Unknown";
 
   return {
