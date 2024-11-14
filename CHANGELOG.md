@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.2.2 (2024-11-14)
+
+### Bug Fixes
+
+- **frontend**: Add missing label for beta-sheet uniprot
+  ([`452ab5e`](https://github.com/t03i/TMVisDB/commit/452ab5e2788bf37cc128e0b8ab53d2b8977b70f2))
+
+
 ## v1.2.1 (2024-11-13)
 
 ### Bug Fixes
@@ -9,6 +17,9 @@
   ([`2e5e57b`](https://github.com/t03i/TMVisDB/commit/2e5e57b929f8613509ce05c549f2769254002d92))
 
 ### Build System
+
+- Fix sentry release version not found issue
+  ([`9328a97`](https://github.com/t03i/TMVisDB/commit/9328a97e77098df7d707cd30a12e053a2cd45d6f))
 
 - Restructure tagging to improve releasing.
   ([`1537c76`](https://github.com/t03i/TMVisDB/commit/1537c7680fccd3c2555d2ea40c6850b57443e92e))
