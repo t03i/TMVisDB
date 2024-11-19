@@ -1,4 +1,11 @@
 erDiagram
+    legend {
+        string PK "Primary Key"
+        string FK "Foreign Key"
+        string IDX "Index"
+        string UX "Unique Index"
+    }
+
     organism {
         int id PK
         varchar taxon_id "UX:ix_organism_taxon_id"
