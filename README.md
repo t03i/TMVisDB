@@ -104,6 +104,10 @@ The web interface is accessible [here](https://tmvisdb.predictprotein.org)
    docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d
    ```
 
+### Database Schema
+
+![Database Schema](./db-scheme.mermaid)
+
 ## Citations
 
 If you use TMvisDB in your research, please cite:
