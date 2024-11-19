@@ -106,7 +106,7 @@ The web interface is accessible [here](https://tmvisdb.predictprotein.org)
 
 ### Database Schema
 
-![Database Schema](./db-scheme.mermaid)
+![Database Schema](docs/db-scheme.mermaid)
 
 ## Citations
 
