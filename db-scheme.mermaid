@@ -1,11 +1,10 @@
-erDiagram
-    legend {
-        string PK "Primary Key"
-        string FK "Foreign Key"
-        string IDX "Index"
-        string UX "Unique Index"
-    }
+%% Database Schema Legend:
+%% PK  - Primary Key
+%% FK  - Foreign Key
+%% IDX - Index
+%% UX  - Unique Index
 
+erDiagram
     organism {
         int id PK
         varchar taxon_id "UX:ix_organism_taxon_id"
