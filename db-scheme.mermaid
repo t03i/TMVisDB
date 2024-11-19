@@ -1,0 +1,51 @@
+erDiagram
+    organism {
+        int id PK
+        varchar taxon_id "UX:ix_organism_taxon_id"
+        varchar name
+        varchar super_kingdom "IDX:ix_organism_super_kingdom"
+        varchar clade "IDX:ix_organism_clade"
+        varchar compound_idx "IDX:(super_kingdom,clade)"
+    }
+
+    sequence {
+        int id PK
+        varchar uniprot_id
+        varchar uniprot_accession "UX:ix_sequence_uniprot_accession"
+        int organism_id FK "IDX:ix_sequence_organism_id"
+        varchar sequence
+        int seq_length "IDX:ix_sequence_seq_length"
+    }
+
+    annotation {
+        int id PK
+        int sequence_id FK "IDX:ix_annotation_sequence_id"
+        int start
+        int end
+        varchar label
+        date date_added
+        varchar source_db
+        varchar source_db_ref
+        varchar source_db_url
+        varchar compound_idx "IDX:(sequence_id,start,end)"
+    }
+
+    tminfo {
+        int id PK
+        int sequence_id FK "IDX:ix_tminfo_sequence_id"
+        int tm_helix_count
+        float tm_helix_percent
+        int tm_strand_count
+        float tm_strand_percent
+        int signal_count
+        float signal_percent
+        date generated_at
+        boolean has_alpha_helix "IDX:ix_tminfo_has_alpha_helix"
+        boolean has_beta_strand "IDX:ix_tminfo_has_beta_strand"
+        boolean has_signal "IDX:ix_tminfo_has_signal"
+        varchar compound_idx "IDX:(has_alpha_helix,has_beta_strand,has_signal)"
+    }
+
+    organism ||--o{ sequence : has
+    sequence ||--o{ annotation : has
+    sequence ||--o{ tminfo : has
