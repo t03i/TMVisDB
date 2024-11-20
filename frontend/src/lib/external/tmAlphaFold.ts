@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createQuery } from '@tanstack/svelte-query';
-import { type Readable } from 'svelte/store';
 import axios from 'axios';
 import type { PublicAnnotation, AnnotationData } from '$lib/client/model';
 
@@ -37,9 +36,18 @@ const tmalphafold_parse_response = (body: any, up_name: string): AnnotationData 
 
 export const getTMAlphaFoldAnnotation = async (up_name: string, signal: AbortSignal) => {
     const url = tmalphafold_query_url(up_name);
-    const { data } = await axios.get(url);
-    return tmalphafold_parse_response(data, up_name);
-  };
+    try {
+      const { data } = await axios.get(url);
+      return tmalphafold_parse_response(data, up_name);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 500) {
+        // Return empty annotation data when the server indicates no data is available
+        return { annotations: [] };
+      }
+      // Re-throw other errors
+      throw error;
+    }
+};
 
 
   // TODO better solution for queryClient
