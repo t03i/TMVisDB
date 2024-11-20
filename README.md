@@ -104,6 +104,13 @@ The web interface is accessible [here](https://tmvisdb.predictprotein.org)
    docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d
    ```
 
+### Database
+
+The database is available at [Zenodo (10.5281/zenodo.14186950)](https://doi.org/10.5281/zenodo.14186950). The database schema can be found ![here](docs/db-scheme.mermaid).
+
+> [!IMPORTANT]
+> Due to Zenodo size constraints, amino acid sequences and indices were removed from the database. These should be re-added for production use of the database.
+
 ## Citations
 
 If you use TMvisDB in your research, please cite:
