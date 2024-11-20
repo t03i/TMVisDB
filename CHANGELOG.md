@@ -1,6 +1,37 @@
 # CHANGELOG
 
 
+## v1.2.3 (2024-11-20)
+
+### Bug Fixes
+
+- **frontend**: More graceful handling for TMAlphaFold
+  ([#10](https://github.com/t03i/TMVisDB/pull/10),
+  [`50ff091`](https://github.com/t03i/TMVisDB/commit/50ff0913cef9a1cb3e0ee5a179cda01d9c5f9206))
+
+### Build System
+
+- Fix sentry version name
+  ([`5221942`](https://github.com/t03i/TMVisDB/commit/5221942296039d7839a5e995a1bf2c621b09e852))
+
+### Documentation
+
+- Add DB section
+  ([`7328764`](https://github.com/t03i/TMVisDB/commit/73287640f080bd548ace2985301c226ed69c1f42))
+
+- Move db scheme to separate folder
+  ([`24b3f10`](https://github.com/t03i/TMVisDB/commit/24b3f10781fb768689ff294f790ff982f0e73a2c))
+
+- Change legend entity to comments
+  ([`22785ed`](https://github.com/t03i/TMVisDB/commit/22785ed21dd83234532750de4ce7c9de0bf72653))
+
+- Add legend
+  ([`26e707b`](https://github.com/t03i/TMVisDB/commit/26e707b0103bb7cb41db3ece745c66a3a9f4b200))
+
+- Add db-scheme
+  ([`2ccfebd`](https://github.com/t03i/TMVisDB/commit/2ccfebd2b466db3137421e4177b2b194a711f711))
+
+
 ## v1.2.2 (2024-11-14)
 
 ### Bug Fixes
