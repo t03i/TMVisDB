@@ -1,7 +1,15 @@
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { sveltekit } from '@sveltejs/kit/vite';
 import { purgeCss } from 'vite-plugin-tailwind-purgecss';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [sveltekit(), purgeCss()],
+    plugins: [sveltekit(), purgeCss(), sentryVitePlugin({
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT
+    })],
+
+    build: {
+        sourcemap: true
+    }
 });
