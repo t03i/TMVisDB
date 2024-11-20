@@ -47,9 +47,6 @@ importers:
       '@sentry/browser':
         specifier: ^8.39.0
         version: 8.39.0
-      '@sentry/vite-plugin':
-        specifier: ^2.22.6
-        version: 2.22.6
       '@tanstack/svelte-query':
         specifier: ^5.60.6
         version: 5.60.6(svelte@4.2.19)
@@ -63,6 +60,9 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1(@types/react@18.3.9)(fp-ts@2.16.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
+      '@sentry/vite-plugin':
+        specifier: ^2.22.6
+        version: 2.22.6
       '@skeletonlabs/skeleton':
         specifier: ^2.10.3
         version: 2.10.3(svelte@4.2.19)

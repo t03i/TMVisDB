@@ -12,6 +12,7 @@
 		"postinstall": "svelte-kit sync"
 	},
 	"devDependencies": {
+		"@sentry/vite-plugin": "^2.22.6",
 		"@skeletonlabs/skeleton": "^2.10.3",
 		"@skeletonlabs/tw-plugin": "^0.4.0",
 		"@sveltejs/adapter-auto": "^3.3.1",
@@ -50,7 +51,6 @@
 		"@nightingale-elements/nightingale-sequence": "^5.3.2",
 		"@nightingale-elements/nightingale-track": "^5.3.2",
 		"@sentry/browser": "^8.39.0",
-		"@sentry/vite-plugin": "^2.22.6",
 		"@tanstack/svelte-query": "^5.60.6",
 		"axios": "^1.7.7",
 		"iconify-icon": "^2.1.0",
