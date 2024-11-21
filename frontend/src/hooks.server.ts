@@ -9,8 +9,9 @@ import * as Sentry from "@sentry/sveltekit";
 Sentry.init({
     dsn: config.SENTRY_DSN,
     environment: config.ENVIRONMENT,
-    release: config.VERSION,
-    tracesSampleRate: 1.0,
+    enabled: config.ENVIRONMENT !== 'development',
+    release: `v${config.VERSION}`,
+    tracesSampleRate: config.SENTRY_SAMPLE_RATE,
     tracePropagationTargets: ["localhost", new RegExp(config.API_BASE_URL)],
 
     replaysSessionSampleRate: 0.1,

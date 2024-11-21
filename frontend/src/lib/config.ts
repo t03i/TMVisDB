@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-import { PUBLIC_API_URL, PUBLIC_PROJECT_NAME, PUBLIC_GITHUB_REPO,PUBLIC_MIN_PROTEIN_LENGTH, PUBLIC_MAX_PROTEIN_LENGTH, PUBLIC_MAINTENANCE_MODE, PUBLIC_SENTRY_DSN_FRONTEND } from '$env/static/public';
+import { PUBLIC_API_URL, PUBLIC_PROJECT_NAME, PUBLIC_GITHUB_REPO,PUBLIC_MIN_PROTEIN_LENGTH, PUBLIC_MAX_PROTEIN_LENGTH, PUBLIC_MAINTENANCE_MODE, PUBLIC_SENTRY_DSN_FRONTEND, PUBLIC_SENTRY_TRACES_SAMPLE_RATE } from '$env/static/public';
 
 import { GitHubLinks } from './github';
 
@@ -15,6 +15,7 @@ interface Config {
     APP_NAME: string;
     MAINTENANCE_MODE: boolean;
     SENTRY_DSN: string;
+    SENTRY_SAMPLE_RATE: number;
     ENVIRONMENT: string;
     VERSION: string;
 }
@@ -28,9 +29,10 @@ const config: Config = {
     API_BASE_URL: PUBLIC_API_URL || 'http://localhost:8000',
     APP_NAME: PUBLIC_PROJECT_NAME || 'TMVisDB',
     MAINTENANCE_MODE: PUBLIC_MAINTENANCE_MODE.toLowerCase() === 'true' || false,
-    SENTRY_DSN: PUBLIC_SENTRY_DSN_FRONTEND,
+    SENTRY_DSN: PUBLIC_SENTRY_DSN_FRONTEND || '',
+    SENTRY_SAMPLE_RATE: Number.parseFloat(PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '0.1'),
     ENVIRONMENT: import.meta.env.VITE_NODE_ENV || import.meta.env.MODE,
-    VERSION: __VERSION__
+    VERSION: import.meta.env.__VERSION__ || 'dev'
 };
 axios.defaults.baseURL = config.API_BASE_URL;
 // TODO: fix this for server side rendering

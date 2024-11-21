@@ -7,7 +7,8 @@ import * as Sentry from "@sentry/sveltekit";
 Sentry.init({
     dsn: config.SENTRY_DSN,
     environment: config.ENVIRONMENT,
-    release: config.VERSION,
+    release: `v${config.VERSION}`,
+    enabled: config.ENVIRONMENT !== 'development',
     integrations: [
         Sentry.breadcrumbsIntegration({
         console: false,
@@ -19,7 +20,7 @@ Sentry.init({
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration(),
     ],
-    tracesSampleRate: 1.0,
+    tracesSampleRate: config.SENTRY_SAMPLE_RATE,
     tracePropagationTargets: [/^localhost$/, new RegExp(config.API_BASE_URL)],
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
