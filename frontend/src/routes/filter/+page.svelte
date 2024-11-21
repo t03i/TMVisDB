@@ -1,6 +1,9 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import * as Sentry from "@sentry/svelte";
+
+
   import DataLoader from "$lib/components/DataLoader.svelte";
   import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
   import { DataTable, LoadingTable } from "$lib/components/Table";
@@ -17,7 +20,30 @@
   $: params = Object.fromEntries($page.url.searchParams);
   $: currentPage = params.page ? parseInt(params.page) : 1;
 
+  // Add breadcrumb when filters change
+  $: {
+    if (Object.keys(params).length > 0) {
+      Sentry.addBreadcrumb({
+        category: 'filters',
+        message: 'Applied protein filters',
+        level: 'info',
+        data: {
+          filters: params
+        }
+      });
+    }
+  }
+
   function handleRowClick(row: ProteinInfo) {
+    Sentry.addBreadcrumb({
+      category: 'navigation',
+      message: `Viewed protein detail: ${row.uniprot_accession}`,
+      level: 'info',
+      data: {
+        uniprot_accession: row.uniprot_accession,
+        applied_filters: params
+      }
+    });
     goto(`/detail/${row.uniprot_accession}`);
   }
 </script>

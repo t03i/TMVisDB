@@ -7,6 +7,7 @@
   import { page } from "$app/stores";
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
+  import * as Sentry from "@sentry/svelte";
 
   import SequenceInput from "$lib/components/SequenceInput.svelte";
 
@@ -23,6 +24,16 @@
   import { missingEntryOptions } from "$lib/github";
 
   $: identifier = $page.url.searchParams.get("search") || "";
+
+  $: {
+    if (identifier) {
+      Sentry.addBreadcrumb({
+        category: 'search',
+        message: `Searching for protein: ${identifier}`,
+        level: 'info'
+      });
+    }
+  }
 
   $: uniprotQuery = identifier
     ? (createGetUniprotAnnotation(
