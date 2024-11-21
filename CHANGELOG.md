@@ -1,6 +1,54 @@
 # CHANGELOG
 
 
+## v1.3.0 (2024-11-21)
+
+### Features
+
+- **frontend**: Add sentry frontend logging
+  ([`e4c5b81`](https://github.com/t03i/TMVisDB/commit/e4c5b81454491dd9abf1554d43e5c794d9cd1aa1))
+
+* chore: update dependencies
+
+* build: upload sentry sourcemaps
+
+* build: add sentry build options
+
+* build: add sentry config
+
+* fix(frontend): improve sidebar navigation
+
+* build(frontend): add svelte version
+
+* feat(frontend): configure sentry logging
+
+* fix(frontend): remove integration for server
+
+* build(frontend): update orval version
+
+* fix(backend): only allow GET
+
+This is supposed to block more malicious requests
+
+* chore(backend): default value for traces
+
+* build(frontend): add variable sentry sampling rate
+
+* refactor(frontend): improve sentry initialization
+
+* fix(frontend): adjust hight which now works again
+
+* fix(frontend): remove sentry sveltekit due to bug
+
+https://github.com/getsentry/sentry-javascript/issues/8291
+
+* refactor(frontend): add expected handle error method
+
+* feat(frontend): add breadcrumbs to sentry
+
+Merges: #11
+
+
 ## v1.2.3 (2024-11-20)
 
 ### Bug Fixes
