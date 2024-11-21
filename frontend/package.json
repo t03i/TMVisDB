@@ -50,7 +50,7 @@
 		"@nightingale-elements/nightingale-saver": "^5.3.2",
 		"@nightingale-elements/nightingale-sequence": "^5.3.2",
 		"@nightingale-elements/nightingale-track": "^5.3.2",
-		"@sentry/sveltekit": "^8.39.0",
+		"@sentry/svelte": "^8.39.0",
 		"@tanstack/svelte-query": "^5.60.6",
 		"axios": "^1.7.7",
 		"iconify-icon": "^2.1.0",
