@@ -10,6 +10,7 @@
   import { storePopup } from "@skeletonlabs/skeleton";
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
+  import config from "$lib/config";
   import "../app.css";
 
   import {
@@ -18,7 +19,6 @@
     Navigation,
     QueryLayout,
   } from "$lib/components/Layout";
-  import config from "$lib/config";
   import Maintenance from "$lib/components/Maintenance.svelte";
   import PrivacyBanner from "$lib/components/PrivacyBanner.svelte";
 </script>

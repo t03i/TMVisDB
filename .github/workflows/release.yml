@@ -110,6 +110,12 @@ jobs:
                   fetch-depth: 0
                   ref: ${{ github.ref_name }}
 
+            - name: Download Build Artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: frontend-build
+                  path: dist/frontend/
+
             - name: Create Sentry release
               uses: getsentry/action-release@v1
               env:
@@ -119,3 +125,5 @@ jobs:
               with:
                   environment: production
                   version: ${{ github.ref_name }}
+                  sourcemaps: ./dist/frontend/
+                  url_prefix: "~"

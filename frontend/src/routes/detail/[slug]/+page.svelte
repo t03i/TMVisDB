@@ -2,12 +2,12 @@
   import { onDestroy, onMount } from "svelte";
   import { modeCurrent } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
+  import * as Sentry from "@sentry/svelte";
 
   import { createStructureStore } from "$lib/stores/StructureStore";
   import { createAnnotationStore } from "$lib/stores/AnnotationStore";
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import type { ProteinInfo } from "$lib/client/model";
-  import type { SourceDB } from "$lib/annotations";
   import { AnnotationStyleManager } from "$lib/annotations";
   import { StructureViewerState } from '$lib/stores/StructureMarksStore';
 
@@ -59,6 +59,12 @@
   };
 
   const uniprotAcc = data.slug;
+
+  Sentry.addBreadcrumb({
+    category: 'navigation',
+    message: `Loading protein details for: ${uniprotAcc}`,
+    level: 'info'
+  });
 
   const {
     query: structureQuery,

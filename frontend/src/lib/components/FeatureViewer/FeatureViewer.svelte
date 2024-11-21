@@ -20,7 +20,7 @@
   export let highlightColor: string = "rgba(var(--color-warning-500)/0.3)";
   export let marginColor: string = "rgba(0, 0, 0, 0)";
   export let minWidth: number = 10;
-  export let height: number = 50;
+  export let height: number = 25;
 
   const length = sequence.length;
 

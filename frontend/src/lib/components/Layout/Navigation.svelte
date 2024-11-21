@@ -4,6 +4,7 @@
 -->
 <script lang="ts">
   import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
   import { AppRail, AppRailAnchor } from "@skeletonlabs/skeleton";
   import "iconify-icon";
 
@@ -18,7 +19,8 @@
   <AppRail>
     {#each navItems as { href, icon, label }}
       <AppRailAnchor
-        {href}
+        data-sveltekit-preload-data="hover"
+        on:click={() => goto(href)}
         selected={$page.url.pathname === href}
         title={label}
       >

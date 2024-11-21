@@ -39,7 +39,7 @@ if settings.BACKEND_CORS_ORIGINS:
             str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS
         ],
         allow_credentials=True,
-        allow_methods=["*"],
+        allow_methods=["GET"],
         allow_headers=["*"],
     )
 
