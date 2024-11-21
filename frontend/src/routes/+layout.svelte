@@ -11,25 +11,6 @@
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   import config from "$lib/config";
-
-  import Sentry from @sentry/browser
-  Sentry.init({
-  dsn: config.SENTRY_DSN,
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-  tracesSampleRate: 1.0,
-
-  // Set `tracePropagationTargets` to control for which URLs trace propagation should be enabled
-  tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
-
-  // Capture Replay for 10% of all sessions,
-  // plus 100% of sessions with an error
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-});
-
   import "../app.css";
 
   import {
