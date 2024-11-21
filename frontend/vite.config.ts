@@ -8,6 +8,9 @@ export default defineConfig({
         org: process.env.SENTRY_ORG,
         project: process.env.SENTRY_PROJECT
     })],
+    define: {
+        __VERSION__: JSON.stringify(process.env.npm_package_version),
+    },
 
     build: {
         sourcemap: true

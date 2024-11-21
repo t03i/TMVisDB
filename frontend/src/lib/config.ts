@@ -15,6 +15,8 @@ interface Config {
     APP_NAME: string;
     MAINTENANCE_MODE: boolean;
     SENTRY_DSN: string;
+    ENVIRONMENT: string;
+    VERSION: string;
 }
 
 
@@ -26,7 +28,9 @@ const config: Config = {
     API_BASE_URL: PUBLIC_API_URL || 'http://localhost:8000',
     APP_NAME: PUBLIC_PROJECT_NAME || 'TMVisDB',
     MAINTENANCE_MODE: PUBLIC_MAINTENANCE_MODE.toLowerCase() === 'true' || false,
-    SENTRY_DSN: PUBLIC_SENTRY_DSN_FRONTEND
+    SENTRY_DSN: PUBLIC_SENTRY_DSN_FRONTEND,
+    ENVIRONMENT: import.meta.env.VITE_NODE_ENV || import.meta.env.MODE,
+    VERSION: __VERSION__
 };
 axios.defaults.baseURL = config.API_BASE_URL;
 // TODO: fix this for server side rendering
