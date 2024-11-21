@@ -8,8 +8,7 @@ Sentry.init({
     dsn: config.SENTRY_DSN,
     environment: config.ENVIRONMENT,
     release: `v${config.VERSION}`,
-    debug: true,
-    // enabled: config.ENVIRONMENT !== 'development',
+    enabled: config.ENVIRONMENT !== 'development',
     integrations: [
         Sentry.breadcrumbsIntegration({
         console: false,
