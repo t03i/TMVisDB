@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.3.2 (2024-11-21)
+
+### Bug Fixes
+
+- **frontend**: Hotfix remove debug info
+  ([`4d88b9a`](https://github.com/t03i/TMVisDB/commit/4d88b9a011e271dd881d3b80aa7f5383d5798024))
+
+
 ## v1.3.1 (2024-11-21)
 
 ### Bug Fixes
