@@ -26,3 +26,18 @@ Sentry.init({
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
 });
+
+export function handleError({ error, event }) {
+  // Only report errors to Sentry if they're not already handled
+  if (error && !('handled' in error)) {
+    Sentry.captureException(error, {
+      contexts: {
+        sveltekit: { event }
+      }
+    });
+  }
+
+  return {
+    message: error?.message ?? 'An unexpected error occurred',
+  };
+}
