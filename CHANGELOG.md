@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.3.1 (2024-11-21)
+
+### Bug Fixes
+
+- **frontend**: Fix build missing variable
+  ([`67b41d0`](https://github.com/t03i/TMVisDB/commit/67b41d0c131ee8deeacd8a00cb0bc55cc448061e))
+
+
 ## v1.3.0 (2024-11-21)
 
 ### Features
