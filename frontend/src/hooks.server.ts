@@ -10,17 +10,6 @@ Sentry.init({
     dsn: config.SENTRY_DSN,
     environment: config.ENVIRONMENT,
     release: config.VERSION,
-    integrations: [
-        Sentry.breadcrumbsIntegration({
-        console: false,
-        dom: false,
-        fetch: true,
-        history: true,
-        xhr: false,
-      }),
-      Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration(),
-    ],
     tracesSampleRate: 1.0,
     tracePropagationTargets: ["localhost", new RegExp(config.API_BASE_URL)],
 
