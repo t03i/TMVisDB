@@ -23,8 +23,8 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
         ignore_errors=["CORSError", "cors"],
     )
 
-logging.getLogger("uvicorn.access").setLevel(level=logging.WARNING)
-logging.getLogger("uvicorn.error").setLevel(level=logging.WARNING)
+logging.getLogger("uvicorn.access").setLevel(level=settings.LOG_LEVEL)
+logging.getLogger("uvicorn.error").setLevel(level=settings.LOG_LEVEL)
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
