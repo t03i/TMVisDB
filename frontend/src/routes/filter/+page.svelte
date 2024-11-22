@@ -71,6 +71,7 @@
         onRowClick={handleRowClick}
         {currentPage}
         pageSize={itemsPerPage}
+        totalItemsLoading={$countQuery?.isLoading ?? false}
         totalItems={$countQuery?.data?.count ?? 0}
         onSetPage={(page) => (currentPage = page)}
       />

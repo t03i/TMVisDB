@@ -18,6 +18,7 @@
   export let currentPage: number;
   export let pageSize: number;
   export let totalItems: number;
+  export let totalItemsLoading: boolean = false;
   export let onRowClick: (row: any) => void = () => {};
   export let onSetPage: (page: number) => void;
 
@@ -70,6 +71,6 @@
         {/each}
       </tbody>
     </table>
-    <TableFooter {currentPage} {onSetPage} {pageSize} {totalItems} />
+    <TableFooter {currentPage} {onSetPage} {pageSize} {totalItems} {totalItemsLoading} />
   </div>
 {/if}

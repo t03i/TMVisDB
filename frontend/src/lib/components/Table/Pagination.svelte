@@ -5,7 +5,7 @@
   export let pageSize: number;
   export let totalItems: number;
   export let onSetPage: (page: number) => void;
-  export let loading = false;
+  export let totalItemsLoading = false;
 
   type PageItem = number | "...";
   let totalPages = 0;
@@ -57,10 +57,10 @@
   <button
     type="button"
     class="button hover:variant-soft-primary"
-    disabled={currentPage === 1 || loading}
+    disabled={currentPage === 1 || totalItemsLoading}
     on:click={() => onSetPage(currentPage - 1)}
   >
-    {#if loading}
+    {#if totalItemsLoading}
       <span class="animate-pulse">←</span>
     {:else}
       ←
@@ -75,7 +75,7 @@
         class:hover:variant-soft-primary={currentPage !== page}
         class:hover:variant-filled-primary={currentPage === page}
         class:variant-filled-primary={currentPage === page}
-        disabled={loading}
+        disabled={totalItemsLoading}
         on:click={() => onSetPage(page)}
       >
         {page}
@@ -85,10 +85,10 @@
   <button
     type="button"
     class="hover:variant-soft-primary"
-    disabled={currentPage === totalPages || loading}
+    disabled={currentPage === totalPages || totalItemsLoading}
     on:click={() => onSetPage(currentPage + 1)}
   >
-    {#if loading}
+    {#if totalItemsLoading}
       <span class="animate-pulse">→</span>
     {:else}
       →
@@ -101,18 +101,18 @@
   <button
     type="button"
     class="variant-ghost-surface btn mb-2 mr-2 hover:variant-soft-primary"
-    disabled={currentPage === 1 || loading}
+    disabled={currentPage === 1 || totalItemsLoading}
     on:click={() => onSetPage(currentPage - 1)}
   >
-    {#if loading}
+    {#if totalItemsLoading}
       <span class="animate-pulse">←</span>
     {:else}
       ←
     {/if}
   </button>
   <span class="my-auto flex-grow text-center">
-    {#if loading}
-      <span class="animate-pulse">Loading...</span>
+    {#if totalItemsLoading}
+      <span class="animate-pulse">Loading total items...</span>
     {:else}
       Page {currentPage} of {totalPages}
     {/if}
@@ -120,10 +120,10 @@
   <button
     type="button"
     class="variant-ghost-surface btn mb-2 hover:variant-soft-primary"
-    disabled={currentPage === totalPages || loading}
+    disabled={currentPage === totalPages || totalItemsLoading}
     on:click={() => onSetPage(currentPage + 1)}
   >
-    {#if loading}
+    {#if totalItemsLoading}
       <span class="animate-pulse">→</span>
     {:else}
       →
