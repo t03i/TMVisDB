@@ -18,6 +18,7 @@ interface Config {
     SENTRY_SAMPLE_RATE: number;
     ENVIRONMENT: string;
     VERSION: string;
+    PROTEIN_PAGE_SIZE: number;
 }
 
 
@@ -32,7 +33,8 @@ const config: Config = {
     SENTRY_DSN: PUBLIC_SENTRY_DSN_FRONTEND || '',
     SENTRY_SAMPLE_RATE: Number.parseFloat(PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '0.1'),
     ENVIRONMENT: import.meta.env.VITE_NODE_ENV || import.meta.env.MODE,
-    VERSION: import.meta.env.__VERSION__ || 'dev'
+    VERSION: import.meta.env.__VERSION__ || 'dev',
+    PROTEIN_PAGE_SIZE: 20,
 };
 axios.defaults.baseURL = config.API_BASE_URL;
 // TODO: fix this for server side rendering

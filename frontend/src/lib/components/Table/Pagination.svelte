@@ -5,47 +5,44 @@
   export let pageSize: number;
   export let totalItems: number;
   export let onSetPage: (page: number) => void;
+  export let loading = false;
 
   type PageItem = number | "...";
   let totalPages = 0;
 
   $: if (totalItems && pageSize) {
-    totalPages = Math.ceil(totalItems / pageSize);
+    totalPages = totalItems % pageSize === 0 ? totalItems / pageSize : Math.floor(totalItems / pageSize) + 1;
   }
 
-  const maxPagesToShow = 5;
+  $: pages = getPages(totalPages, currentPage);
 
-  $: pages = getPages(totalPages, currentPage, maxPagesToShow);
-
-  function getPages(total: number, current: number, max: number): PageItem[] {
-    if (total <= max) {
+  function getPages(total: number, current: number): PageItem[] {
+    if (total <= 5) {
       return Array.from({ length: total }, (_, i) => i + 1);
     }
 
-    const halfMax = Math.floor(max / 2);
-    const leftOffset = Math.min(
-      Math.max(current - halfMax, 1),
-      Math.max(total - max + 1, 1),
-    );
-    const rightOffset = Math.min(leftOffset + max - 1, total);
-
     const result: PageItem[] = [];
-    for (let i = leftOffset; i <= rightOffset; i++) {
-      if ((i === leftOffset && i !== 1) || (i === rightOffset && i !== total)) {
-        result.push("...");
-      }
-      result.push(i);
+
+    // Always add first page
+    result.push(1);
+
+    // Add dots if there's a gap before current
+    if (current > 3) {
+      result.push("...");
     }
 
-    if (leftOffset > 2) {
-      result.unshift("...", 1);
-    } else if (leftOffset === 2) {
-      result.unshift(1);
+    // Add previous, current, and next pages (if they exist)
+    if (current > 2) result.push(current - 1);
+    if (current !== 1 && current !== total) result.push(current);
+    if (current < total - 1) result.push(current + 1);
+
+    // Add dots if there's a gap after current
+    if (current < total - 2) {
+      result.push("...");
     }
 
-    if (rightOffset < total - 1) {
-      result.push("...", total);
-    } else if (rightOffset === total - 1) {
+    // Always add last page
+    if (total > 1) {
       result.push(total);
     }
 
@@ -60,22 +57,25 @@
   <button
     type="button"
     class="button hover:variant-soft-primary"
-    disabled={currentPage === 1}
+    disabled={currentPage === 1 || loading}
     on:click={() => onSetPage(currentPage - 1)}
   >
-    ←
+    {#if loading}
+      <span class="animate-pulse">←</span>
+    {:else}
+      ←
+    {/if}
   </button>
   {#each pages as page}
     {#if page === "..."}
-      <button type="button" class="hover:variant-soft-primary" disabled
-        >...</button
-      >
+      <button type="button" class="hover:variant-soft-primary" disabled>...</button>
     {:else}
       <button
         type="button"
         class:hover:variant-soft-primary={currentPage !== page}
         class:hover:variant-filled-primary={currentPage === page}
         class:variant-filled-primary={currentPage === page}
+        disabled={loading}
         on:click={() => onSetPage(page)}
       >
         {page}
@@ -85,10 +85,14 @@
   <button
     type="button"
     class="hover:variant-soft-primary"
-    disabled={currentPage === totalPages}
+    disabled={currentPage === totalPages || loading}
     on:click={() => onSetPage(currentPage + 1)}
   >
-    →
+    {#if loading}
+      <span class="animate-pulse">→</span>
+    {:else}
+      →
+    {/if}
   </button>
 </section>
 
@@ -97,20 +101,32 @@
   <button
     type="button"
     class="variant-ghost-surface btn mb-2 mr-2 hover:variant-soft-primary"
-    disabled={currentPage === 1}
+    disabled={currentPage === 1 || loading}
     on:click={() => onSetPage(currentPage - 1)}
   >
-    ←
+    {#if loading}
+      <span class="animate-pulse">←</span>
+    {:else}
+      ←
+    {/if}
   </button>
   <span class="my-auto flex-grow text-center">
-    Page {currentPage} of {totalPages}
+    {#if loading}
+      <span class="animate-pulse">Loading...</span>
+    {:else}
+      Page {currentPage} of {totalPages}
+    {/if}
   </span>
   <button
     type="button"
     class="variant-ghost-surface btn mb-2 hover:variant-soft-primary"
-    disabled={currentPage === totalPages}
+    disabled={currentPage === totalPages || loading}
     on:click={() => onSetPage(currentPage + 1)}
   >
-    →
+    {#if loading}
+      <span class="animate-pulse">→</span>
+    {:else}
+      →
+    {/if}
   </button>
 </section>
