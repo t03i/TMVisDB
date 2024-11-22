@@ -7,7 +7,7 @@ from sqlmodel import (
     SQLModel,
     Index,
 )
-from pydantic import BaseModel, PositiveInt, Field as PD_Field, validator
+from pydantic import BaseModel, PositiveInt, Field as PD_Field, field_validator
 
 from .definitions import Topology
 from .taxonomy_enums import SuperKingdom, Clade, SK_CLADE_MAPPING
@@ -120,7 +120,7 @@ class TaxonomyFilter(BaseModel):
     super_kingdom: SuperKingdom
     clade: Optional[Clade] = None
 
-    @validator("clade")
+    @field_validator("clade")
     def validate_clade(cls, v, values):
         if v is not None:
             super_kingdom = values.get("super_kingdom")
@@ -144,6 +144,9 @@ class ProteinFilter(BaseModel):
     sequence_length_max: Annotated[
         Optional[PositiveInt], PD_Field(default=None, le=settings.MAX_PROTEIN_LENGTH)
     ]
+
+
+class ProteinRequest(ProteinFilter):
     page: Annotated[Optional[PositiveInt], PD_Field(default=None, ge=0)]
     page_size: PositiveInt = PD_Field(default=100, le=settings.MAX_RESULTS_LIMIT)
 

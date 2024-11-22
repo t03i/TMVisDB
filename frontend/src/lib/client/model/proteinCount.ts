@@ -4,8 +4,7 @@
  * TMVis
  * OpenAPI spec version: 0.1.0
  */
-import type { ProteinInfo } from './proteinInfo';
 
-export interface ProteinResponse {
-  items: ProteinInfo[];
+export interface ProteinCount {
+  count: number;
 }
