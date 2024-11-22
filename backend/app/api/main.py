@@ -4,7 +4,7 @@ from .routes import annotations, proteins, info
 from app.core.config import settings
 
 api_router = APIRouter()
-api_router.include_router(proteins.router, prefix="/proteins", tags=["proteins"])
+api_router.include_router(proteins.router)
 api_router.include_router(
     annotations.router, prefix="/annotations", tags=["annotations"]
 )
