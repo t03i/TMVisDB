@@ -1,12 +1,15 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
 import random
+from typing import Optional
+from base64 import b64encode, b64decode
 
 from sqlalchemy import Select, func, select, and_
 from sqlmodel import Session
 
 from .models import (
     ProteinCount,
+    ProteinRequest,
     Sequence,
     Annotation,
     Organism,
@@ -15,6 +18,7 @@ from .models import (
     ProteinFilter,
     TaxonomyFilter,
     ProteinResponse,
+    PageInfo,
 )
 from .core.config import settings
 from .definitions import Topology
@@ -71,19 +75,25 @@ def _query_filter(filter: ProteinFilter):
     return conditions
 
 
-def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
-    """Build the base query with required joins.
+def _encode_cursor(last_id: int) -> str:
+    """Encode the last ID as a cursor."""
+    return b64encode(str(last_id).encode()).decode()
 
-    Args:
-        filter: The filter to apply
-        for_count: If True, builds an optimized count query joining only IDs
-    """
+
+def _decode_cursor(cursor: str) -> int:
+    """Decode cursor back to ID."""
+    return int(b64decode(cursor.encode()).decode())
+
+
+def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
+    """Build the base query with required joins."""
     conditions = _query_filter(filter)
 
     if for_count:
+        # For count queries, we can use an estimate from statistics
+        # This is POSTGRES specific and would need adjustment for other databases
         query = (
-            select(func.count())
-            .select_from(Sequence)
+            select(func.count(Sequence.id))
             .join(TMInfo, Sequence.id == TMInfo.sequence_id)
             .join(Organism, Sequence.organism_id == Organism.id)
         )
@@ -93,6 +103,10 @@ def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
             .join(TMInfo, Sequence.id == TMInfo.sequence_id)
             .join(Organism, Sequence.organism_id == Organism.id)
         )
+
+        # Always order by ID for consistent pagination
+        query = query.order_by(Sequence.id)
+
     if conditions:
         query = query.where(and_(*conditions))
     return query
@@ -101,18 +115,34 @@ def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
 def execute_query(
     db: Session,
     query: Select,
+    cursor: Optional[str] = None,
     page_size: int | None = None,
-    page: int | None = None,
 ) -> ProteinResponse | None:
-    """Execute the query with optional pagination and return ProteinInfo objects."""
-    if page is not None and page_size is not None:
-        query = query.offset(page_size * page)
-    if page_size is not None:
-        query = query.limit(page_size)
+    """Execute the query with keyset pagination."""
 
-    result = db.exec(query)
+    # Add keyset pagination
+    if cursor:
+        last_id = _decode_cursor(cursor)
+        query = query.where(Sequence.id > last_id)
+    if page_size:
+        query = query.limit(page_size + 1)  # Fetch one extra to check if there's more
+
+    result = db.exec(query).all()
+
+    has_next_page = len(result) > page_size if page_size else False
+    if has_next_page:
+        result = result[:-1]  # Remove the extra item
+
     protein_info = _query_to_protein_info(result)
-    return ProteinResponse(items=protein_info) if protein_info else None
+
+    if not protein_info:
+        return None
+
+    # Get the last ID for the next cursor
+    next_cursor = _encode_cursor(result[-1].Sequence.id) if has_next_page else None
+    page_info = PageInfo(next_cursor=next_cursor, has_next_page=has_next_page)
+
+    return ProteinResponse(items=protein_info, page_info=page_info)
 
 
 def execute_count_query(db: Session, query: Select) -> ProteinCount | None:
@@ -123,31 +153,34 @@ def execute_count_query(db: Session, query: Select) -> ProteinCount | None:
 
 
 def get_proteins_by_organism(
-    db: Session, organism_id: int, filter: ProteinFilter, count_only: bool = False
+    db: Session,
+    organism_id: int,
+    filter: ProteinRequest | ProteinFilter,
+    count_only: bool = False,
 ) -> ProteinResponse | ProteinCount | None:
     query = build_base_query(filter, for_count=count_only)
     query = query.where(Organism.taxon_id == organism_id)
-    return (
-        execute_count_query(db, query)
-        if count_only
-        else execute_query(db, query, filter.page_size, filter.page)
-    )
+    if not count_only:
+        return execute_query(db, query, filter.cursor, filter.page_size)
+    else:
+        return execute_count_query(db, query)
 
 
 def get_proteins_by_lineage(
     db: Session,
     taxonomy: TaxonomyFilter,
-    filter: ProteinFilter,
+    filter: ProteinRequest | ProteinFilter,
     count_only: bool = False,
 ) -> ProteinResponse | ProteinCount | None:
     query = build_base_query(filter, for_count=count_only)
     query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)
     if taxonomy.clade:
         query = query.where(Organism.clade == taxonomy.clade)
+
     return (
         execute_count_query(db, query)
         if count_only
-        else execute_query(db, query, filter.page_size, filter.page)
+        else execute_query(db, query, filter.cursor, filter.page_size)
     )
 
 
@@ -184,7 +217,7 @@ def get_random_proteins(db: Session, num_sequences: int) -> ProteinResponse | No
     result = db.exec(query)
     proteins = _query_to_protein_info(result)
 
-    return ProteinResponse(items=proteins) if proteins else None
+    return ProteinResponse(items=proteins, page_info=None) if proteins else None
 
 
 def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:

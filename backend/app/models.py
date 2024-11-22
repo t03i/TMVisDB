@@ -82,8 +82,14 @@ class ProteinInfo(PublicTMInfo, PublicSequence, PublicOrganism, table=False):
     pass
 
 
+class PageInfo(BaseModel):
+    next_cursor: Optional[str] = None
+    has_next_page: bool
+
+
 class ProteinResponse(BaseModel):
     items: list[ProteinInfo]
+    page_info: PageInfo | None
 
 
 class ProteinCount(BaseModel):
@@ -147,7 +153,7 @@ class ProteinFilter(BaseModel):
 
 
 class ProteinRequest(ProteinFilter):
-    page: Annotated[Optional[int], PD_Field(default=None, ge=0)]
+    cursor: Optional[str] = None
     page_size: PositiveInt = PD_Field(default=100, le=settings.MAX_RESULTS_LIMIT)
 
 
