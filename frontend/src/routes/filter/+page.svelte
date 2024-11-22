@@ -17,7 +17,7 @@
   const itemsPerPage = config.PROTEIN_PAGE_SIZE;
 
   $: params = Object.fromEntries($page.url.searchParams);
-  $: currentPage = params.page ? parseInt(params.page) : 1;
+  $: currentPage = params.page ? parseInt(params.page)  :1;
   $: query = createDataQueries(params, currentPage , data.proteinResponse);
   $: dataQuery = query.data;
   $: countQuery = query.count;

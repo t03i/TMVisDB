@@ -32,7 +32,7 @@ type Request = Filter & {
   page_size: number;
 };
 
-export function createDataQueries(filterParams: Record<string, string>, pageNumber?: number = 1, initialData?: ProteinResponse) {
+export function createDataQueries(filterParams: Record<string, string>, pageNumber: number = 1, initialData?: ProteinResponse) {
   // Define query parameters
   const filter: Filter = {
     ...(filterParams.topology && { topology: filterParams.topology }),
@@ -42,7 +42,7 @@ export function createDataQueries(filterParams: Record<string, string>, pageNumb
   };
   const request: Request = {
     ...filter,
-    page: pageNumber,
+    page: pageNumber - 1, // API expects 0-based page index
     page_size: PAGE_SIZE,
   };
 

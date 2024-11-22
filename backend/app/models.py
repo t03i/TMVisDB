@@ -147,7 +147,7 @@ class ProteinFilter(BaseModel):
 
 
 class ProteinRequest(ProteinFilter):
-    page: Annotated[Optional[PositiveInt], PD_Field(default=None, ge=0)]
+    page: Annotated[Optional[int], PD_Field(default=None, ge=0)]
     page_size: PositiveInt = PD_Field(default=100, le=settings.MAX_RESULTS_LIMIT)
 
 
