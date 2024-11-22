@@ -3,8 +3,7 @@
   import { page } from "$app/stores";
   import * as Sentry from "@sentry/svelte";
 
-
-  import DataLoader from "$lib/components/DataLoader.svelte";
+  import { createDataQueries } from "$lib/stores/DataQueryStore";
   import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
   import { DataTable, LoadingTable } from "$lib/components/Table";
   import { proteinTableHeaders } from "$lib/tableConfig";
@@ -15,11 +14,13 @@
   /** @type {import('./$types').PageData} */
   export let data;
   let isHydrated = data.isHydrated;
-  const itemsPerPage = 20;
+  const itemsPerPage = config.PROTEIN_PAGE_SIZE;
 
   $: params = Object.fromEntries($page.url.searchParams);
   $: currentPage = params.page ? parseInt(params.page) : 1;
-
+  $: query = createDataQueries(params, currentPage , data.proteinResponse);
+  $: dataQuery = query.data;
+  $: countQuery = query.count;
   // Add breadcrumb when filters change
   $: {
     if (Object.keys(params).length > 0) {
@@ -49,49 +50,40 @@
 </script>
 
 <svelte:head>
-  <title>{config.APP_NAME} Filter</title>
+  <title>{config.APP_NAME} Database Filter</title>
 </svelte:head>
 
-<DataLoader
-  {params}
-  initialData={data.initialProteins}
-  pageSize={itemsPerPage}
-  {currentPage}
-  let:data={proteinResponse}
-  let:isSuccessful
-  let:isLoading
-  let:error
->
+
   <div class="card m-3 p-2">
-    <FilterFormLoading {isLoading}>
+    <FilterFormLoading isLoading={$dataQuery?.isLoading ?? false}>
       <FilterForm />
     </FilterFormLoading>
   </div>
 
   <div class="card p-2 m-3">
-    {#if isSuccessful}
+    {#if $dataQuery?.isSuccess}
       <h3 class="h3 mb-1 text-center">
         {params?.search_for ? "Filtered Proteins" : "Random Proteins"}
       </h3>
       <DataTable
-        data={proteinResponse.items}
+        data={$dataQuery?.data?.items}
         headers={proteinTableHeaders}
         onRowClick={handleRowClick}
         {currentPage}
         pageSize={itemsPerPage}
-        totalItems={200}
+        totalItems={$countQuery?.data?.count ?? 0}
         onSetPage={(page) => (currentPage = page)}
       />
-    {:else if isLoading}
+    {:else if $dataQuery?.isLoading}
       <LoadingTable headers={proteinTableHeaders} rows={itemsPerPage} />
-    {:else if error}
+    {:else if $dataQuery === null || $dataQuery?.error}
       <div class="card variant-filled-error p-4">
         <div class="flex items-center gap-4">
           <iconify-icon icon="line-md:alert" class="text-2xl"></iconify-icon>
           <div>
             <h3 class="h3">Error Loading Data</h3>
             <p>
-              {error.message ||
+              {$dataQuery?.error?.message ||
                 "An unexpected error occurred while loading the data."}
             </p>
           </div>
@@ -115,4 +107,3 @@
       </div>
     {/if}
   </div>
-</DataLoader>
