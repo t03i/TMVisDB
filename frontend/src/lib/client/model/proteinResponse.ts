@@ -5,7 +5,9 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { ProteinInfo } from './proteinInfo';
+import type { ProteinResponsePageInfo } from './proteinResponsePageInfo';
 
 export interface ProteinResponse {
   items: ProteinInfo[];
+  page_info: ProteinResponsePageInfo;
 }
