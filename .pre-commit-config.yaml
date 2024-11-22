@@ -28,7 +28,7 @@ repos:
         name: Generate API Client
         entry: scripts/generate-client.sh
         language: script
-        files: backend/app/
+        files: backend/app/api/
         types: [python]
       - id: generate-enums
         name: Generate Enums

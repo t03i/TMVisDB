@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 import random
 
-from sqlalchemy import func, select, and_
+from sqlalchemy import Select, func, select, and_
 from sqlmodel import Session
 
 from .models import (
+    ProteinCount,
     Sequence,
     Annotation,
     Organism,
@@ -13,12 +14,13 @@ from .models import (
     ProteinInfo,
     ProteinFilter,
     TaxonomyFilter,
+    ProteinResponse,
 )
 from .core.config import settings
 from .definitions import Topology
 
 
-def _query_to_protein_info(query_result):
+def _query_to_protein_info(query_result) -> list[ProteinInfo]:
     protein_infos = []
     for row in query_result:
         # Create a combined dictionary from all three Pydantic models
@@ -35,9 +37,7 @@ def _query_to_protein_info(query_result):
     return protein_infos
 
 
-def filtered_query(filter: ProteinFilter):
-    query = select(Sequence, TMInfo, Organism).join(TMInfo).join(Organism)
-
+def _query_filter(filter: ProteinFilter):
     conditions = []
 
     # Topology filter
@@ -68,48 +68,106 @@ def filtered_query(filter: ProteinFilter):
             )
         )
 
-    # Apply all conditions
+    return conditions
+
+
+def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
+    """Build the base query with required joins.
+
+    Args:
+        filter: The filter to apply
+        for_count: If True, builds an optimized count query joining only IDs
+    """
+    conditions = _query_filter(filter)
+
+    if for_count:
+        query = (
+            select(func.count())
+            .select_from(Sequence)
+            .join(TMInfo, Sequence.id == TMInfo.sequence_id)
+            .join(Organism, Sequence.organism_id == Organism.id)
+        )
+    else:
+        query = (
+            select(Sequence, TMInfo, Organism)
+            .join(TMInfo, Sequence.id == TMInfo.sequence_id)
+            .join(Organism, Sequence.organism_id == Organism.id)
+        )
     if conditions:
         query = query.where(and_(*conditions))
-
     return query
 
 
-def get_paginated_proteins_with_count(
-    db: Session, base_query, page_size: int, page: int | None
-):
-    # count_query = select(func.count()).select_from(base_query.subquery())
-    # total_count = db.execute(count_query).scalar()
-    total_count = page_size
+def execute_query(
+    db: Session,
+    query: Select,
+    page_size: int | None = None,
+    page: int | None = None,
+) -> ProteinResponse | None:
+    """Execute the query with optional pagination and return ProteinInfo objects."""
+    if page is not None and page_size is not None:
+        query = query.offset(page_size * page)
+    if page_size is not None:
+        query = query.limit(page_size)
 
-    query = base_query.limit(page_size)
+    result = db.exec(query)
+    protein_info = _query_to_protein_info(result)
+    return ProteinResponse(items=protein_info) if protein_info else None
 
-    if page is not None:
-        offset = page_size * page
-        query = query.offset(offset)
 
-    result = db.execute(query)
-    proteins = _query_to_protein_info(result)
-    return proteins, total_count
+def execute_count_query(db: Session, query: Select) -> ProteinCount | None:
+    """Execute a count query based on the filter."""
+    count: int | None = db.exec(query).scalar()
+
+    return ProteinCount(count=count) if count else None
+
+
+def get_proteins_by_organism(
+    db: Session, organism_id: int, filter: ProteinFilter, count_only: bool = False
+) -> ProteinResponse | ProteinCount | None:
+    query = build_base_query(filter, for_count=count_only)
+    query = query.where(Organism.taxon_id == organism_id)
+    return (
+        execute_count_query(db, query)
+        if count_only
+        else execute_query(db, query, filter.page_size, filter.page)
+    )
+
+
+def get_proteins_by_lineage(
+    db: Session,
+    taxonomy: TaxonomyFilter,
+    filter: ProteinFilter,
+    count_only: bool = False,
+) -> ProteinResponse | ProteinCount | None:
+    query = build_base_query(filter, for_count=count_only)
+    query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)
+    if taxonomy.clade:
+        query = query.where(Organism.clade == taxonomy.clade)
+    return (
+        execute_count_query(db, query)
+        if count_only
+        else execute_query(db, query, filter.page_size, filter.page)
+    )
 
 
 def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annotation]:
     sequence = (
-        db.query(Sequence).filter(Sequence.uniprot_accession == selected_id).first()  # type: ignore
+        db.exec(
+            select(Sequence).where(Sequence.uniprot_accession == selected_id)
+        ).first()  # type: ignore
     )
     if not sequence:
         return []
 
-    annotations = (
-        db.query(Annotation).filter(Annotation.sequence_id == sequence.id).all()
-    )
+    annotations = db.exec(
+        select(Annotation).where(Annotation.sequence_id == sequence.id)
+    ).all()
     return annotations
 
 
-def get_random_proteins(
-    db: Session, num_sequences: int
-) -> tuple[list[ProteinInfo], int]:
-    max_id = db.query(func.max(Sequence.id)).scalar()
+def get_random_proteins(db: Session, num_sequences: int) -> ProteinResponse | None:
+    max_id = db.exec(select(func.max(Sequence.id))).scalar()
 
     # Generate a list of random IDs
     random_ids = random.sample(range(1, max_id + 1), min(num_sequences * 2, max_id))
@@ -123,30 +181,10 @@ def get_random_proteins(
         .limit(num_sequences)
     )
 
-    result = db.execute(query)
+    result = db.exec(query)
     proteins = _query_to_protein_info(result)
 
-    return proteins, len(proteins)
-
-
-def get_proteins_by_organism(
-    db: Session, organism_id: int, filter: ProteinFilter
-) -> tuple[list[ProteinInfo], int]:
-    query = filtered_query(filter)
-    query = query.where(Organism.taxon_id == organism_id)  # type: ignore
-
-    return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
-
-
-def get_proteins_by_lineage(
-    db: Session, taxonomy: TaxonomyFilter, filter: ProteinFilter
-) -> tuple[list[ProteinInfo], int]:
-    query = filtered_query(filter)
-    query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)  # type: ignore
-    if taxonomy.clade:
-        query = query.where(Organism.clade == taxonomy.clade)  # type: ignore
-
-    return get_paginated_proteins_with_count(db, query, filter.page_size, filter.page)
+    return ProteinResponse(items=proteins) if proteins else None
 
 
 def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
@@ -157,7 +195,7 @@ def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
         .where(Sequence.uniprot_accession == uniprot_accession)  # type: ignore
     )
 
-    result = db.execute(query).first()
+    result = db.exec(query).first()
     if result is None:
         raise ValueError(f"No protein found with uniprot_accession {uniprot_accession}")
 
@@ -176,5 +214,5 @@ def get_protein_by_id(db: Session, uniprot_accession: str) -> ProteinInfo:
 
 def check_protein_exists(db: Session, uniprot_accession: str) -> bool:
     query = select(Sequence.id).where(Sequence.uniprot_accession == uniprot_accession)  # type: ignore
-    result = db.execute(query).first()
+    result = db.exec(query).first()
     return result is not None
