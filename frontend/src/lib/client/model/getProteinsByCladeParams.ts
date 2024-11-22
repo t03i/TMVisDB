@@ -11,6 +11,6 @@ topology?: Topology | null;
 has_signal_peptide?: boolean | null;
 sequence_length_min?: number | null;
 sequence_length_max?: number | null;
-page?: number | null;
+cursor?: string | null;
 page_size?: number;
 };
