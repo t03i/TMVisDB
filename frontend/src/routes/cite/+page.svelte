@@ -19,7 +19,7 @@
       </div>
       <div class="md:w-1/2">
         <SciReference
-          doi="https://doi.org/10.1101/2022.11.30.518551"
+          doi="https://doi.org/10.1101/2024.11.22.624323"
           class="w-full"
         />
       </div>

@@ -116,12 +116,16 @@ The database is available at [Zenodo (10.5281/zenodo.14186950)](https://doi.org/
 If you use TMvisDB in your research, please cite:
 
 ```bibtex
-@article{tmvisdb2024,
-title={TMvisDB: A database for visualization of predicted transmembrane proteins},
-author={...},
-journal={bioRxiv},
-year={2022},
-doi={10.1101/2022.11.30.518551}
+@article {tmvisdb2024,
+	author = {Olenyi, Tobias and Marquet, C{\'e}line and Grekova, Anastasia and Houri, Leen and Heinzinger, Michael and Dallago, Christian and Rost, Burkhard},
+	title = {TMVisDB: A Resource for Transmembrane Protein Annotations and 3D Visualizations},
+	elocation-id = {2024.11.22.624323},
+	year = {2024},
+	doi = {10.1101/2024.11.22.624323},
+	publisher = {Cold Spring Harbor Laboratory},
+	URL = {https://www.biorxiv.org/content/early/2024/11/23/2024.11.22.624323},
+	eprint = {https://www.biorxiv.org/content/early/2024/11/23/2024.11.22.624323.full.pdf},
+	journal = {bioRxiv}
 }
 ```
 
