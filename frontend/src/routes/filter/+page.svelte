@@ -18,9 +18,16 @@
 
   $: params = Object.fromEntries($page.url.searchParams);
   $: currentPage = params.page ? parseInt(params.page)  :1;
-  $: query = createDataQueries(params, currentPage , data.proteinResponse);
+  $: query = createDataQueries(params, currentPage, data.proteinResponse);
   $: dataQuery = query.data;
   $: countQuery = query.count;
+  $: pagination = query.pagination;
+
+  // Cleanup on component destroy
+  onDestroy(() => {
+    pagination?.destroy();
+  });
+
   // Add breadcrumb when filters change
   $: {
     if (Object.keys(params).length > 0) {
@@ -69,11 +76,10 @@
         data={$dataQuery?.data?.items}
         headers={proteinTableHeaders}
         onRowClick={handleRowClick}
-        {currentPage}
         pageSize={itemsPerPage}
-        totalItemsLoading={$countQuery?.isLoading ?? false}
-        totalItems={$countQuery?.data?.count ?? 0}
         onSetPage={(page) => (currentPage = page)}
+        showPagination={!!params?.search_for}
+        {pagination}
       />
     {:else if $dataQuery?.isLoading}
       <LoadingTable headers={proteinTableHeaders} rows={itemsPerPage} />
