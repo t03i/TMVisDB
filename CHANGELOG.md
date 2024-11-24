@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.3.3 (2024-11-24)
+
+### Bug Fixes
+
+- Update citation to latest biorxiv
+  ([`19a8685`](https://github.com/t03i/TMVisDB/commit/19a86857bab013e97e7955ec0a0d092165b6a9da))
+
+
 ## v1.3.2 (2024-11-21)
 
 ### Bug Fixes
