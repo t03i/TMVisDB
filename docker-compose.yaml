@@ -26,7 +26,7 @@ services:
             - DOMAIN=${API_DOMAIN}
             - ENVIRONMENT=${NODE_ENV}
             - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
-            - SENTRY_DSN=${SENTRY_DSN}
+            - SENTRY_DSN_BACKEND=${SENTRY_DSN_BACKEND}
             - SQLITE_DATABASE_PATH=${SQLITE_DATABASE_PATH}
         volumes:
             - ./backend/data/tmvis.db:/app/data/tmvis.db:ro
