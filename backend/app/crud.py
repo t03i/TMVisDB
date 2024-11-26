@@ -104,8 +104,8 @@ def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
             .join(Organism, Sequence.organism_id == Organism.id)
         )
 
-        # Always order by ID for consistent pagination
-        query = query.order_by(Sequence.id)
+        # Always order by ID for consistent pagination; this is super slow and not feasible
+        # query = query.order_by(Sequence.id)
 
     if conditions:
         query = query.where(and_(*conditions))
