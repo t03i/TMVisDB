@@ -3,6 +3,7 @@
 
 export { default as DataTable } from './DataTable.svelte';
 export { default as LoadingTable } from './LoadingTable.svelte';
+export { default as PaginationFooter } from './PaginationFooter.svelte'
 
 export interface TableHeader<T> {
     key: string;

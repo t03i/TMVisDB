@@ -8,7 +8,7 @@
   import ThFilter from "./ThFilter.svelte";
   import ThBoolFilter from "./ThBoolFilter.svelte";
   import Search from "./Search.svelte";
-  import TableFooter from "./TableFooter.svelte";
+  import TableFooter from "./PaginationFooter.svelte";
   import type { TableHeader } from "$lib/components/Table";
   import DownloadCsv from "./DownloadCSV.svelte";
 
@@ -16,11 +16,8 @@
   export let headers: TableHeader<any>[];
   export let rowsPerPage: number = 20;
   export let currentPage: number;
-  export let pageSize: number;
-  export let totalItems: number;
-  export let totalItemsLoading: boolean = false;
+
   export let onRowClick: (row: any) => void = () => {};
-  export let onSetPage: (page: number) => void;
 
   let handler: DataHandler<any>;
   let rows: Readable<any[]>;
@@ -71,6 +68,9 @@
         {/each}
       </tbody>
     </table>
-    <TableFooter {currentPage} {onSetPage} {pageSize} {totalItems} {totalItemsLoading} />
+    <footer>
+      <slot name="footer">
+      </slot>
+    </footer>
   </div>
 {/if}
