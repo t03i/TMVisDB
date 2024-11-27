@@ -1,21 +1,27 @@
 <script lang="ts">
+  import type { ProteinCount, HTTPValidationError } from "$lib/client/model";
+  import type { CreateQueryResult } from "@tanstack/svelte-query";
+
   export let currentPage: number;
   export let pageSize: number;
-  export let totalItems: number;
-  export let totalItemsLoading: boolean = false;
+  export let countQuery: CreateQueryResult<ProteinCount, HTTPValidationError> | null;
 
   $: startRow = (currentPage - 1) * pageSize + 1;
-  $: endRow = Math.min(currentPage * pageSize, totalItems);
+  $: endRow = currentPage * pageSize;
+  // #todo Fix actual end item
 </script>
 
 <aside class="mr-6 text-sm leading-8">
-  {#if totalItemsLoading}
-    <span class="animate-pulse">Loading...</span>
-  {:else if totalItems > 0}
     <b>{startRow}</b>
     - <b>{endRow}</b>
-    / <b>{totalItems}</b>
-  {:else}
-    No entries found
+    {#if countQuery}
+    \
+    {#if $countQuery?.isLoading}
+      <span class='italic animate-pulse'>Loading ... </span>
+    {:else if $countQuery?.isError}
+      <span class='italic text-error-500'>Error loading count</span>
+    {:else}
+      <b>{$countQuery?.data?.count}</b>
+    {/if}
   {/if}
 </aside>
