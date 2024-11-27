@@ -1,7 +1,15 @@
 // Copyright 2024 Tobias Olenyi.
 // SPDX-License-Identifier: Apache-2.0
 
+import { wrappedQueries } from "$lib/client/autoWrapper";
 import { derived, get, readable, writable, type Readable } from "svelte/store";
+
+const {
+  useRandomProteins,
+  useProteinsByOrganism,
+  useProteinsBySuperKingdom,
+  useProteinsByClade,
+} = wrappedQueries;
 
 import type {
   Clade,
@@ -16,7 +24,6 @@ import type {
 } from "$lib/client/model";
 import {
   createGetProteinsByClade,
-  createGetProteinsByOrganism,
   createGetProteinsBySuperKingdom,
   createGetRandomProteins,
 } from "$lib/client/tmvisdb";
@@ -53,23 +60,20 @@ class QueryManager {
       }),
     };
 
-    const baseOptions = {
-      query: {
-        queryClient: this.queryClient,
-      },
-    };
-
     if (this.filterParams.search_for === "id") {
-      const organismId = parseInt(this.filterParams.organism_id);
-      return createGetProteinsByOrganism(
-        organismId,
-        {
-          ...filter,
-          cursor,
-          page_size: config.PROTEIN_PAGE_SIZE,
-        } as GetProteinsByOrganismParams,
-        baseOptions,
-      );
+      const organismId = parseInt(this.filterParams.organismid);
+      console.log("organismId", this.filterParams.organismid);
+      return useProteinsByOrganism({
+        params: [
+          organismId,
+          {
+            ...filter,
+            cursor,
+            page_size: config.PROTEIN_PAGE_SIZE,
+          } as GetProteinsByOrganismParams,
+        ],
+        queryClient: this.queryClient,
+      });
     }
     if (this.filterParams.search_for === "taxa") {
       const superKingdom = this.filterParams.domain as SuperKingdom;

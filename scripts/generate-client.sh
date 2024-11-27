@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BACKEND_DIR="$ROOT_DIR/backend"
 FRONTEND_DIR="$ROOT_DIR/frontend"
@@ -51,7 +52,6 @@ module.exports = {
           path: "$FRONTEND_DIR/src/lib/client/dataMutator.ts",
           name: "dataMutator",
         },
-        transformer: "$FRONTEND_DIR/src/lib/client/transformer.ts",
       },
     },
     input: {
