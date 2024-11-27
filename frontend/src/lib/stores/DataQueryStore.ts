@@ -1,85 +1,172 @@
 // Copyright 2024 Tobias Olenyi.
 // SPDX-License-Identifier: Apache-2.0
 
-import { readable, writable, derived } from "svelte/store";
-import type { CreateQueryResult, QueryKey } from "@tanstack/svelte-query";
+import { derived, get, readable, writable, type Readable } from "svelte/store";
 
-import type { ProteinResponse, PageInfo, GetProteinsByOrganismParams, SuperKingdom, Clade, GetProteinsBySuperKingdomParams, GetProteinsByCladeParams, PageInfoNextCursor,  HTTPValidationError } from "$lib/client/model";
+import type {
+  Clade,
+  GetProteinsByCladeParams,
+  GetProteinsByOrganismParams,
+  GetProteinsBySuperKingdomParams,
+  PageInfoNextCursor,
+  ProteinResponse,
+  ProteinResponsePageInfo,
+  SuperKingdom,
+  Topology,
+} from "$lib/client/model";
 import {
-  createGetProteinsByOrganism,
   createGetProteinsByClade,
+  createGetProteinsByOrganism,
   createGetProteinsBySuperKingdom,
   createGetRandomProteins,
 } from "$lib/client/tmvisdb";
 import config from "$lib/config";
+import { useQueryClient, type QueryClient } from "@tanstack/svelte-query";
 
 type Filter = {
-  topology?: string;
+  topology?: Topology;
   has_signal_peptide?: boolean;
   sequence_length_min?: number;
   sequence_length_max?: number;
+  cursor?: PageInfoNextCursor;
 };
 
+class QueryManager {
+  constructor(
+    private filterParams: Record<string, string>,
+    private queryClient: QueryClient,
+  ) {}
+
+  createQuery(cursor?: PageInfoNextCursor) {
+    const filter: Filter = {
+      ...(this.filterParams.topology && {
+        topology: this.filterParams.topology as Topology,
+      }),
+      ...(this.filterParams.peptide && {
+        has_signal_peptide: this.filterParams.peptide === "true",
+      }),
+      ...(this.filterParams.min && {
+        sequence_length_min: parseInt(this.filterParams.min),
+      }),
+      ...(this.filterParams.max && {
+        sequence_length_max: parseInt(this.filterParams.max),
+      }),
+    };
+
+    const baseOptions = {
+      query: {
+        queryClient: this.queryClient,
+      },
+    };
+
+    if (this.filterParams.search_for === "id") {
+      const organismId = parseInt(this.filterParams.organism_id);
+      return createGetProteinsByOrganism(
+        organismId,
+        {
+          ...filter,
+          cursor,
+          page_size: config.PROTEIN_PAGE_SIZE,
+        } as GetProteinsByOrganismParams,
+        baseOptions,
+      );
+    }
+    if (this.filterParams.search_for === "taxa") {
+      const superKingdom = this.filterParams.domain as SuperKingdom;
+      if (!superKingdom) {
+        console.error("Invalid super kingdom:", this.filterParams.domain);
+        return null;
+      }
+      if (this.filterParams.kingdom) {
+        const clade = this.filterParams.kingdom as Clade;
+        return createGetProteinsByClade(
+          superKingdom,
+          clade,
+          {
+            ...filter,
+            cursor,
+            page_size: config.PROTEIN_PAGE_SIZE,
+          } as GetProteinsByCladeParams,
+          baseOptions,
+        );
+      }
+      return createGetProteinsBySuperKingdom(
+        superKingdom,
+        {
+          ...filter,
+          cursor,
+          page_size: config.PROTEIN_PAGE_SIZE,
+        } as GetProteinsBySuperKingdomParams,
+        baseOptions,
+      );
+    }
+    return null;
+  }
+}
+
+export type Pagination = {
+  goForward: () => void;
+  goBack: () => void;
+  canGoForward: Readable<boolean>;
+  canGoBack: Readable<boolean>;
+  hasNextPage: Readable<boolean>;
+  currentPage: Readable<number>;
+  destroy: () => void;
+};
 
 interface PaginationState {
   currentPageIndex: number;
-  pageInfoHistory: PageInfo[];
+  pageInfoHistory: ProteinResponsePageInfo[];
 }
 
-export function createPaginatedQuery(filterParams: Record<string, string>) {
+export function createPaginatedQuery(
+  filterParams: Record<string, string>,
+  queryClient: QueryClient,
+) {
   const paginationStore = writable<PaginationState>({
     currentPageIndex: 0,
-    pageInfoHistory: []
+    pageInfoHistory: [],
   });
 
-  const filter: Filter = {
-    ...(filterParams.topology && { topology: filterParams.topology }),
-    ...(filterParams.peptide && { has_signal_peptide: filterParams.peptide === "true" }),
-    ...(filterParams.min && { sequence_length_min: parseInt(filterParams.min) }),
-    ...(filterParams.max && { sequence_length_max: parseInt(filterParams.max) }),
-  };
+  const queryManager = new QueryManager(filterParams, queryClient);
+  console.log("queryManager", queryManager);
 
-  // Create a new query based on current cursor
-  const createQuery = (cursor?: PageInfoNextCursor) => {
-    if (filterParams.search_for === "id") {
-      const organismId = parseInt(filterParams.organism_id);
-      return createGetProteinsByOrganism(organismId, {...filter, cursor, page_size: config.PROTEIN_PAGE_SIZE} as GetProteinsByOrganismParams);
-    }
-    if (filterParams.search_for === "taxa") {
-      const superKingdom = filterParams.domain as SuperKingdom;
-      if (!superKingdom) {
-        console.error("Invalid super kingdom:", filterParams.domain);
-        return null;
-      }
-      if (filterParams.kingdom) {
-        const clade = filterParams.kingdom as Clade;
-        return createGetProteinsByClade(superKingdom, clade, {...filter, cursor, page_size: config.PROTEIN_PAGE_SIZE} as GetProteinsByCladeParams);
-      }
-
-      return createGetProteinsBySuperKingdom(superKingdom, {...filter, cursor, page_size: config.PROTEIN_PAGE_SIZE} as GetProteinsBySuperKingdomParams);
-    }
-    return null;
+  // Define addPageInfo before using it
+  const addPageInfo = (pageInfo: ProteinResponsePageInfo) => {
+    console.log("addPageInfo", pageInfo);
+    paginationStore.update((state) => {
+      const newHistory = [
+        ...state.pageInfoHistory.slice(0, state.currentPageIndex + 1),
+        pageInfo,
+      ];
+      console.log("newHistory", newHistory);
+      return {
+        pageInfoHistory: newHistory,
+        currentPageIndex: state.currentPageIndex,
+      };
+    });
   };
 
   // Store for the current query
-  const currentQuery = writable<CreateQueryResult<ProteinResponse, HTTPValidationError> & { queryKey: QueryKey; } | null>(createQuery());
 
-  // Create a single subscription that we can control
-  let queryUnsubscribe = currentQuery.subscribe(($query) => {
+  const currentQuery = writable(queryManager.createQuery());
+
+  // Now we can use addPageInfo in the subscription
+  let queryUnsubscribe = get(currentQuery).subscribe(($query) => {
     if ($query?.data) {
-      addPageInfo($query.data.page_info);
+      addPageInfo($query?.data.page_info);
     }
   });
 
   const goBack = () => {
-    paginationStore.update(state => {
+    paginationStore.update((state) => {
       if (state.currentPageIndex > 0) {
         const newIndex = state.currentPageIndex - 1;
         const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
-        currentQuery.set(createQuery(cursor));
+        currentQuery.set(queryManager.createQuery(cursor));
         return {
           ...state,
-          currentPageIndex: newIndex
+          currentPageIndex: newIndex,
         };
       }
       return state;
@@ -87,23 +174,24 @@ export function createPaginatedQuery(filterParams: Record<string, string>) {
   };
 
   const goForward = () => {
-    paginationStore.update(state => {
+    console.log("goForward");
+    paginationStore.update((state) => {
       const currentPageInfo = state.pageInfoHistory[state.currentPageIndex];
       if (state.currentPageIndex < state.pageInfoHistory.length - 1) {
         // Navigate through existing history
         const newIndex = state.currentPageIndex + 1;
         const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
-        currentQuery.set(createQuery(cursor));
+        currentQuery.set(queryManager.createQuery(cursor));
         return {
           ...state,
-          currentPageIndex: newIndex
+          currentPageIndex: newIndex,
         };
       } else if (currentPageInfo?.has_next_page) {
         // Fetch new page
         queryUnsubscribe(); // Unsubscribe from old query
-        const newQuery = createQuery(currentPageInfo.next_cursor);
+        const newQuery = queryManager.createQuery(currentPageInfo.next_cursor);
         currentQuery.set(newQuery);
-        queryUnsubscribe = currentQuery.subscribe(($query) => {
+        queryUnsubscribe = newQuery.subscribe(($query) => {
           if ($query?.data) {
             addPageInfo($query.data.page_info);
           }
@@ -111,16 +199,6 @@ export function createPaginatedQuery(filterParams: Record<string, string>) {
         return state; // State will be updated by the subscription
       }
       return state;
-    });
-  };
-
-  const addPageInfo = (pageInfo: PageInfo) => {
-    paginationStore.update(state => {
-      const newHistory = [...state.pageInfoHistory.slice(0, state.currentPageIndex + 1), pageInfo];
-      return {
-        pageInfoHistory: newHistory,
-        currentPageIndex: state.currentPageIndex + 1
-      };
     });
   };
 
@@ -133,39 +211,50 @@ export function createPaginatedQuery(filterParams: Record<string, string>) {
     query: currentQuery,
     goBack,
     goForward,
-    addPageInfo,
-    canGoBack: derived(paginationStore, state => state.currentPageIndex > 0),
-    canGoForward: derived(paginationStore, state =>
-      state.currentPageIndex < state.pageInfoHistory.length - 1 ||
-      (state.pageInfoHistory[state.currentPageIndex]?.has_next_page ?? false)
+    canGoBack: derived(
+      paginationStore,
+      (state) => state.pageInfoHistory.length > 1,
     ),
-    hasNextPage: derived(paginationStore, state =>
-      (state.pageInfoHistory[state.currentPageIndex]?.has_next_page ?? false)
+    canGoForward: derived(
+      paginationStore,
+      (state) =>
+        state.currentPageIndex < state.pageInfoHistory.length - 1 ||
+        (state.pageInfoHistory[state.currentPageIndex]?.has_next_page ?? false),
+    ),
+    hasNextPage: derived(
+      paginationStore,
+      (state) =>
+        state.pageInfoHistory[state.currentPageIndex]?.has_next_page ?? false,
+    ),
+    currentPage: derived(
+      paginationStore,
+      (state) => state.currentPageIndex + 1,
     ),
     destroy, // Add destroy method to cleanup
   };
 }
 
-export function createDataQueries(params: Record<string, string>, currentPage: number, initialData?: ProteinResponse) {
+export function createDataQueries(
+  params: Record<string, string>,
+  initialData?: ProteinResponse,
+) {
+  const queryClient = useQueryClient();
+  console.log("createDataQueries", params, queryClient, initialData);
   // If no search parameters are set, we're displaying random proteins
   const isRandomProteins = !params.search_for;
 
   if (isRandomProteins) {
     // For random proteins, create a simple query without pagination
-    const query = writable<CreateQueryResult<ProteinResponse, HTTPValidationError> & { queryKey: QueryKey; } | null>(
-      createGetRandomProteins(config.PROTEIN_PAGE_SIZE)
-    );
+    const query = readable(createGetRandomProteins(config.PROTEIN_PAGE_SIZE));
 
     return {
       data: query,
-      count: null, // No count needed for random proteins
-      pagination: null // No pagination needed for random proteins
+      count: null,
+      pagination: null,
     };
   }
 
-  // For filtered proteins, create paginated query
-  const paginatedQuery = createPaginatedQuery(params);
-
+  const paginatedQuery = createPaginatedQuery(params, queryClient);
 
   return {
     data: paginatedQuery.query,
@@ -176,7 +265,8 @@ export function createDataQueries(params: Record<string, string>, currentPage: n
       canGoForward: paginatedQuery.canGoForward,
       canGoBack: paginatedQuery.canGoBack,
       hasNextPage: paginatedQuery.hasNextPage,
-      destroy: paginatedQuery.destroy
-    }
+      currentPage: paginatedQuery.currentPage,
+      destroy: paginatedQuery.destroy,
+    },
   };
 }
