@@ -1,11 +1,22 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
-  import * as Sentry from "@sentry/svelte";
+  import { onDestroy } from "svelte";
+  import { get } from "svelte/store";
 
-  import { createDataQueries } from "$lib/stores/DataQueryStore";
+  import * as Sentry from "@sentry/svelte";
+  import { useQueryClient } from "@tanstack/svelte-query";
+
+  import {
+    createDataQueries,
+    type Pagination as PaginationType,
+  } from "$lib/stores/DataQueryStore";
   import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
-  import { DataTable, LoadingTable } from "$lib/components/Table";
+  import {
+    DataTable,
+    LoadingTable,
+    PaginationFooter,
+  } from "$lib/components/Table";
   import { proteinTableHeaders } from "$lib/tableConfig";
   import type { ProteinInfo } from "$lib/client/model";
   import config from "$lib/config";
@@ -14,12 +25,11 @@
   /** @type {import('./$types').PageData} */
   export let data;
   let isHydrated = data.isHydrated;
-  const itemsPerPage = config.PROTEIN_PAGE_SIZE;
+  const pageSize = config.PROTEIN_PAGE_SIZE;
 
   $: params = Object.fromEntries($page.url.searchParams);
-  $: currentPage = params.page ? parseInt(params.page)  :1;
-  $: query = createDataQueries(params, currentPage, data.proteinResponse);
-  $: dataQuery = query.data;
+  $: query = createDataQueries(params, data.proteinResponse);
+  $: dataQuery = query ? get(query.data) : null;
   $: countQuery = query.count;
   $: pagination = query.pagination;
 
@@ -32,25 +42,25 @@
   $: {
     if (Object.keys(params).length > 0) {
       Sentry.addBreadcrumb({
-        category: 'filters',
-        message: 'Applied protein filters',
-        level: 'info',
+        category: "filters",
+        message: "Applied protein filters",
+        level: "info",
         data: {
-          filters: params
-        }
+          filters: params,
+        },
       });
     }
   }
 
   function handleRowClick(row: ProteinInfo) {
     Sentry.addBreadcrumb({
-      category: 'navigation',
+      category: "navigation",
       message: `Viewed protein detail: ${row.uniprot_accession}`,
-      level: 'info',
+      level: "info",
       data: {
         uniprot_accession: row.uniprot_accession,
-        applied_filters: params
-      }
+        applied_filters: params,
+      },
     });
     goto(`/detail/${row.uniprot_accession}`);
   }
@@ -60,57 +70,55 @@
   <title>{config.APP_NAME} Database Filter</title>
 </svelte:head>
 
+<div class="card m-3 p-2">
+  <FilterFormLoading isLoading={$dataQuery?.isLoading ?? false}>
+    <FilterForm />
+  </FilterFormLoading>
+</div>
 
-  <div class="card m-3 p-2">
-    <FilterFormLoading isLoading={$dataQuery?.isLoading ?? false}>
-      <FilterForm />
-    </FilterFormLoading>
-  </div>
-
-  <div class="card p-2 m-3">
-    {#if $dataQuery?.isSuccess}
-      <h3 class="h3 mb-1 text-center">
-        {params?.search_for ? "Filtered Proteins" : "Random Proteins"}
-      </h3>
-      <DataTable
-        data={$dataQuery?.data?.items}
-        headers={proteinTableHeaders}
-        onRowClick={handleRowClick}
-        pageSize={itemsPerPage}
-        onSetPage={(page) => (currentPage = page)}
-        showPagination={!!params?.search_for}
-        {pagination}
-      />
-    {:else if $dataQuery?.isLoading}
-      <LoadingTable headers={proteinTableHeaders} rows={itemsPerPage} />
-    {:else if $dataQuery === null || $dataQuery?.error}
-      <div class="card variant-filled-error p-4">
-        <div class="flex items-center gap-4">
-          <iconify-icon icon="line-md:alert" class="text-2xl"></iconify-icon>
-          <div>
-            <h3 class="h3">Error Loading Data</h3>
-            <p>
-              {$dataQuery?.error?.message ||
-                "An unexpected error occurred while loading the data."}
-            </p>
-          </div>
-        </div>
-        <div class="mt-4 flex justify-end gap-2">
-          <button
-            class="variant-filled btn"
-            on:click={() => window.location.reload()}
-          >
-            Try Again
-          </button>
-          <a
-            href={config.GITHUB_LINKS.getNewIssueUrl(bugOptions())}
-            target="_blank"
-            rel="noopener"
-            class="variant-soft btn"
-          >
-            Report Issue
-          </a>
+<div class="card m-3 p-2">
+  {#if $dataQuery?.isSuccess}
+    <h3 class="h3 mb-1 text-center">
+      {params?.search_for ? "Filtered Proteins" : "Random Proteins"}
+    </h3>
+    <DataTable
+      data={$dataQuery?.data?.items}
+      headers={proteinTableHeaders}
+      onRowClick={handleRowClick}
+      currentPage={pagination ? get(pagination.currentPage) : 1}
+    >
+      <PaginationFooter {pageSize} {pagination} {countQuery} slot="footer" />
+    </DataTable>
+  {:else if $dataQuery?.isLoading}
+    <LoadingTable headers={proteinTableHeaders} rows={pageSize} />
+  {:else if $dataQuery === null || $dataQuery?.error}
+    <div class="card variant-filled-error p-4">
+      <div class="flex items-center gap-4">
+        <iconify-icon icon="line-md:alert" class="text-2xl"></iconify-icon>
+        <div>
+          <h3 class="h3">Error Loading Data</h3>
+          <p>
+            {$dataQuery?.error?.message ||
+              "An unexpected error occurred while loading the data."}
+          </p>
         </div>
       </div>
-    {/if}
-  </div>
+      <div class="mt-4 flex justify-end gap-2">
+        <button
+          class="variant-filled btn"
+          on:click={() => window.location.reload()}
+        >
+          Try Again
+        </button>
+        <a
+          href={config.GITHUB_LINKS.getNewIssueUrl(bugOptions())}
+          target="_blank"
+          rel="noopener"
+          class="variant-soft btn"
+        >
+          Report Issue
+        </a>
+      </div>
+    </div>
+  {/if}
+</div>
