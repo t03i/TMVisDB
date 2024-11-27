@@ -5,5 +5,5 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.prettierPath": "./node_modules/prettier",
-  "prettier.configPath": ".prettierrc.json"
+  "prettier.configPath": ".prettierrc"
 }
