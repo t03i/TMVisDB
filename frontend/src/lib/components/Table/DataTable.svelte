@@ -14,7 +14,6 @@
 
   export let data: any[];
   export let headers: TableHeader<any>[];
-  export let rowsPerPage: number = 20;
   export let currentPage: number;
 
   export let onRowClick: (row: any) => void = () => {};
@@ -22,9 +21,7 @@
   let handler: DataHandler<any>;
   let rows: Readable<any[]>;
   onMount(() => {
-    handler = new DataHandler<any>([], {
-      rowsPerPage,
-    });
+    handler = new DataHandler<any>([], {});
     rows = handler.getRows();
   });
 
@@ -69,8 +66,7 @@
       </tbody>
     </table>
     <footer>
-      <slot name="footer">
-      </slot>
+      <slot name="footer"></slot>
     </footer>
   </div>
 {/if}
