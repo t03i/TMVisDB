@@ -44,7 +44,7 @@ const config: Config = {
     PUBLIC_SENTRY_TRACES_SAMPLE_RATE || "0.1",
   ),
   ENVIRONMENT: import.meta.env.VITE_NODE_ENV || import.meta.env.MODE,
-  VERSION: import.meta.env.__VERSION__ || "dev",
+  VERSION: import.meta.env.APP_VERSION || "dev",
   PROTEIN_PAGE_SIZE: 25,
 };
 axios.defaults.baseURL = config.API_BASE_URL;

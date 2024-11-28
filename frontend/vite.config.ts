@@ -1,14 +1,16 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import { purgeCss } from 'vite-plugin-tailwind-purgecss';
-import { defineConfig } from 'vite';
+import { sveltekit } from "@sveltejs/kit/vite";
+import { defineConfig } from "vite";
+import { purgeCss } from "vite-plugin-tailwind-purgecss";
 
 export default defineConfig({
-    plugins: [sveltekit(), purgeCss()],
-    define: {
-        __VERSION__: JSON.stringify(process.env.npm_package_version),
-    },
+  plugins: [sveltekit(), purgeCss()],
+  define: {
+    "import.meta.env.APP_VERSION": JSON.stringify(
+      process.env.npm_package_version,
+    ),
+  },
 
-    build: {
-        sourcemap: true
-    }
+  build: {
+    sourcemap: true,
+  },
 });
