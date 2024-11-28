@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.4.1 (2024-11-28)
+
+### Bug Fixes
+
+- **frontend**: Restore 25 as more sane default
+  ([`f09842f`](https://github.com/t03i/TMVisDB/commit/f09842fe3884e8c7f20f40bd2a0c28051dc46f73))
+
+
 ## v1.4.0 (2024-11-28)
 
 ### Bug Fixes
