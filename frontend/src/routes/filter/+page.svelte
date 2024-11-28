@@ -86,7 +86,13 @@
       onRowClick={handleRowClick}
       currentPage={currentPageIndex + 1}
     >
-      <PaginationFooter {pageSize} {pagination} {countQuery} slot="footer" />
+      <PaginationFooter
+        {pageSize}
+        {pagination}
+        {countQuery}
+        loadedRows={$dataQuery?.data?.items.length}
+        slot="footer"
+      />
     </DataTable>
   {:else if $dataQuery?.isLoading}
     <LoadingTable headers={proteinTableHeaders} rows={pageSize} />

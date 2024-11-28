@@ -12,14 +12,16 @@
   import type { Pagination as PaginationType } from "$lib/stores/DataQueryStore";
 
   export let pageSize: number;
+  export let loadedRows: number;
   export let pagination: PaginationType | null;
-  export let countQuery: CreateQueryResult<ProteinCount, HTTPValidationError> | null;
+  export let countQuery: CreateQueryResult<
+    ProteinCount,
+    HTTPValidationError
+  > | null;
   $: currentPage = pagination ? get(pagination.currentPage) : 1;
-
-
 </script>
 
 <div class="flex justify-between px-3 pb-3">
-  <RowCount {currentPage} {pageSize} {countQuery}/>
-  <Pagination {pagination}/>
+  <RowCount {currentPage} {pageSize} {countQuery} {loadedRows} />
+  <Pagination {pagination} />
 </div>
