@@ -17,6 +17,7 @@ from app.api.deps import SessionDep
 import app.crud as crud
 from app.taxonomy_enums import SuperKingdom, Clade, SK_CLADE_MAPPING
 
+
 router = APIRouter(prefix="/by-lineage", tags=["proteins by lineage"])
 
 

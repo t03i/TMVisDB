@@ -127,18 +127,18 @@ class TaxonomyFilter(BaseModel):
     clade: Optional[Clade] = None
 
     @field_validator("clade")
-    def validate_clade(cls, v, values):
-        if v is not None:
-            super_kingdom = values.get("super_kingdom")
+    def validate_clade(cls, value, validation_info):
+        if value is not None:
+            super_kingdom = validation_info.data.get("super_kingdom")
             if super_kingdom is None:
                 raise ValueError(
                     "super_kingdom must be provided when clade is specified"
                 )
-            if v not in SK_CLADE_MAPPING.get(super_kingdom, []):
+            if value not in SK_CLADE_MAPPING.get(super_kingdom, []):
                 raise ValueError(
-                    f"Invalid clade '{v.value}' for super kingdom '{super_kingdom.value}'"
+                    f"Invalid clade '{value.value}' for super kingdom '{super_kingdom.value}'"
                 )
-        return v
+        return value
 
 
 class ProteinFilter(BaseModel):
