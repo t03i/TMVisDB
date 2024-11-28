@@ -8,7 +8,7 @@
   import { useQueryClient } from "@tanstack/svelte-query";
 
   import {
-    createDataQueries,
+    createDataQueryStore,
     type Pagination as PaginationType,
   } from "$lib/stores/DataQueryStore";
   import { FilterForm, FilterFormLoading } from "$lib/components/FilterForm";
@@ -28,18 +28,18 @@
   const pageSize = config.PROTEIN_PAGE_SIZE;
 
   $: params = Object.fromEntries($page.url.searchParams);
-  $: query = createDataQueries(params, data.proteinResponse);
-  $: dataQuery = query ? get(query.data) : null;
-  $: countQuery = query.count;
-  $: pagination = query.pagination;
+  $: dataQueryStore = createDataQueryStore(params);
+  $: ({ dataQuery, countQuery, pagination, currentPageIndex } =
+    $dataQueryStore);
 
   // Cleanup on component destroy
   onDestroy(() => {
-    pagination?.destroy();
+    dataQueryStore.destroy();
   });
 
   // Add breadcrumb when filters change
   $: {
+    console.log("dataQueryStore", $dataQueryStore);
     if (Object.keys(params).length > 0) {
       Sentry.addBreadcrumb({
         category: "filters",
@@ -85,7 +85,7 @@
       data={$dataQuery?.data?.items}
       headers={proteinTableHeaders}
       onRowClick={handleRowClick}
-      currentPage={pagination ? get(pagination.currentPage) : 1}
+      currentPage={currentPageIndex + 1}
     >
       <PaginationFooter {pageSize} {pagination} {countQuery} slot="footer" />
     </DataTable>
