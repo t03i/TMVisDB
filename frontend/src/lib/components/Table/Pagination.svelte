@@ -9,18 +9,18 @@
   {#if pagination}
     <button
       type="button"
-      class="variant-ghost-surface hover:variant-soft-primary btn"
+      class="variant-ghost-surface btn hover:variant-soft-primary"
       disabled={!get(pagination.canGoBack)}
       on:click={() => pagination.goBack()}
     >
       ←
     </button>
     <span class="min-w-[3ch] text-center">
-      {get(pagination.currentPage) }
+      {get(pagination.currentPage)}
     </span>
     <button
       type="button"
-      class="variant-ghost-surface hover:variant-soft-primary btn"
+      class="variant-ghost-surface btn hover:variant-soft-primary"
       disabled={!get(pagination.canGoForward)}
       on:click={() => pagination.goForward()}
     >
@@ -28,7 +28,7 @@
     </button>
   {:else}
     <div class="invisible">←</div>
-    <span class="min-w-[3ch] text-center">-</span>
+    <span class="invisible min-w-[3ch] text-center">-</span>
     <div class="invisible">→</div>
   {/if}
 </section>
