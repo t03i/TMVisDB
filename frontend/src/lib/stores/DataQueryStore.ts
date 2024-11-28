@@ -22,11 +22,6 @@ import type {
   SuperKingdom,
   Topology,
 } from "$lib/client/model";
-import {
-  createGetProteinsByClade,
-  createGetProteinsBySuperKingdom,
-  createGetRandomProteins,
-} from "$lib/client/tmvisdb";
 import config from "$lib/config";
 import { useQueryClient, type QueryClient } from "@tanstack/svelte-query";
 
@@ -83,26 +78,30 @@ class QueryManager {
       }
       if (this.filterParams.kingdom) {
         const clade = this.filterParams.kingdom as Clade;
-        return createGetProteinsByClade(
+        return useProteinsByClade({
+          params: [
+            superKingdom,
+            clade,
+            {
+              ...filter,
+              cursor,
+              page_size: config.PROTEIN_PAGE_SIZE,
+            } as GetProteinsByCladeParams,
+          ],
+          queryClient: this.queryClient,
+        });
+      }
+      return useProteinsBySuperKingdom({
+        params: [
           superKingdom,
-          clade,
           {
             ...filter,
             cursor,
             page_size: config.PROTEIN_PAGE_SIZE,
-          } as GetProteinsByCladeParams,
-          baseOptions,
-        );
-      }
-      return createGetProteinsBySuperKingdom(
-        superKingdom,
-        {
-          ...filter,
-          cursor,
-          page_size: config.PROTEIN_PAGE_SIZE,
-        } as GetProteinsBySuperKingdomParams,
-        baseOptions,
-      );
+          } as GetProteinsBySuperKingdomParams,
+        ],
+        queryClient: this.queryClient,
+      });
     }
     return null;
   }
@@ -249,7 +248,12 @@ export function createDataQueries(
 
   if (isRandomProteins) {
     // For random proteins, create a simple query without pagination
-    const query = readable(createGetRandomProteins(config.PROTEIN_PAGE_SIZE));
+    const query = readable(
+      useRandomProteins({
+        params: [config.PROTEIN_PAGE_SIZE],
+        queryClient,
+      }),
+    );
 
     return {
       data: query,
