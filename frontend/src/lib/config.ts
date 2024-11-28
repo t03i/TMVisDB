@@ -45,7 +45,7 @@ const config: Config = {
   ),
   ENVIRONMENT: import.meta.env.VITE_NODE_ENV || import.meta.env.MODE,
   VERSION: import.meta.env.__VERSION__ || "dev",
-  PROTEIN_PAGE_SIZE: 50,
+  PROTEIN_PAGE_SIZE: 25,
 };
 axios.defaults.baseURL = config.API_BASE_URL;
 // TODO: fix this for server side rendering

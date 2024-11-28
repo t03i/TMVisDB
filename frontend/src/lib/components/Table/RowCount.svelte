@@ -3,12 +3,12 @@
   import type { CreateQueryResult } from "@tanstack/svelte-query";
 
   export let currentPage: number;
-  export let loadedRows: number;
   export let pageSize: number;
   export let countQuery: CreateQueryResult<
     ProteinCount,
     HTTPValidationError
   > | null;
+  export let loadedRows: number;
 
   $: startRow = (currentPage - 1) * pageSize + 1;
   $: endRow = loadedRows + startRow - 1;
