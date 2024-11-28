@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { wrappedQueries } from "$lib/client/autoWrapper";
-import { derived, get, readable, writable, type Readable } from "svelte/store";
+import { derived, get, writable, type Readable } from "svelte/store";
 
 const {
   useRandomProteins,
@@ -17,7 +17,6 @@ import type {
   GetProteinsByOrganismParams,
   GetProteinsBySuperKingdomParams,
   PageInfoNextCursor,
-  ProteinResponse,
   ProteinResponsePageInfo,
   SuperKingdom,
   Topology,
@@ -117,164 +116,171 @@ export type Pagination = {
   destroy: () => void;
 };
 
-interface PaginationState {
+type DataQueryState = {
+  dataQuery: ReturnType<
+    | typeof useRandomProteins
+    | typeof useProteinsByOrganism
+    | typeof useProteinsBySuperKingdom
+    | typeof useProteinsByClade
+  > | null;
+  countQuery: number | null;
+  pagination: Pagination | null;
   currentPageIndex: number;
   pageInfoHistory: ProteinResponsePageInfo[];
-}
+};
 
-export function createPaginatedQuery(
-  filterParams: Record<string, string>,
-  queryClient: QueryClient,
-) {
-  const paginationStore = writable<PaginationState>({
+export function createDataQueryStore(params: Record<string, string>) {
+  const queryClient = useQueryClient();
+  const isRandomProteins = !params.search_for;
+
+  const store = writable<DataQueryState>({
+    dataQuery: null,
+    countQuery: null,
+    pagination: null,
     currentPageIndex: 0,
     pageInfoHistory: [],
   });
 
-  const queryManager = new QueryManager(filterParams, queryClient);
-  console.log("queryManager", queryManager);
-
-  // Define addPageInfo before using it
   const addPageInfo = (pageInfo: ProteinResponsePageInfo) => {
-    console.log("addPageInfo", pageInfo);
-    paginationStore.update((state) => {
-      const newHistory = [
+    store.update((state) => ({
+      ...state,
+      pageInfoHistory: [
         ...state.pageInfoHistory.slice(0, state.currentPageIndex + 1),
         pageInfo,
-      ];
-      console.log("newHistory", newHistory);
-      return {
-        pageInfoHistory: newHistory,
-        currentPageIndex: state.currentPageIndex,
-      };
-    });
+      ],
+    }));
   };
-
-  // Store for the current query
-
-  const currentQuery = writable(queryManager.createQuery());
-
-  // Now we can use addPageInfo in the subscription
-  let queryUnsubscribe = get(currentQuery).subscribe(($query) => {
-    if ($query?.data) {
-      addPageInfo($query?.data.page_info);
-    }
-  });
-
-  const goBack = () => {
-    paginationStore.update((state) => {
-      if (state.currentPageIndex > 0) {
-        const newIndex = state.currentPageIndex - 1;
-        const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
-        currentQuery.set(queryManager.createQuery(cursor));
-        return {
-          ...state,
-          currentPageIndex: newIndex,
-        };
-      }
-      return state;
-    });
-  };
-
-  const goForward = () => {
-    console.log("goForward");
-    paginationStore.update((state) => {
-      const currentPageInfo = state.pageInfoHistory[state.currentPageIndex];
-      if (state.currentPageIndex < state.pageInfoHistory.length - 1) {
-        // Navigate through existing history
-        const newIndex = state.currentPageIndex + 1;
-        const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
-        currentQuery.set(queryManager.createQuery(cursor));
-        return {
-          ...state,
-          currentPageIndex: newIndex,
-        };
-      } else if (currentPageInfo?.has_next_page) {
-        // Fetch new page
-        queryUnsubscribe(); // Unsubscribe from old query
-        const newQuery = queryManager.createQuery(currentPageInfo.next_cursor);
-        currentQuery.set(newQuery);
-        queryUnsubscribe = newQuery.subscribe(($query) => {
-          if ($query?.data) {
-            addPageInfo($query.data.page_info);
-          }
-        });
-        return state; // State will be updated by the subscription
-      }
-      return state;
-    });
-  };
-
-  // Make sure to expose a cleanup method
-  const destroy = () => {
-    queryUnsubscribe();
-  };
-
-  return {
-    query: currentQuery,
-    goBack,
-    goForward,
-    canGoBack: derived(
-      paginationStore,
-      (state) => state.pageInfoHistory.length > 1,
-    ),
-    canGoForward: derived(
-      paginationStore,
-      (state) =>
-        state.currentPageIndex < state.pageInfoHistory.length - 1 ||
-        (state.pageInfoHistory[state.currentPageIndex]?.has_next_page ?? false),
-    ),
-    hasNextPage: derived(
-      paginationStore,
-      (state) =>
-        state.pageInfoHistory[state.currentPageIndex]?.has_next_page ?? false,
-    ),
-    currentPage: derived(
-      paginationStore,
-      (state) => state.currentPageIndex + 1,
-    ),
-    destroy, // Add destroy method to cleanup
-  };
-}
-
-export function createDataQueries(
-  params: Record<string, string>,
-  initialData?: ProteinResponse,
-) {
-  const queryClient = useQueryClient();
-  console.log("createDataQueries", params, queryClient, initialData);
-  // If no search parameters are set, we're displaying random proteins
-  const isRandomProteins = !params.search_for;
 
   if (isRandomProteins) {
-    // For random proteins, create a simple query without pagination
-    const query = readable(
-      useRandomProteins({
-        params: [config.PROTEIN_PAGE_SIZE],
-        queryClient,
-      }),
-    );
+    const randomQuery = useRandomProteins({
+      params: [config.PROTEIN_PAGE_SIZE],
+      queryClient,
+    });
+
+    store.set({
+      dataQuery: randomQuery,
+      countQuery: null,
+      pagination: null,
+      currentPageIndex: 0,
+      pageInfoHistory: [],
+    });
 
     return {
-      data: query,
-      count: null,
-      pagination: null,
+      subscribe: store.subscribe,
+      destroy: () => {
+        store.set({
+          dataQuery: null,
+          countQuery: null,
+          pagination: null,
+          currentPageIndex: 0,
+          pageInfoHistory: [],
+        });
+      },
     };
+  } else {
+    const queryManager = new QueryManager(params, queryClient);
+    let queryUnsubscribe: (() => void) | null = null;
+
+    const subscribeToQuery = (
+      query: ReturnType<typeof queryManager.createQuery>,
+    ) => {
+      queryUnsubscribe?.();
+      queryUnsubscribe = query.subscribe(($query) => {
+        if ($query?.data) {
+          addPageInfo($query.data.page_info);
+        }
+      });
+    };
+
+    const goBack = () => {
+      store.update((state) => {
+        if (state.currentPageIndex > 0) {
+          const newIndex = state.currentPageIndex - 1;
+          const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
+          const newQuery = queryManager.createQuery(cursor);
+          subscribeToQuery(newQuery);
+          return {
+            ...state,
+            currentPageIndex: newIndex,
+          };
+        }
+        return state;
+      });
+    };
+
+    const goForward = () => {
+      store.update((state) => {
+        const currentPageInfo = state.pageInfoHistory[state.currentPageIndex];
+        const newIndex = state.currentPageIndex + 1;
+
+        if (state.currentPageIndex < state.pageInfoHistory.length - 1) {
+          const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
+          const newQuery = queryManager.createQuery(cursor);
+          subscribeToQuery(newQuery);
+          return {
+            ...state,
+            currentPageIndex: newIndex,
+            dataQuery: newQuery,
+          };
+        } else if (currentPageInfo?.has_next_page) {
+          const newQuery = queryManager.createQuery(
+            currentPageInfo.next_cursor,
+          );
+          subscribeToQuery(newQuery);
+          return {
+            ...state,
+            dataQuery: newQuery,
+            currentPageIndex: newIndex,
+          };
+        }
+        return state;
+      });
+    };
+
+    // Initialize with first query
+    const initialQuery = queryManager.createQuery();
+    subscribeToQuery(initialQuery);
+
+    store.set({
+      dataQuery: initialQuery,
+      countQuery: null,
+      pagination: {
+        goForward,
+        goBack,
+        canGoForward: derived(
+          store,
+          (state) =>
+            state.currentPageIndex < state.pageInfoHistory.length - 1 ||
+            (state.pageInfoHistory[state.currentPageIndex]?.has_next_page ??
+              false),
+        ),
+        canGoBack: derived(store, (state) => state.currentPageIndex > 0),
+        hasNextPage: derived(
+          store,
+          (state) =>
+            state.pageInfoHistory[state.currentPageIndex]?.has_next_page ??
+            false,
+        ),
+        currentPage: derived(store, (state) => state.currentPageIndex + 1),
+        destroy: () => queryUnsubscribe?.(),
+      },
+      currentPageIndex: 0,
+      pageInfoHistory: [],
+    });
   }
 
-  const paginatedQuery = createPaginatedQuery(params, queryClient);
-
   return {
-    data: paginatedQuery.query,
-    count: null,
-    pagination: {
-      goForward: paginatedQuery.goForward,
-      goBack: paginatedQuery.goBack,
-      canGoForward: paginatedQuery.canGoForward,
-      canGoBack: paginatedQuery.canGoBack,
-      hasNextPage: paginatedQuery.hasNextPage,
-      currentPage: paginatedQuery.currentPage,
-      destroy: paginatedQuery.destroy,
+    subscribe: store.subscribe,
+    destroy: () => {
+      const currentValue = get(store);
+      currentValue.pagination?.destroy?.();
+      store.set({
+        dataQuery: null,
+        countQuery: null,
+        pagination: null,
+        currentPageIndex: 0,
+        pageInfoHistory: [],
+      });
     },
   };
 }
