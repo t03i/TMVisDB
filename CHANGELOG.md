@@ -1,6 +1,114 @@
 # CHANGELOG
 
 
+## v1.4.0 (2024-11-28)
+
+### Bug Fixes
+
+- **frontend**: Reset Kingdom filter to all if otherwise invalid
+  ([`6e88fd0`](https://github.com/t03i/TMVisDB/commit/6e88fd099d2ebaf80d8b20bc0ee34f64aa4e7733))
+
+- **backend**: Fix unclassified not being processable
+  ([`1023e59`](https://github.com/t03i/TMVisDB/commit/1023e59cc46a7fce65d7c5c47ff8ed9c7e8dd9b2))
+
+- **backend**: Fix invalid clade validation
+  ([`3a61ba8`](https://github.com/t03i/TMVisDB/commit/3a61ba863a1057278c5f508fdff44a8e96c2fb6e))
+
+- **frontend**: Go back now uses correct logic
+  ([`c2877f8`](https://github.com/t03i/TMVisDB/commit/c2877f8f94e60d871de109df790897b480c6c7da))
+
+- **backend**: Resolve issue with sqlalchemy new orm API
+  ([`68138c1`](https://github.com/t03i/TMVisDB/commit/68138c160d4243c81956ab6713cad66e7cf3c06a))
+
+- **frontend**: Forward pagination
+  ([`03f219e`](https://github.com/t03i/TMVisDB/commit/03f219e89f65bf6c3378a2dc66b6a5f413532070))
+
+- Sentry variable name
+  ([`2b6941c`](https://github.com/t03i/TMVisDB/commit/2b6941c7210335b8ea97510bd22836d57b73bbe3))
+
+- Fix page 0, one confusion
+  ([`3998946`](https://github.com/t03i/TMVisDB/commit/399894605189db8ae5fcbab6c91b56075dfd3aa0))
+
+### Build System
+
+- Fix prettier
+  ([`b153957`](https://github.com/t03i/TMVisDB/commit/b153957e9f705d7e6566aca20c7b928916a19ba9))
+
+### Code Style
+
+- **frontend**: Remove pagination artifact for random
+  ([`a5ddca4`](https://github.com/t03i/TMVisDB/commit/a5ddca4ac0aafa6286be7f5447c28b055ecede5d))
+
+### Documentation
+
+- Document search is only for page
+  ([`a58044f`](https://github.com/t03i/TMVisDB/commit/a58044fbe54c9bf43b119af676dbe98ed3fbd348))
+
+### Features
+
+- Add query transfomer to allow passing in a queryClient
+  ([`0e38fc0`](https://github.com/t03i/TMVisDB/commit/0e38fc06e2b867933e1a45feed4c9d7acbecfad0))
+
+- **backend**: Implement cursor based pagination
+  ([`e9fbe34`](https://github.com/t03i/TMVisDB/commit/e9fbe3496bd5250ec8f7aa9456bdb82578956a5f))
+
+- **frontend**: Implement pagination display
+  ([`a2aa857`](https://github.com/t03i/TMVisDB/commit/a2aa85760b9ffd367fb961a1fe40678b55f28301))
+
+- **backend**: Add more efficient count
+  ([`05e5d96`](https://github.com/t03i/TMVisDB/commit/05e5d96539153cf24c05b86a0a50d0bc8c925b49))
+
+### Refactoring
+
+- **frontend**: Up page size to 50
+  ([`483062f`](https://github.com/t03i/TMVisDB/commit/483062f09592d1c464915a56d8d4604b19871626))
+
+- **frontend**: Improve table rendering
+  ([`eccfd36`](https://github.com/t03i/TMVisDB/commit/eccfd36b71a3d58d60faa04ed0b04475a48f84e0))
+
+- **frontend**: Regenerate client
+  ([`91d0e90`](https://github.com/t03i/TMVisDB/commit/91d0e90c2f88df0240fb3ec36ddcc577f520dd5f))
+
+- **frontend**: Add data-based row count
+  ([`4a8defa`](https://github.com/t03i/TMVisDB/commit/4a8defa582aa6550a9113f57f6fa71864ef8f0d6))
+
+- Remove debug logging
+  ([`7f4b5d0`](https://github.com/t03i/TMVisDB/commit/7f4b5d081f2c0f61cf7b45a1ac54e1cd1cdcda99))
+
+- **frontend**: Switch to wrapper queries with queryClient
+  ([`db5da1d`](https://github.com/t03i/TMVisDB/commit/db5da1d063c152943d0501fff611995c7e2ef997))
+
+- Create wrapper to allow passing query keys
+  ([`a2ce413`](https://github.com/t03i/TMVisDB/commit/a2ce413980ab9ff04e1a703122c9313d2c0cd3bd))
+
+- Dataquery setup for client use
+  ([`37b63f4`](https://github.com/t03i/TMVisDB/commit/37b63f4d6b065e3027d69382dbf1d951b2c9f06b))
+
+- **frontend**: Move pagination to top-level
+  ([`6f2c755`](https://github.com/t03i/TMVisDB/commit/6f2c755602a0b01fb477b6f4e89e64b1912182ef))
+
+- **backend**: Remove obsolete sorting
+  ([`887d52c`](https://github.com/t03i/TMVisDB/commit/887d52c21dfae2891261b510764a49a6af39c809))
+
+- **backend**: Remove query sorting by id.
+  ([`6acdc53`](https://github.com/t03i/TMVisDB/commit/6acdc5349f9ca5a23d52c436fc85daab1a420b79))
+
+Sorting by id slows the query down too much. In theory it should be ifine to not sort if for an auto
+  incrementing key
+
+- Improve query store usage
+  ([`d1a4ae4`](https://github.com/t03i/TMVisDB/commit/d1a4ae44c5d381c73ab7ad8c574d80df8b8f6fa3))
+
+- **frontend**: Add cursor based pagination
+  ([`e7dc5ad`](https://github.com/t03i/TMVisDB/commit/e7dc5adbb9a58a87b82f3f9eed92ec22a54586b0))
+
+- **frontend**: Remove dataloader component for store implementation
+  ([`11419d1`](https://github.com/t03i/TMVisDB/commit/11419d12743b2f27f533004239e5fb539d065c4c))
+
+- Integrate count into api and improve file structure
+  ([`a36ffac`](https://github.com/t03i/TMVisDB/commit/a36ffac291ee80754b7682469fca9d8c642b4ee1))
+
+
 ## v1.3.3 (2024-11-24)
 
 ### Bug Fixes
