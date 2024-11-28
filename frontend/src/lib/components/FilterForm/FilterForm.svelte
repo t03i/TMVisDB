@@ -24,9 +24,19 @@
   // Initialize filters with default values
   $: filters = { ...defaultFilters };
 
-  // Compute available clades based on selected domain
+  // Move the kingdom reset logic into a function
+  function updateKingdom(domain: string) {
+    const newClades =
+      taxonomyData.find((d) => d.value === domain)?.clades || [];
+    if (!newClades.includes(filters.filterKingdom)) {
+      filters.filterKingdom = "";
+    }
+  }
+
+  // Update the reactive statements
   $: availableClades =
     taxonomyData.find((d) => d.value === filters.filterDomain)?.clades || [];
+  $: if (filters.filterDomain) updateKingdom(filters.filterDomain);
 
   // Ensure signal peptide filter is enabled when topology is 'All'
   $: if (filters.filterTopology === Topology.All) {
