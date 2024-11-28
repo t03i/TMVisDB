@@ -4,14 +4,15 @@
  * TMVis
  * OpenAPI spec version: 0.1.0
  */
+import {
+  createQuery
+} from '@tanstack/svelte-query'
 import type {
   CreateQueryOptions,
   CreateQueryResult,
   QueryFunction,
-  QueryKey,
-} from "@tanstack/svelte-query";
-import { createQuery } from "@tanstack/svelte-query";
-import { dataMutator } from "./dataMutator";
+  QueryKey
+} from '@tanstack/svelte-query'
 import type {
   AnnotationData,
   AnnotationLegend,
@@ -30,1203 +31,883 @@ import type {
   ProteinExistence,
   ProteinInfo,
   ProteinResponse,
-  SuperKingdom,
-} from "./model";
+  SuperKingdom
+} from './model'
+import { dataMutator } from './dataMutator';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
-type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
+      type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
+
+
 
 /**
  * @summary Get Random Proteins
  */
 export const getRandomProteins = (
-  numSequences: number,
-  signal?: AbortSignal,
+    numSequences: number,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinResponse>({
-    url: `/api/v1/proteins/random/${numSequences}/`,
-    method: "GET",
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/random/${numSequences}/`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-export const getGetRandomProteinsQueryKey = (numSequences: number) => {
-  return [`/api/v1/proteins/random/${numSequences}/`] as const;
-};
+export const getGetRandomProteinsQueryKey = (numSequences: number,) => {
+    return [`/api/v1/proteins/random/${numSequences}/`] as const;
+    }
 
-export const getGetRandomProteinsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getRandomProteins>>,
-  TError = HTTPValidationError,
->(
-  numSequences: number,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getRandomProteins>>,
-      TError,
-      TData
-    >;
-  },
+    
+export const getGetRandomProteinsQueryOptions = <TData = Awaited<ReturnType<typeof getRandomProteins>>, TError = HTTPValidationError>(numSequences: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData>, }
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetRandomProteinsQueryKey(numSequences);
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getRandomProteins>>
-  > = ({ signal }) => getRandomProteins(numSequences, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetRandomProteinsQueryKey(numSequences);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!numSequences,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getRandomProteins>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetRandomProteinsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getRandomProteins>>
->;
-export type GetRandomProteinsQueryError = HTTPValidationError;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRandomProteins>>> = ({ signal }) => getRandomProteins(numSequences, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(numSequences), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetRandomProteinsQueryResult = NonNullable<Awaited<ReturnType<typeof getRandomProteins>>>
+export type GetRandomProteinsQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Random Proteins
  */
 
-export function createGetRandomProteins<
-  TData = Awaited<ReturnType<typeof getRandomProteins>>,
-  TError = HTTPValidationError,
->(
-  numSequences: number,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getRandomProteins>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetRandomProteinsQueryOptions(numSequences, options);
+export function createGetRandomProteins<TData = Awaited<ReturnType<typeof getRandomProteins>>, TError = HTTPValidationError>(
+ numSequences: number, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getRandomProteins>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetRandomProteinsQueryOptions(numSequences,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Protein By Id
  */
 export const getProteinById = (
-  uniprotAccession: string,
-  signal?: AbortSignal,
+    uniprotAccession: string,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinInfo>({
-    url: `/api/v1/proteins/${uniprotAccession}`,
-    method: "GET",
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinInfo>(
+      {url: `/api/v1/proteins/${uniprotAccession}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-export const getGetProteinByIdQueryKey = (uniprotAccession: string) => {
-  return [`/api/v1/proteins/${uniprotAccession}`] as const;
-};
+export const getGetProteinByIdQueryKey = (uniprotAccession: string,) => {
+    return [`/api/v1/proteins/${uniprotAccession}`] as const;
+    }
 
-export const getGetProteinByIdQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinById>>,
-  TError = HTTPValidationError,
->(
-  uniprotAccession: string,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinById>>,
-      TError,
-      TData
-    >;
-  },
+    
+export const getGetProteinByIdQueryOptions = <TData = Awaited<ReturnType<typeof getProteinById>>, TError = HTTPValidationError>(uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData>, }
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetProteinByIdQueryKey(uniprotAccession);
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinById>>> = ({
-    signal,
-  }) => getProteinById(uniprotAccession, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinByIdQueryKey(uniprotAccession);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!uniprotAccession,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinById>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetProteinByIdQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinById>>
->;
-export type GetProteinByIdQueryError = HTTPValidationError;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinById>>> = ({ signal }) => getProteinById(uniprotAccession, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(uniprotAccession), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinByIdQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinById>>>
+export type GetProteinByIdQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Protein By Id
  */
 
-export function createGetProteinById<
-  TData = Awaited<ReturnType<typeof getProteinById>>,
-  TError = HTTPValidationError,
->(
-  uniprotAccession: string,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinById>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinByIdQueryOptions(uniprotAccession, options);
+export function createGetProteinById<TData = Awaited<ReturnType<typeof getProteinById>>, TError = HTTPValidationError>(
+ uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinById>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinByIdQueryOptions(uniprotAccession,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Check Protein Exists
  */
 export const checkProteinExists = (
-  uniprotAccession: string,
-  signal?: AbortSignal,
+    uniprotAccession: string,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinExistence>({
-    url: `/api/v1/proteins/exists/${uniprotAccession}`,
-    method: "GET",
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinExistence>(
+      {url: `/api/v1/proteins/exists/${uniprotAccession}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-export const getCheckProteinExistsQueryKey = (uniprotAccession: string) => {
-  return [`/api/v1/proteins/exists/${uniprotAccession}`] as const;
-};
+export const getCheckProteinExistsQueryKey = (uniprotAccession: string,) => {
+    return [`/api/v1/proteins/exists/${uniprotAccession}`] as const;
+    }
 
-export const getCheckProteinExistsQueryOptions = <
-  TData = Awaited<ReturnType<typeof checkProteinExists>>,
-  TError = HTTPValidationError,
->(
-  uniprotAccession: string,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof checkProteinExists>>,
-      TError,
-      TData
-    >;
-  },
+    
+export const getCheckProteinExistsQueryOptions = <TData = Awaited<ReturnType<typeof checkProteinExists>>, TError = HTTPValidationError>(uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof checkProteinExists>>, TError, TData>, }
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getCheckProteinExistsQueryKey(uniprotAccession);
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof checkProteinExists>>
-  > = ({ signal }) => checkProteinExists(uniprotAccession, signal);
+  const queryKey =  queryOptions?.queryKey ?? getCheckProteinExistsQueryKey(uniprotAccession);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!uniprotAccession,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof checkProteinExists>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type CheckProteinExistsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof checkProteinExists>>
->;
-export type CheckProteinExistsQueryError = HTTPValidationError;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof checkProteinExists>>> = ({ signal }) => checkProteinExists(uniprotAccession, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(uniprotAccession), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof checkProteinExists>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type CheckProteinExistsQueryResult = NonNullable<Awaited<ReturnType<typeof checkProteinExists>>>
+export type CheckProteinExistsQueryError = HTTPValidationError
+
 
 /**
  * @summary Check Protein Exists
  */
 
-export function createCheckProteinExists<
-  TData = Awaited<ReturnType<typeof checkProteinExists>>,
-  TError = HTTPValidationError,
->(
-  uniprotAccession: string,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof checkProteinExists>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getCheckProteinExistsQueryOptions(
-    uniprotAccession,
-    options,
-  );
+export function createCheckProteinExists<TData = Awaited<ReturnType<typeof checkProteinExists>>, TError = HTTPValidationError>(
+ uniprotAccession: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof checkProteinExists>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getCheckProteinExistsQueryOptions(uniprotAccession,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Proteins By Organism
  */
 export const getProteinsByOrganism = (
-  organismId: number,
-  params?: GetProteinsByOrganismParams,
-  signal?: AbortSignal,
+    organismId: number,
+    params?: GetProteinsByOrganismParams,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinResponse>({
-    url: `/api/v1/proteins/by-organism/${organismId}/`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/by-organism/${organismId}/`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-export const getGetProteinsByOrganismQueryKey = (
-  organismId: number,
-  params?: GetProteinsByOrganismParams,
+export const getGetProteinsByOrganismQueryKey = (organismId: number,
+    params?: GetProteinsByOrganismParams,) => {
+    return [`/api/v1/proteins/by-organism/${organismId}/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetProteinsByOrganismQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByOrganism>>, TError = HTTPValidationError>(organismId: number,
+    params?: GetProteinsByOrganismParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData>, }
 ) => {
-  return [
-    `/api/v1/proteins/by-organism/${organismId}/`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetProteinsByOrganismQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinsByOrganism>>,
-  TError = HTTPValidationError,
->(
-  organismId: number,
-  params?: GetProteinsByOrganismParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByOrganism>>,
-      TError,
-      TData
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGetProteinsByOrganismQueryKey(organismId, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinsByOrganismQueryKey(organismId,params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinsByOrganism>>
-  > = ({ signal }) => getProteinsByOrganism(organismId, params, signal);
+  
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!organismId,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinsByOrganism>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByOrganism>>> = ({ signal }) => getProteinsByOrganism(organismId,params, signal);
 
-export type GetProteinsByOrganismQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinsByOrganism>>
->;
-export type GetProteinsByOrganismQueryError = HTTPValidationError;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(organismId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinsByOrganismQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsByOrganism>>>
+export type GetProteinsByOrganismQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Proteins By Organism
  */
 
-export function createGetProteinsByOrganism<
-  TData = Awaited<ReturnType<typeof getProteinsByOrganism>>,
-  TError = HTTPValidationError,
->(
-  organismId: number,
-  params?: GetProteinsByOrganismParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByOrganism>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinsByOrganismQueryOptions(
-    organismId,
-    params,
-    options,
-  );
+export function createGetProteinsByOrganism<TData = Awaited<ReturnType<typeof getProteinsByOrganism>>, TError = HTTPValidationError>(
+ organismId: number,
+    params?: GetProteinsByOrganismParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganism>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinsByOrganismQueryOptions(organismId,params,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Proteins By Organism Count
  */
 export const getProteinsByOrganismCount = (
-  organismId: number,
-  params?: GetProteinsByOrganismCountParams,
-  signal?: AbortSignal,
+    organismId: number,
+    params?: GetProteinsByOrganismCountParams,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinCount>({
-    url: `/api/v1/proteins/by-organism/${organismId}/count`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinCount>(
+      {url: `/api/v1/proteins/by-organism/${organismId}/count`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-export const getGetProteinsByOrganismCountQueryKey = (
-  organismId: number,
-  params?: GetProteinsByOrganismCountParams,
+export const getGetProteinsByOrganismCountQueryKey = (organismId: number,
+    params?: GetProteinsByOrganismCountParams,) => {
+    return [`/api/v1/proteins/by-organism/${organismId}/count`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetProteinsByOrganismCountQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByOrganismCount>>, TError = HTTPValidationError>(organismId: number,
+    params?: GetProteinsByOrganismCountParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganismCount>>, TError, TData>, }
 ) => {
-  return [
-    `/api/v1/proteins/by-organism/${organismId}/count`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetProteinsByOrganismCountQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinsByOrganismCount>>,
-  TError = HTTPValidationError,
->(
-  organismId: number,
-  params?: GetProteinsByOrganismCountParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByOrganismCount>>,
-      TError,
-      TData
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGetProteinsByOrganismCountQueryKey(organismId, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinsByOrganismCountQueryKey(organismId,params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinsByOrganismCount>>
-  > = ({ signal }) => getProteinsByOrganismCount(organismId, params, signal);
+  
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!organismId,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinsByOrganismCount>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByOrganismCount>>> = ({ signal }) => getProteinsByOrganismCount(organismId,params, signal);
 
-export type GetProteinsByOrganismCountQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinsByOrganismCount>>
->;
-export type GetProteinsByOrganismCountQueryError = HTTPValidationError;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(organismId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganismCount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinsByOrganismCountQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsByOrganismCount>>>
+export type GetProteinsByOrganismCountQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Proteins By Organism Count
  */
 
-export function createGetProteinsByOrganismCount<
-  TData = Awaited<ReturnType<typeof getProteinsByOrganismCount>>,
-  TError = HTTPValidationError,
->(
-  organismId: number,
-  params?: GetProteinsByOrganismCountParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByOrganismCount>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinsByOrganismCountQueryOptions(
-    organismId,
-    params,
-    options,
-  );
+export function createGetProteinsByOrganismCount<TData = Awaited<ReturnType<typeof getProteinsByOrganismCount>>, TError = HTTPValidationError>(
+ organismId: number,
+    params?: GetProteinsByOrganismCountParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByOrganismCount>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinsByOrganismCountQueryOptions(organismId,params,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Proteins By Super Kingdom
  */
 export const getProteinsBySuperKingdom = (
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomParams,
-  signal?: AbortSignal,
+    superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomParams,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinResponse>({
-    url: `/api/v1/proteins/by-lineage/${superKingdom}/`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/by-lineage/${superKingdom}/`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-export const getGetProteinsBySuperKingdomQueryKey = (
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomParams,
+export const getGetProteinsBySuperKingdomQueryKey = (superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomParams,) => {
+    return [`/api/v1/proteins/by-lineage/${superKingdom}/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetProteinsBySuperKingdomQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = HTTPValidationError>(superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, }
 ) => {
-  return [
-    `/api/v1/proteins/by-lineage/${superKingdom}/`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetProteinsBySuperKingdomQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsBySuperKingdom>>,
-      TError,
-      TData
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGetProteinsBySuperKingdomQueryKey(superKingdom, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinsBySuperKingdomQueryKey(superKingdom,params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinsBySuperKingdom>>
-  > = ({ signal }) => getProteinsBySuperKingdom(superKingdom, params, signal);
+  
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!superKingdom,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinsBySuperKingdom>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>> = ({ signal }) => getProteinsBySuperKingdom(superKingdom,params, signal);
 
-export type GetProteinsBySuperKingdomQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinsBySuperKingdom>>
->;
-export type GetProteinsBySuperKingdomQueryError = HTTPValidationError;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(superKingdom), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinsBySuperKingdomQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>>
+export type GetProteinsBySuperKingdomQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Proteins By Super Kingdom
  */
 
-export function createGetProteinsBySuperKingdom<
-  TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsBySuperKingdom>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinsBySuperKingdomQueryOptions(
-    superKingdom,
-    params,
-    options,
-  );
+export function createGetProteinsBySuperKingdom<TData = Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError = HTTPValidationError>(
+ superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdom>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinsBySuperKingdomQueryOptions(superKingdom,params,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Proteins By Super Kingdom Count
  */
 export const getProteinsBySuperKingdomCount = (
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomCountParams,
-  signal?: AbortSignal,
+    superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomCountParams,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinCount>({
-    url: `/api/v1/proteins/by-lineage/${superKingdom}/count`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinCount>(
+      {url: `/api/v1/proteins/by-lineage/${superKingdom}/count`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-export const getGetProteinsBySuperKingdomCountQueryKey = (
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomCountParams,
+export const getGetProteinsBySuperKingdomCountQueryKey = (superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomCountParams,) => {
+    return [`/api/v1/proteins/by-lineage/${superKingdom}/count`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetProteinsBySuperKingdomCountQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>, TError = HTTPValidationError>(superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomCountParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>, TError, TData>, }
 ) => {
-  return [
-    `/api/v1/proteins/by-lineage/${superKingdom}/count`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetProteinsBySuperKingdomCountQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomCountParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>,
-      TError,
-      TData
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGetProteinsBySuperKingdomCountQueryKey(superKingdom, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinsBySuperKingdomCountQueryKey(superKingdom,params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>
-  > = ({ signal }) =>
-    getProteinsBySuperKingdomCount(superKingdom, params, signal);
+  
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!superKingdom,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>> = ({ signal }) => getProteinsBySuperKingdomCount(superKingdom,params, signal);
 
-export type GetProteinsBySuperKingdomCountQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>
->;
-export type GetProteinsBySuperKingdomCountQueryError = HTTPValidationError;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(superKingdom), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinsBySuperKingdomCountQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>>
+export type GetProteinsBySuperKingdomCountQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Proteins By Super Kingdom Count
  */
 
-export function createGetProteinsBySuperKingdomCount<
-  TData = Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  params?: GetProteinsBySuperKingdomCountParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinsBySuperKingdomCountQueryOptions(
-    superKingdom,
-    params,
-    options,
-  );
+export function createGetProteinsBySuperKingdomCount<TData = Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>, TError = HTTPValidationError>(
+ superKingdom: SuperKingdom,
+    params?: GetProteinsBySuperKingdomCountParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsBySuperKingdomCount>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinsBySuperKingdomCountQueryOptions(superKingdom,params,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Proteins By Clade
  */
 export const getProteinsByClade = (
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeParams,
-  signal?: AbortSignal,
+    superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeParams,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinResponse>({
-    url: `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinResponse>(
+      {url: `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-export const getGetProteinsByCladeQueryKey = (
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeParams,
+export const getGetProteinsByCladeQueryKey = (superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeParams,) => {
+    return [`/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetProteinsByCladeQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = HTTPValidationError>(superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, }
 ) => {
-  return [
-    `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetProteinsByCladeQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinsByClade>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByClade>>,
-      TError,
-      TData
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGetProteinsByCladeQueryKey(superKingdom, clade, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinsByCladeQueryKey(superKingdom,clade,params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinsByClade>>
-  > = ({ signal }) => getProteinsByClade(superKingdom, clade, params, signal);
+  
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!(superKingdom && clade),
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinsByClade>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByClade>>> = ({ signal }) => getProteinsByClade(superKingdom,clade,params, signal);
 
-export type GetProteinsByCladeQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinsByClade>>
->;
-export type GetProteinsByCladeQueryError = HTTPValidationError;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(superKingdom && clade), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinsByCladeQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsByClade>>>
+export type GetProteinsByCladeQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Proteins By Clade
  */
 
-export function createGetProteinsByClade<
-  TData = Awaited<ReturnType<typeof getProteinsByClade>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByClade>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinsByCladeQueryOptions(
-    superKingdom,
-    clade,
-    params,
-    options,
-  );
+export function createGetProteinsByClade<TData = Awaited<ReturnType<typeof getProteinsByClade>>, TError = HTTPValidationError>(
+ superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByClade>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinsByCladeQueryOptions(superKingdom,clade,params,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Proteins By Clade Count
  */
 export const getProteinsByCladeCount = (
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeCountParams,
-  signal?: AbortSignal,
+    superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeCountParams,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<ProteinCount>({
-    url: `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/count`,
-    method: "GET",
-    params,
-    signal,
-  });
-};
+      
+      
+      return dataMutator<ProteinCount>(
+      {url: `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/count`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-export const getGetProteinsByCladeCountQueryKey = (
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeCountParams,
+export const getGetProteinsByCladeCountQueryKey = (superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeCountParams,) => {
+    return [`/api/v1/proteins/by-lineage/${superKingdom}/${clade}/count`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetProteinsByCladeCountQueryOptions = <TData = Awaited<ReturnType<typeof getProteinsByCladeCount>>, TError = HTTPValidationError>(superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeCountParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByCladeCount>>, TError, TData>, }
 ) => {
-  return [
-    `/api/v1/proteins/by-lineage/${superKingdom}/${clade}/count`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetProteinsByCladeCountQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinsByCladeCount>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeCountParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByCladeCount>>,
-      TError,
-      TData
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGetProteinsByCladeCountQueryKey(superKingdom, clade, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinsByCladeCountQueryKey(superKingdom,clade,params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinsByCladeCount>>
-  > = ({ signal }) =>
-    getProteinsByCladeCount(superKingdom, clade, params, signal);
+  
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!(superKingdom && clade),
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinsByCladeCount>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinsByCladeCount>>> = ({ signal }) => getProteinsByCladeCount(superKingdom,clade,params, signal);
 
-export type GetProteinsByCladeCountQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinsByCladeCount>>
->;
-export type GetProteinsByCladeCountQueryError = HTTPValidationError;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(superKingdom && clade), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByCladeCount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinsByCladeCountQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinsByCladeCount>>>
+export type GetProteinsByCladeCountQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Proteins By Clade Count
  */
 
-export function createGetProteinsByCladeCount<
-  TData = Awaited<ReturnType<typeof getProteinsByCladeCount>>,
-  TError = HTTPValidationError,
->(
-  superKingdom: SuperKingdom,
-  clade: Clade,
-  params?: GetProteinsByCladeCountParams,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinsByCladeCount>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinsByCladeCountQueryOptions(
-    superKingdom,
-    clade,
-    params,
-    options,
-  );
+export function createGetProteinsByCladeCount<TData = Awaited<ReturnType<typeof getProteinsByCladeCount>>, TError = HTTPValidationError>(
+ superKingdom: SuperKingdom,
+    clade: Clade,
+    params?: GetProteinsByCladeCountParams, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinsByCladeCount>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinsByCladeCountQueryOptions(superKingdom,clade,params,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Protein Annotations
  */
 export const getProteinAnnotations = (
-  uniprotId: string,
-  signal?: AbortSignal,
+    uniprotId: string,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<AnnotationData>({
-    url: `/api/v1/annotations/${uniprotId}`,
-    method: "GET",
-    signal,
-  });
-};
+      
+      
+      return dataMutator<AnnotationData>(
+      {url: `/api/v1/annotations/${uniprotId}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-export const getGetProteinAnnotationsQueryKey = (uniprotId: string) => {
-  return [`/api/v1/annotations/${uniprotId}`] as const;
-};
+export const getGetProteinAnnotationsQueryKey = (uniprotId: string,) => {
+    return [`/api/v1/annotations/${uniprotId}`] as const;
+    }
 
-export const getGetProteinAnnotationsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getProteinAnnotations>>,
-  TError = HTTPValidationError,
->(
-  uniprotId: string,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinAnnotations>>,
-      TError,
-      TData
-    >;
-  },
+    
+export const getGetProteinAnnotationsQueryOptions = <TData = Awaited<ReturnType<typeof getProteinAnnotations>>, TError = HTTPValidationError>(uniprotId: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData>, }
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetProteinAnnotationsQueryKey(uniprotId);
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getProteinAnnotations>>
-  > = ({ signal }) => getProteinAnnotations(uniprotId, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetProteinAnnotationsQueryKey(uniprotId);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!uniprotId,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getProteinAnnotations>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetProteinAnnotationsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getProteinAnnotations>>
->;
-export type GetProteinAnnotationsQueryError = HTTPValidationError;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProteinAnnotations>>> = ({ signal }) => getProteinAnnotations(uniprotId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(uniprotId), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProteinAnnotationsQueryResult = NonNullable<Awaited<ReturnType<typeof getProteinAnnotations>>>
+export type GetProteinAnnotationsQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Protein Annotations
  */
 
-export function createGetProteinAnnotations<
-  TData = Awaited<ReturnType<typeof getProteinAnnotations>>,
-  TError = HTTPValidationError,
->(
-  uniprotId: string,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getProteinAnnotations>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetProteinAnnotationsQueryOptions(uniprotId, options);
+export function createGetProteinAnnotations<TData = Awaited<ReturnType<typeof getProteinAnnotations>>, TError = HTTPValidationError>(
+ uniprotId: string, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getProteinAnnotations>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetProteinAnnotationsQueryOptions(uniprotId,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
 
+
+
+
 /**
  * @summary Get Db Annotations Legends
  */
-export const getDbAnnotationsLegends = (signal?: AbortSignal) => {
-  return dataMutator<GetDbAnnotationsLegends200>({
-    url: `/api/v1/info/legends/`,
-    method: "GET",
-    signal,
-  });
-};
+export const getDbAnnotationsLegends = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return dataMutator<GetDbAnnotationsLegends200>(
+      {url: `/api/v1/info/legends/`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetDbAnnotationsLegendsQueryKey = () => {
-  return [`/api/v1/info/legends/`] as const;
-};
+    return [`/api/v1/info/legends/`] as const;
+    }
 
-export const getGetDbAnnotationsLegendsQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>,
-  TError = unknown,
->(options?: {
-  query?: CreateQueryOptions<
-    Awaited<ReturnType<typeof getDbAnnotationsLegends>>,
-    TError,
-    TData
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
+    
+export const getGetDbAnnotationsLegendsQueryOptions = <TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError = unknown>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData>, }
+) => {
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetDbAnnotationsLegendsQueryKey();
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getDbAnnotationsLegends>>
-  > = ({ signal }) => getDbAnnotationsLegends(signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetDbAnnotationsLegendsQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getDbAnnotationsLegends>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetDbAnnotationsLegendsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getDbAnnotationsLegends>>
->;
-export type GetDbAnnotationsLegendsQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDbAnnotationsLegends>>> = ({ signal }) => getDbAnnotationsLegends(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDbAnnotationsLegendsQueryResult = NonNullable<Awaited<ReturnType<typeof getDbAnnotationsLegends>>>
+export type GetDbAnnotationsLegendsQueryError = unknown
+
 
 /**
  * @summary Get Db Annotations Legends
  */
 
-export function createGetDbAnnotationsLegends<
-  TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>,
-  TError = unknown,
->(options?: {
-  query?: CreateQueryOptions<
-    Awaited<ReturnType<typeof getDbAnnotationsLegends>>,
-    TError,
-    TData
-  >;
-}): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetDbAnnotationsLegendsQueryOptions(options);
+export function createGetDbAnnotationsLegends<TData = Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError = unknown>(
+  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getDbAnnotationsLegends>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetDbAnnotationsLegendsQueryOptions(options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
 
 /**
  * @summary Get Annotation Legend For Db
  */
 export const getAnnotationLegendForDb = (
-  dbName: DatabaseType,
-  signal?: AbortSignal,
+    dbName: DatabaseType,
+ signal?: AbortSignal
 ) => {
-  return dataMutator<AnnotationLegend>({
-    url: `/api/v1/info/legend/${dbName}`,
-    method: "GET",
-    signal,
-  });
-};
+      
+      
+      return dataMutator<AnnotationLegend>(
+      {url: `/api/v1/info/legend/${dbName}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-export const getGetAnnotationLegendForDbQueryKey = (dbName: DatabaseType) => {
-  return [`/api/v1/info/legend/${dbName}`] as const;
-};
+export const getGetAnnotationLegendForDbQueryKey = (dbName: DatabaseType,) => {
+    return [`/api/v1/info/legend/${dbName}`] as const;
+    }
 
-export const getGetAnnotationLegendForDbQueryOptions = <
-  TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>,
-  TError = HTTPValidationError,
->(
-  dbName: DatabaseType,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getAnnotationLegendForDb>>,
-      TError,
-      TData
-    >;
-  },
+    
+export const getGetAnnotationLegendForDbQueryOptions = <TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError = HTTPValidationError>(dbName: DatabaseType, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData>, }
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetAnnotationLegendForDbQueryKey(dbName);
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getAnnotationLegendForDb>>
-  > = ({ signal }) => getAnnotationLegendForDb(dbName, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetAnnotationLegendForDbQueryKey(dbName);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!dbName,
-    ...queryOptions,
-  } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getAnnotationLegendForDb>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetAnnotationLegendForDbQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getAnnotationLegendForDb>>
->;
-export type GetAnnotationLegendForDbQueryError = HTTPValidationError;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAnnotationLegendForDb>>> = ({ signal }) => getAnnotationLegendForDb(dbName, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(dbName), ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAnnotationLegendForDbQueryResult = NonNullable<Awaited<ReturnType<typeof getAnnotationLegendForDb>>>
+export type GetAnnotationLegendForDbQueryError = HTTPValidationError
+
 
 /**
  * @summary Get Annotation Legend For Db
  */
 
-export function createGetAnnotationLegendForDb<
-  TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>,
-  TError = HTTPValidationError,
->(
-  dbName: DatabaseType,
-  options?: {
-    query?: CreateQueryOptions<
-      Awaited<ReturnType<typeof getAnnotationLegendForDb>>,
-      TError,
-      TData
-    >;
-  },
-): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetAnnotationLegendForDbQueryOptions(dbName, options);
+export function createGetAnnotationLegendForDb<TData = Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError = HTTPValidationError>(
+ dbName: DatabaseType, options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getAnnotationLegendForDb>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetAnnotationLegendForDbQueryOptions(dbName,options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
 
+
+
+
 /**
  * @summary Get Taxonomies
  */
-export const getTaxonomies = (signal?: AbortSignal) => {
-  return dataMutator<GetTaxonomies200>({
-    url: `/api/v1/info/taxonomies/`,
-    method: "GET",
-    signal,
-  });
-};
+export const getTaxonomies = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return dataMutator<GetTaxonomies200>(
+      {url: `/api/v1/info/taxonomies/`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetTaxonomiesQueryKey = () => {
-  return [`/api/v1/info/taxonomies/`] as const;
-};
+    return [`/api/v1/info/taxonomies/`] as const;
+    }
 
-export const getGetTaxonomiesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getTaxonomies>>,
-  TError = unknown,
->(options?: {
-  query?: CreateQueryOptions<
-    Awaited<ReturnType<typeof getTaxonomies>>,
-    TError,
-    TData
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
+    
+export const getGetTaxonomiesQueryOptions = <TData = Awaited<ReturnType<typeof getTaxonomies>>, TError = unknown>( options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData>, }
+) => {
 
-  const queryKey = queryOptions?.queryKey ?? getGetTaxonomiesQueryKey();
+const {query: queryOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getTaxonomies>>> = ({
-    signal,
-  }) => getTaxonomies(signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetTaxonomiesQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as CreateQueryOptions<
-    Awaited<ReturnType<typeof getTaxonomies>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetTaxonomiesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getTaxonomies>>
->;
-export type GetTaxonomiesQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTaxonomies>>> = ({ signal }) => getTaxonomies(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTaxonomiesQueryResult = NonNullable<Awaited<ReturnType<typeof getTaxonomies>>>
+export type GetTaxonomiesQueryError = unknown
+
 
 /**
  * @summary Get Taxonomies
  */
 
-export function createGetTaxonomies<
-  TData = Awaited<ReturnType<typeof getTaxonomies>>,
-  TError = unknown,
->(options?: {
-  query?: CreateQueryOptions<
-    Awaited<ReturnType<typeof getTaxonomies>>,
-    TError,
-    TData
-  >;
-}): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetTaxonomiesQueryOptions(options);
+export function createGetTaxonomies<TData = Awaited<ReturnType<typeof getTaxonomies>>, TError = unknown>(
+  options?: { query?:CreateQueryOptions<Awaited<ReturnType<typeof getTaxonomies>>, TError, TData>, }
 
-  const query = createQuery(queryOptions) as CreateQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
+  ): CreateQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetTaxonomiesQueryOptions(options)
+
+  const query = createQuery(queryOptions) as CreateQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
+
+
