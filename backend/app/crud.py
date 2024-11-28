@@ -1,9 +1,9 @@
 # Copyright 2024 Tobias Olenyi.
 # SPDX-License-Identifier: Apache-2.0
 import random
-from typing import Optional
+from typing import Iterable, Optional
 from base64 import b64encode, b64decode
-
+import logging
 from sqlalchemy import Select, func, select, and_
 from sqlmodel import Session
 
@@ -22,6 +22,8 @@ from .models import (
 )
 from .core.config import settings
 from .definitions import Topology
+
+logger = logging.getLogger(__name__)
 
 
 def _query_to_protein_info(query_result) -> list[ProteinInfo]:
@@ -181,19 +183,19 @@ def get_proteins_by_lineage(
     )
 
 
-def get_membrane_annotation_for_id(db: Session, selected_id: str) -> list[Annotation]:
+def get_membrane_annotation_for_id(
+    db: Session, selected_id: str
+) -> Iterable[Annotation]:
     sequence = (
-        db.exec(
-            select(Sequence).where(Sequence.uniprot_accession == selected_id)
-        ).first()  # type: ignore
+        db.scalar(select(Sequence).where(Sequence.uniprot_accession == selected_id))  # type: ignore
     )
     if not sequence:
         return []
 
-    annotations = db.exec(
+    annotations = db.scalars(
         select(Annotation).where(Annotation.sequence_id == sequence.id)
-    ).all()
-    return annotations
+    )
+    return annotations if annotations else []
 
 
 def get_random_proteins(db: Session, num_sequences: int) -> ProteinResponse | None:
