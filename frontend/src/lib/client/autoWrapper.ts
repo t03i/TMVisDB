@@ -33,7 +33,6 @@ function wrapQueryFunction<TParams extends any[], TData, TError>(
     options?: { query?: CreateQueryOptions<any, TError, TData> };
     queryClient?: QueryClient;
   }) => {
-    console.log("params", params);
     const queryOptions = getQueryOptionsFn(...params, options);
     const query = createQuery(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
