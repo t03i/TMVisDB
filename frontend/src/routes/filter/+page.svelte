@@ -32,9 +32,30 @@
   $: ({ dataQuery, countQuery, pagination, currentPageIndex } =
     $dataQueryStore);
 
+  let loadingTimer: ReturnType<typeof setTimeout> | null = null;
+  let showLoadingNote = false;
+
+  // Watch dataQuery loading state
+  $: {
+    if ($dataQuery?.isLoading) {
+      loadingTimer = setTimeout(() => {
+        showLoadingNote = true;
+      }, 15000); // 15 seconds
+    } else {
+      if (loadingTimer) {
+        clearTimeout(loadingTimer);
+        loadingTimer = null;
+      }
+      showLoadingNote = false;
+    }
+  }
+
   // Cleanup on component destroy
   onDestroy(() => {
     dataQueryStore.destroy();
+    if (loadingTimer) {
+      clearTimeout(loadingTimer);
+    }
   });
 
   // Add breadcrumb when filters change
@@ -74,6 +95,23 @@
     <FilterForm />
   </FilterFormLoading>
 </div>
+
+{#if showLoadingNote}
+  <div
+    class="alert variant-ghost-primary m-3 grid grid-cols-[auto_1fr] items-center gap-4 p-2"
+  >
+    <iconify-icon icon="line-md:cog-loop" height="3rem"></iconify-icon>
+    <div>
+      <h3 class="h3 mb-2">Taking a moment to find exactly what you need</h3>
+      <p>
+        We're carefully searching through detailed criteria like specific
+        organisms and kingdoms. For all of our proteins, this can take a while.
+        <br />
+        Need a quick overview? Try using fewer filters to see results faster.
+      </p>
+    </div>
+  </div>
+{/if}
 
 <div class="card m-3 p-2">
   {#if $dataQuery?.isSuccess}
