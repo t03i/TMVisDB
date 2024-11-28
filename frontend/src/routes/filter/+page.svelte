@@ -97,8 +97,24 @@
   {:else if $dataQuery?.isLoading}
     <LoadingTable headers={proteinTableHeaders} rows={pageSize} />
   {:else if $dataQuery === null || $dataQuery?.error}
-    <div class="card variant-filled-error p-4">
-      <div class="flex items-center gap-4">
+    {#if $dataQuery?.error?.status === 404 || $dataQuery?.error?.status === 422}
+      <div
+        class="alert variant-filled-error grid grid-cols-[auto_1fr] items-center gap-4 p-4"
+      >
+        <iconify-icon icon="line-md:alert" class="text-2xl"></iconify-icon>
+        <div>
+          <h3 class="h3">No Data Found</h3>
+          <p>
+            {$dataQuery?.error?.status === 422
+              ? "Your search criteria resulted in an invalid query. Please adjust your filters."
+              : "No proteins matched your search criteria."}
+          </p>
+        </div>
+      </div>
+    {:else}
+      <div
+        class="alert variant-filled-error grid grid-cols-[auto_1fr_auto] items-center gap-4 p-4"
+      >
         <iconify-icon icon="line-md:alert" class="text-2xl"></iconify-icon>
         <div>
           <h3 class="h3">Error Loading Data</h3>
@@ -107,23 +123,23 @@
               "An unexpected error occurred while loading the data."}
           </p>
         </div>
+        <div class="flex gap-2">
+          <button
+            class="variant-filled btn"
+            on:click={() => window.location.reload()}
+          >
+            Try Again
+          </button>
+          <a
+            href={config.GITHUB_LINKS.getNewIssueUrl(bugOptions())}
+            target="_blank"
+            rel="noopener"
+            class="variant-soft btn"
+          >
+            Report Issue
+          </a>
+        </div>
       </div>
-      <div class="mt-4 flex justify-end gap-2">
-        <button
-          class="variant-filled btn"
-          on:click={() => window.location.reload()}
-        >
-          Try Again
-        </button>
-        <a
-          href={config.GITHUB_LINKS.getNewIssueUrl(bugOptions())}
-          target="_blank"
-          rel="noopener"
-          class="variant-soft btn"
-        >
-          Report Issue
-        </a>
-      </div>
-    </div>
+    {/if}
   {/if}
 </div>
