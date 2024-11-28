@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v1.4.2 (2024-11-28)
+
+### Bug Fixes
+
+- **frontend**: Catch issue with structureState race condition
+  ([`0f5099e`](https://github.com/t03i/TMVisDB/commit/0f5099ee9e55f6e62e125595dc94a5fae0c11946))
+
+- **frontend**: Add app version
+  ([`1f5af77`](https://github.com/t03i/TMVisDB/commit/1f5af77ced0b944b4e5c119857638a20dc06bf93))
+
+### Code Style
+
+- **frontend**: Improve error display for filter problems
+  ([`5ab7740`](https://github.com/t03i/TMVisDB/commit/5ab7740679d89fcedd5ebc06f84adc80876fce5c))
+
+### Refactoring
+
+- **frontend**: Change to use dev version in development
+  ([`1fdf201`](https://github.com/t03i/TMVisDB/commit/1fdf201861ee35b630a64acf4df0bb61cad6660f))
+
+- **frontend**: Add db search time display
+  ([`3eaddcd`](https://github.com/t03i/TMVisDB/commit/3eaddcd63f1a7f5bdde2bb49d474367681099cab))
+
+
 ## v1.4.1 (2024-11-28)
 
 ### Bug Fixes
