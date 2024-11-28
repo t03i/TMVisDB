@@ -39,7 +39,6 @@
 
   // Add breadcrumb when filters change
   $: {
-    console.log("dataQueryStore", $dataQueryStore);
     if (Object.keys(params).length > 0) {
       Sentry.addBreadcrumb({
         category: "filters",

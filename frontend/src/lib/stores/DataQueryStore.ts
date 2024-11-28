@@ -56,7 +56,6 @@ class QueryManager {
 
     if (this.filterParams.search_for === "id") {
       const organismId = parseInt(this.filterParams.organismid);
-      console.log("organismId", this.filterParams.organismid);
       return useProteinsByOrganism({
         params: [
           organismId,
@@ -196,12 +195,17 @@ export function createDataQueryStore(params: Record<string, string>) {
       store.update((state) => {
         if (state.currentPageIndex > 0) {
           const newIndex = state.currentPageIndex - 1;
-          const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
+          const cursor =
+            newIndex <= 0
+              ? undefined
+              : state.pageInfoHistory[newIndex - 1]?.next_cursor;
+
           const newQuery = queryManager.createQuery(cursor);
           subscribeToQuery(newQuery);
           return {
             ...state,
             currentPageIndex: newIndex,
+            dataQuery: newQuery,
           };
         }
         return state;
@@ -213,16 +217,7 @@ export function createDataQueryStore(params: Record<string, string>) {
         const currentPageInfo = state.pageInfoHistory[state.currentPageIndex];
         const newIndex = state.currentPageIndex + 1;
 
-        if (state.currentPageIndex < state.pageInfoHistory.length - 1) {
-          const cursor = state.pageInfoHistory[newIndex]?.next_cursor;
-          const newQuery = queryManager.createQuery(cursor);
-          subscribeToQuery(newQuery);
-          return {
-            ...state,
-            currentPageIndex: newIndex,
-            dataQuery: newQuery,
-          };
-        } else if (currentPageInfo?.has_next_page) {
+        if (currentPageInfo?.has_next_page) {
           const newQuery = queryManager.createQuery(
             currentPageInfo.next_cursor,
           );
