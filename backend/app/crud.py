@@ -22,6 +22,7 @@ from .models import (
 )
 from .core.config import settings
 from .definitions import Topology
+from .taxonomy_enums import SuperKingdom
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +173,13 @@ def get_proteins_by_lineage(
     count_only: bool = False,
 ) -> ProteinResponse | ProteinCount | None:
     query = build_base_query(filter, for_count=count_only)
-    query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)
+
+    # Handle unclassified sequences by mapping them to "Unknown"
+    if taxonomy.super_kingdom == SuperKingdom.unclassified_sequences:
+        query = query.where(Organism.super_kingdom == "Unknown")
+    else:
+        query = query.where(Organism.super_kingdom == taxonomy.super_kingdom)
+
     if taxonomy.clade:
         query = query.where(Organism.clade == taxonomy.clade)
 
