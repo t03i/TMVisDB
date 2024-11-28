@@ -7,9 +7,9 @@
 
 <th>
   <input
-    class="input text-sm w-full"
+    class="input w-full text-sm"
     type="text"
-    placeholder="Filter"
+    placeholder="Filter Page"
     bind:value
     on:input={() => {
       if (filterBy) handler.filter(value, filterBy);

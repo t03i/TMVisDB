@@ -7,7 +7,7 @@
 <input
   class="input w-36 sm:w-64"
   type="search"
-  placeholder="Search..."
+  placeholder="Search Page"
   bind:value
   on:input={() => handler.search(value)}
 />
