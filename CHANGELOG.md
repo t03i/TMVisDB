@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v1.4.3 (2024-11-29)
+
+### Bug Fixes
+
+- **frontend**: Fix initial theme incorrectly rendered on detail pages;
+  ([`dee1ce2`](https://github.com/t03i/TMVisDB/commit/dee1ce22d88d373e995f755c5be928b69af93a59))
+
+Issue was caused by skeleton UI not handling modeSwitches on SSR. Cf: -
+  https://github.com/skeletonlabs/skeleton/issues/2598#issuecomment-2070622735 -
+  https://github.com/skeletonlabs/skeleton/issues/905#issuecomment-1445231511
+
+### Build System
+
+- **frontend**: Update dependencies
+  ([`221786b`](https://github.com/t03i/TMVisDB/commit/221786bdd86d59069428dd1731769428d66d67e0))
+
+
 ## v1.4.2 (2024-11-28)
 
 ### Bug Fixes
