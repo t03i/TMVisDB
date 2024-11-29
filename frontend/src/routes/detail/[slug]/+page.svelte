@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { modeCurrent } from "@skeletonlabs/skeleton";
+  import { modeCurrent, setInitialClassState } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
   import * as Sentry from "@sentry/svelte";
 
@@ -9,7 +9,7 @@
   import { createGetProteinById } from "$lib/client/tmvisdb";
   import type { ProteinInfo } from "$lib/client/model";
   import { AnnotationStyleManager } from "$lib/annotations";
-  import { StructureViewerState } from '$lib/stores/StructureMarksStore';
+  import { StructureViewerState } from "$lib/stores/StructureMarksStore";
 
   import config from "$lib/config";
 
@@ -50,20 +50,22 @@
     const { feature } = detail;
 
     if (feature) {
-        const residues = feature.locations[0].fragments.map((fragment: { start: number; end: number }) => ({
+      const residues = feature.locations[0].fragments.map(
+        (fragment: { start: number; end: number }) => ({
           start_residue_number: fragment.start,
           end_residue_number: fragment.end,
-        }));
-        structureState.setHighlight(residues,  true);
+        }),
+      );
+      structureState.setHighlight(residues, true);
     }
   };
 
   const uniprotAcc = data.slug;
 
   Sentry.addBreadcrumb({
-    category: 'navigation',
+    category: "navigation",
     message: `Loading protein details for: ${uniprotAcc}`,
-    level: 'info'
+    level: "info",
   });
 
   const {
@@ -83,14 +85,21 @@
     annotationTracks,
   } = createAnnotationStore(uniprotAcc, infoQuery);
 
-
   onMount(() => {
+    // Dark mode issue with SSR disabled; See:
+    // - https://github.com/skeletonlabs/skeleton/issues/905#issuecomment-1445231511
+    // - https://github.com/skeletonlabs/skeleton/issues/2598#issuecomment-2070622735
+    setInitialClassState();
+
     annotationStyleManager = new AnnotationStyleManager(
       rootContainer,
-      modeCurrent ? "light" : "dark",
+      $modeCurrent ? "light" : "dark",
     );
 
-    structureState = new StructureViewerState(annotationStyleManager, annotationStructureSelection);
+    structureState = new StructureViewerState(
+      annotationStyleManager,
+      annotationStructureSelection,
+    );
 
     const unsubscribe = modeCurrent.subscribe((mode) => {
       annotationStyleManager.setTheme(mode ? "light" : "dark");
@@ -123,7 +132,7 @@
       {:else if $structureUrl}
         <div class="relative h-full w-full">
           <StructureColorSwitcher
-            structureState={structureState}
+            {structureState}
             annotationStructureSelection={$annotationStructureSelection}
           />
           <StructureViewer
