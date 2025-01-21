@@ -18,17 +18,40 @@ export class MolstarWrapper {
     this.initializeWhenReady();
   }
 
+  private setReady() {
+    this.ready = true;
+    this.readyCallbacks.forEach((cb) => cb());
+    this.readyCallbacks = [];
+  }
+
   private initializeWhenReady() {
-    if (this.viewer?.viewerInstance) {
+    const setupLoadCompleteListener = () => {
       this.viewer.viewerInstance.events.loadComplete.subscribe(
         (success: boolean) => {
           if (success) {
-            this.ready = true;
-            this.readyCallbacks.forEach((cb) => cb());
-            this.readyCallbacks = [];
+            this.setReady();
           }
         },
       );
+    };
+
+    if (this.viewer?.viewerInstance) {
+      setupLoadCompleteListener();
+    } else {
+      // Create MutationObserver to watch for viewerInstance
+      const observer = new MutationObserver(() => {
+        if (this.viewer?.viewerInstance) {
+          setupLoadCompleteListener();
+          observer.disconnect();
+        }
+      });
+
+      // Observe the viewer element for changes
+      observer.observe(this.viewer, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+      });
     }
   }
 
@@ -139,7 +162,6 @@ export class MolstarWrapper {
       await this.clearSelection();
       return;
     }
-
     const {
       residues,
       color,
