@@ -35,6 +35,7 @@
 
     selectionUnsubscribe = state.selectionStore.subscribe(async (state) => {
       await molstarWrapper.updateSelectionState(state);
+      await molstarWrapper.applyConfidenceVisualization();
     });
 
     molstarWrapper.whenReady().then(() => {

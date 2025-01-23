@@ -9,17 +9,36 @@ import type {
 import type { RGB } from "$lib/utils";
 
 import { isEmptyLoci, Loci } from "molstar/lib/mol-model/loci";
-import {
-  QueryContext,
-  StructureElement,
-  StructureSelection,
-} from "molstar/lib/mol-model/structure";
+import { StructureElement } from "molstar/lib/mol-model/structure";
 import { Structure } from "molstar/lib/mol-model/structure/structure";
+import type { StructureComponentRef } from "molstar/lib/mol-plugin-state/manager/structure/hierarchy-state";
+import type { PluginStateObject } from "molstar/lib/mol-plugin-state/objects";
 import { StateTransforms } from "molstar/lib/mol-plugin-state/transforms";
-import { MolScriptBuilder as MS } from "molstar/lib/mol-script/language/builder";
-import { compile } from "molstar/lib/mol-script/runtime/query/compiler";
-import { StateSelection } from "molstar/lib/mol-state";
+import { PluginContext } from "molstar/lib/mol-plugin/context";
+import {
+  StateBuilder,
+  StateObjectCell,
+  StateSelection,
+  StateTransform,
+} from "molstar/lib/mol-state";
 import { Transparency } from "molstar/lib/mol-theme/transparency";
+
+type TransparencyEachReprCallback = (
+  update: StateBuilder.Root,
+  repr: StateObjectCell<
+    PluginStateObject.Molecule.Structure.Representation3D,
+    StateTransform<
+      typeof StateTransforms.Representation.StructureRepresentation3D
+    >
+  >,
+  transparency?: StateObjectCell<
+    any,
+    StateTransform<
+      typeof StateTransforms.Representation.TransparencyStructureRepresentation3DFromBundle
+    >
+  >,
+) => Promise<void>;
+const TransparencyManagerTag = "transparency-controls";
 
 export class MolstarWrapper {
   private viewer: any;
@@ -194,7 +213,6 @@ export class MolstarWrapper {
       keepColors,
       keepRepresentations,
     );
-    await this.applyConfidenceVisualization();
   }
 
   async updateHighlightState(state: HighlightState | null) {
@@ -210,74 +228,33 @@ export class MolstarWrapper {
 
   async applyConfidenceVisualization() {
     await this.whenReady();
-    await this.setTransparency(70);
-  }
 
-  private getLociByPLDDT(
-    score: number,
-    contextData: Structure,
-  ): StructureElement.Loci {
-    const queryExp = MS.struct.modifier.union([
-      MS.struct.modifier.wholeResidues([
-        MS.struct.modifier.union([
-          MS.struct.generator.atomGroups({
-            "chain-test": MS.core.rel.eq([
-              MS.ammp("objectPrimitive"),
-              "atomistic",
-            ]),
-            "residue-test": MS.core.rel.lte([
-              MS.struct.atomProperty.macromolecular.B_iso_or_equiv(),
-              score,
-            ]),
-          }),
-        ]),
-      ]),
-    ]);
-
-    const query = compile<StructureSelection>(queryExp);
-    const sel = query(new QueryContext(contextData));
-    return StructureSelection.toLociWithSourceUnits(sel);
-  }
-
-  private getFilteredBundle(
-    layers: Transparency.BundleLayer[],
-    structure: Structure,
-  ) {
-    const transparency = Transparency.ofBundle(layers, structure.root);
-    const merged = Transparency.merge(transparency);
-    return Transparency.filter(
-      merged,
-      structure,
-    ) as Transparency<StructureElement.Loci>;
-  }
-
-  async setTransparency(score: number, transparencyValue: number = 0.5) {
-    await this.whenReady();
-    if (!this.plugin) return;
-
-    // Wait for structure to be fully loaded and processed
-    await new Promise((resolve) => setTimeout(resolve, 100)); // Add small delay
-
-    const hierarchy = this.plugin.managers.structure.hierarchy;
-    const current = hierarchy.current;
-
-    if (!current?.structures?.[0]?.cell?.obj?.data) {
-      console.warn("No structure data available for transparency");
+    const plugin = this.plugin;
+    if (!plugin) {
+      console.warn("No transparency plugin found");
       return;
     }
 
-    const structure = current.structures[0];
-    const loci = this.getLociByPLDDT(score, structure.cell.obj.data);
-    if (isEmptyLoci(loci)) {
-      console.warn("No matching loci found for transparency");
+    const pLDDT = 70;
+    const transparency = 1;
+
+    const assemblyRef =
+      this.plugin.managers.structure.hierarchy.current.structures[0].cell
+        .transform.ref;
+    const structure =
+      plugin.managers.structure.hierarchy.current?.refs.get(assemblyRef);
+    if (!structure) {
+      console.warn("No structure found");
       return;
     }
 
-    await this.plugin.dataTransaction(
-      async () => {
+    return plugin.dataTransaction(
+      async (ctx: any) => {
+        const loci = this.viewer.viewerInstance.getLociByPLDDT(pLDDT);
         await this.setStructureTransparency(
+          plugin,
           structure.components,
-          transparencyValue,
+          transparency,
           loci,
         );
       },
@@ -285,95 +262,112 @@ export class MolstarWrapper {
     );
   }
 
-  private async setStructureTransparency(
-    components: any[],
-    value: number,
-    loci: StructureElement.Loci,
+  private getFilteredBundle(
+    layers: Transparency.BundleLayer[],
+    structureRef: Structure,
   ) {
-    if (!components?.length) {
-      console.warn("No components found for transparency");
-      return;
-    }
+    const transparency = Transparency.ofBundle(layers, structureRef.root);
+    const merged = Transparency.merge(transparency);
+    return Transparency.filter(
+      merged,
+      structureRef,
+    ) as Transparency<StructureElement.Loci>;
+  }
 
-    const state = this.plugin.state.data;
+  private async updateRepresentations(
+    plugin: PluginContext,
+    components: StructureComponentRef[],
+    callback: TransparencyEachReprCallback,
+  ) {
+    const state = plugin.state.data;
     const update = state.build();
 
     for (const c of components) {
-      if (!c?.representations?.length) continue;
-
-      for (const r of c.representations) {
-        if (!r?.cell?.obj?.data?.sourceData) continue;
-
-        const structure = r.cell.obj.data.sourceData;
-        if (Loci.isEmpty(loci) || isEmptyLoci(loci)) continue;
-
-        const reprRef = r.cell.transform.ref;
-        const transparency = state.select(
-          StateSelection.Generators.ofTransformer(
-            StateTransforms.Representation
-              .TransparencyStructureRepresentation3DFromBundle,
-            reprRef,
-          ).withTag("transparency-controls"),
-        )[0];
-
-        const layer = {
-          bundle: StructureElement.Bundle.fromLoci(loci),
-          value,
-        };
-
-        try {
-          if (transparency) {
-            const bundleLayers = [...transparency.params!.values.layers, layer];
-            const filtered = this.getFilteredBundle(bundleLayers, structure);
-            update.to(transparency).update(Transparency.toBundle(filtered));
-          } else {
-            const filtered = this.getFilteredBundle([layer], structure);
-            update
-              .to(reprRef)
-              .apply(
-                StateTransforms.Representation
-                  .TransparencyStructureRepresentation3DFromBundle,
-                Transparency.toBundle(filtered),
-                { tags: ["transparency-controls"] },
-              );
-          }
-        } catch (error) {
-          console.error("Error applying transparency:", error);
-        }
-      }
-    }
-
-    return update.commit({ doNotUpdateCurrent: true });
-  }
-
-  async clearTransparency() {
-    await this.whenReady();
-    if (!this.plugin) return;
-
-    const structure =
-      this.viewer.viewerInstance.plugin.managers.structure.hierarchy.current
-        ?.structures[0];
-    if (!structure) return;
-
-    const state = this.plugin.state.data;
-    const update = state.build();
-
-    for (const c of structure.components) {
       for (const r of c.representations) {
         const transparency = state.select(
           StateSelection.Generators.ofTransformer(
             StateTransforms.Representation
               .TransparencyStructureRepresentation3DFromBundle,
             r.cell.transform.ref,
-          ).withTag("transparency-controls"),
-        )[0];
+          ).withTag(TransparencyManagerTag),
+        );
 
-        if (transparency) {
-          update.delete(transparency.transform.ref);
-        }
+        await callback(update, r.cell, transparency[0]);
       }
     }
 
-    await update.commit({ doNotUpdateCurrent: true });
+    update.commit();
+  }
+
+  private async setStructureTransparency(
+    plugin: PluginContext,
+    components: StructureComponentRef[],
+    value: number,
+    loci: StructureElement.Loci,
+  ) {
+    await this.updateRepresentations(
+      plugin,
+      components,
+      async (update, repr, transparencyCell) => {
+        const structure = repr.obj!.data.sourceData;
+        if (Loci.isEmpty(loci) || isEmptyLoci(loci)) {
+          return;
+        }
+
+        const layer = {
+          bundle: StructureElement.Bundle.fromLoci(loci),
+          value,
+        };
+
+        if (transparencyCell) {
+          const bundleLayers = [
+            ...transparencyCell.params!.values.layers,
+            layer,
+          ];
+          const filtered = this.getFilteredBundle(bundleLayers, structure);
+          update.to(transparencyCell).update(Transparency.toBundle(filtered));
+        } else {
+          const parentRef = repr.transform.ref;
+          const parentNode = plugin.state.data.tree.transforms.get(parentRef);
+          if (!parentNode) {
+            throw new Error(`Parent node ${parentRef} not found in state tree`);
+          }
+
+          // Create the transparency transform params
+          const filtered = this.getFilteredBundle([layer], structure);
+          const transparencyRef = `transparency-${parentRef}`;
+          const params = {
+            ...Transparency.toBundle(filtered),
+            parent: parentRef,
+          };
+          update
+            .to(parentRef)
+            .apply(
+              StateTransforms.Representation
+                .TransparencyStructureRepresentation3DFromBundle,
+              params,
+              {
+                tags: TransparencyManagerTag,
+                ref: transparencyRef,
+              },
+            );
+        }
+      },
+    );
+  }
+
+  private async clearTransparency(
+    plugin: PluginContext,
+    components: StructureComponentRef[],
+  ) {
+    await this.updateRepresentations(
+      plugin,
+      components,
+      async (update, repr, transparencyCell) => {
+        if (transparencyCell) {
+          update.delete(transparencyCell.transform.ref);
+        }
+      },
+    );
   }
 }
