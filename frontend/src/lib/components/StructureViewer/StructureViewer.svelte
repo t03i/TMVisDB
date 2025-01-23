@@ -40,7 +40,6 @@
     molstarWrapper.whenReady().then(() => {
       dispatch("viewerReady");
       molstarWrapper.updateBackground();
-      molstarWrapper.applyConfidenceVisualization();
     });
   });
 
