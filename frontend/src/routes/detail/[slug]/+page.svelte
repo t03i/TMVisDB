@@ -115,10 +115,7 @@
   <title>{config.APP_NAME} - {uniprotAcc}</title>
 </svelte:head>
 
-<div
-  bind:this={rootContainer}
-  class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh"
->
+<div bind:this={rootContainer} class="m-5 flex h-full flex-col gap-4 lg:h-lvh">
   <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">
     <div class="card h-full w-full lg:w-1/2">
       {#if $structureQuery?.isLoading}
@@ -146,7 +143,7 @@
         </div>
       {/if}
     </div>
-    <div class="card h-full w-full p-6 lg:w-1/2">
+    <div class="h-full w-full lg:w-1/2">
       {#if !$infoQuery?.error && $infoQuery?.data}
         <ProteinDetailView proteinInfo={$infoQuery.data} />
       {:else if $infoQuery?.isLoading}
