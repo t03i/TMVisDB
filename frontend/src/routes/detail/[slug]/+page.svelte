@@ -117,9 +117,9 @@
 
 <div
   bind:this={rootContainer}
-  class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh"
+  class="m-5 flex h-full min-h-fit flex-col gap-4 p-3"
 >
-  <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">
+  <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-fit lg:flex-row">
     <div class="card h-full w-full lg:w-1/2">
       {#if $structureQuery?.isLoading}
         <div class="h-full w-full p-6">
