@@ -18,7 +18,7 @@
   $: is404Error = statusCode === 404;
 </script>
 
-<div class="display-block {className}" {...$$restProps}>
+<div class="display-block card {className}" {...$$restProps}>
   <div class="mb-5 flex flex-col items-center justify-center rounded-lg p-4">
     <div class="flex h-1/3 items-end justify-center">
       {#if is404Error}

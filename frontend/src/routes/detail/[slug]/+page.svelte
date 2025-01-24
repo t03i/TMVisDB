@@ -146,7 +146,7 @@
         </div>
       {/if}
     </div>
-    <div class="card h-full w-full p-6 lg:w-1/2">
+    <div class="h-full w-full lg:w-1/2">
       {#if !$infoQuery?.error && $infoQuery?.data}
         <ProteinDetailView proteinInfo={$infoQuery.data} />
       {:else if $infoQuery?.isLoading}
