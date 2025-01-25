@@ -19,6 +19,12 @@ export enum UniprotGOCategory {
   CELLULAR_COMPONENT = "C",
 }
 
+export interface GOAnnotation {
+  id: string;
+  term: string;
+  category: UniprotGOCategory;
+}
+
 export const UniprotACCTypeNameMap: Record<UniprotACCType, string | null> = {
   [UniprotACCType.UNIPROT_ACCESSION]: "UniProt Accession",
   [UniprotACCType.UNIPROT_NAME]: "UniProt Name",
@@ -28,11 +34,7 @@ export interface UniprotAnnotationData extends AnnotationData {
   accession: string;
   name: string;
   sequence_length: number;
-  go_annotations?: Array<{
-    id: string;
-    term: string;
-    category: UniprotGOCategory;
-  }>;
+  go_annotations?: Array<GOAnnotation>;
 }
 
 export const uniprot_get_input_type = (selected_id: string): UniprotACCType => {
