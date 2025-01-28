@@ -168,15 +168,6 @@
       <DBReferencesView dbReferences={$annotationDBReferences} />
     {/if}
   </div>
-  <div class="card w-full space-y-6 p-6">
-    <h3 class="no-wrap h3">GO Term Overview</h3>
-    {#if !$uniprotQuery?.isFetching && $uniprotQuery?.data?.go_annotations}
-      <GoView
-        goAnnotations={$uniprotQuery?.data?.go_annotations}
-        {uniprotAcc}
-      />
-    {/if}
-  </div>
 
   <div class="card w-full space-y-6 p-6">
     <h3 class="no-wrap h3">Annotations</h3>
@@ -187,6 +178,16 @@
         on:feature-clicked={handleFeatureEvent}
         sequence={$structureQuery.data?.sequence}
         trackData={$annotationTracks}
+      />
+    {/if}
+  </div>
+
+  <div class="card w-full space-y-6 p-6">
+    <h3 class="no-wrap h3">GO Term Overview</h3>
+    {#if !$uniprotQuery?.isFetching && $uniprotQuery?.data?.go_annotations}
+      <GoView
+        goAnnotations={$uniprotQuery?.data?.go_annotations}
+        {uniprotAcc}
       />
     {/if}
   </div>

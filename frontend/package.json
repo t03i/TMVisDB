@@ -22,6 +22,7 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
 		"@tanstack/svelte-query-devtools": "^5.61.5",
+		"@types/d3": "^7.4.3",
 		"@types/d3-cloud": "^1.2.9",
 		"@types/node": "^22.10.1",
 		"@vincjo/datatables": "^1.14.10",

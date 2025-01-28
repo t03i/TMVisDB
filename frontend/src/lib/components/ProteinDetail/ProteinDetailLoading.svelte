@@ -7,7 +7,7 @@
   export { className as class };
 </script>
 
-<div class="display-block card{className}" {...$$restProps}>
+<div class="display-block card p-4 {className}" {...$$restProps}>
   <div class="placeholder mb-2 h-8 w-1/3 animate-pulse" />
   <div class="placeholder mb-4 h-4 w-1/2 animate-pulse" />
 
