@@ -50,9 +50,7 @@ jobs:
               env:
                   UV_TOOL_DIR: /tmp/release-tool-bin
               run: |
-                  if ! uv tool list | grep -q "python-semantic-release"; then
-                      uv tool install python-semantic-release@v9.11.1
-                  fi
+                  uv tool install --force python-semantic-release@v9.11.1
 
             - name: Run Semantic Release
               env:
