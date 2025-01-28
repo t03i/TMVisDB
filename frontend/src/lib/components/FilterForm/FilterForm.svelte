@@ -67,7 +67,21 @@
       const defaultValue = defaultFilters[key as keyof typeof defaultFilters];
       if (value !== defaultValue) {
         const paramKey = key.replace("filter", "").toLowerCase();
-        params[paramKey] = String(value);
+        // Add length parameters only if they're different from defaults and within valid range
+        if (key === "filterMinLength" || key === "filterMaxLength") {
+          const length = Number(value);
+          if (
+            !isNaN(length) &&
+            length >= config.MIN_PROTEIN_LENGTH &&
+            length <= config.MAX_PROTEIN_LENGTH &&
+            (key !== "filterMinLength" || length <= filters.filterMaxLength) &&
+            (key !== "filterMaxLength" || length >= filters.filterMinLength)
+          ) {
+            params[paramKey] = String(value);
+          }
+        } else {
+          params[paramKey] = String(value);
+        }
       }
     });
 
@@ -78,7 +92,6 @@
     if (filters.filterTopology !== defaultFilters.filterTopology) {
       params.peptide = String(filters.filterSignalPeptide);
     }
-
     goto(`?${new URLSearchParams(params).toString()}`);
     dispatch("filter");
   }
@@ -96,7 +109,14 @@
           // @ts-ignore
           filters[key] = paramValue;
         } else if (key === "filterMinLength" || key === "filterMaxLength") {
-          filters[key] = parseInt(paramValue);
+          const length = parseInt(paramValue);
+          if (
+            !isNaN(length) &&
+            length >= config.MIN_PROTEIN_LENGTH &&
+            length <= config.MAX_PROTEIN_LENGTH
+          ) {
+            filters[key] = length;
+          }
         } else if (key === "filterSignalPeptide") {
           filters[key] = paramValue !== "false";
         } else {
@@ -105,6 +125,11 @@
         }
       }
     });
+
+    // Ensure min length is not greater than max length
+    if (filters.filterMinLength > filters.filterMaxLength) {
+      filters.filterMinLength = filters.filterMaxLength;
+    }
   });
 
   // Check if current state matches default state
@@ -245,6 +270,7 @@
         min={config.MIN_PROTEIN_LENGTH}
         max={filters.filterMaxLength}
         placeholder="Min"
+        required
       />
       <span>-</span>
       <input
@@ -254,6 +280,7 @@
         min={filters.filterMinLength}
         max={config.MAX_PROTEIN_LENGTH}
         placeholder="Max"
+        required
       />
     </div>
   </div>
