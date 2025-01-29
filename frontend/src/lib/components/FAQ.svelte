@@ -92,8 +92,8 @@
 
   <AccordionItem>
     <svelte:fragment slot="summary">
-      How to handle conflicting annotations?</svelte:fragment
-    >
+      <h3 class="h3">How to handle conflicting annotations?</h3>
+    </svelte:fragment>
     <svelte:fragment slot="content">
       In some cases, the annotations from different sources can be conflicting;
       e.g., annotations of an alpha-helix and a beta-barrel. In these cases, we
