@@ -22,6 +22,8 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
 		"@tanstack/svelte-query-devtools": "^5.61.5",
+		"@types/d3": "^7.4.3",
+		"@types/d3-cloud": "^1.2.9",
 		"@types/node": "^22.10.1",
 		"@vincjo/datatables": "^1.14.10",
 		"autoprefixer": "^10.4.20",
@@ -53,6 +55,8 @@
 		"@sentry/svelte": "^8.41.0",
 		"@tanstack/svelte-query": "^5.61.5",
 		"axios": "^1.7.8",
+		"d3": "^7.9.0",
+		"d3-cloud": "^1.2.7",
 		"iconify-icon": "^2.1.0",
 		"pdbe-molstar": "^3.3.2"
 	}
