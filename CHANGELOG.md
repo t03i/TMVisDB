@@ -1,6 +1,32 @@
 # CHANGELOG
 
 
+## v1.5.0 (2025-01-29)
+
+### Features
+
+- Add GO word cloud on detail page
+  ([`46bcb44`](https://github.com/t03i/TMVisDB/commit/46bcb44850380d3275c5c37f2b8f876fd4056074))
+
+* style: fix page alignment
+
+* feat: add go term retrieval
+
+* feat: add go term word cloud
+
+* feat: add wordcloud display
+
+* style: add text-styling to svg
+
+* refactor: prevent single letter words
+
+* refactor: improve text
+
+* style: better font scaling
+
+* feat: add GO loading state
+
+
 ## v1.4.5 (2025-01-29)
 
 ### Bug Fixes
