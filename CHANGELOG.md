@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.4.5 (2025-01-29)
+
+### Bug Fixes
+
+- Add topdb signal peptide
+  ([`195b0b0`](https://github.com/t03i/TMVisDB/commit/195b0b05fdf64f0ed9e87a223a92f62329d00ee8))
+
+
 ## v1.4.4 (2025-01-28)
 
 ### Bug Fixes
