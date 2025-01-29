@@ -184,7 +184,13 @@
 
   <div class="card w-full space-y-6 p-6">
     <h3 class="no-wrap h3">GO Term Overview</h3>
-    {#if !$uniprotQuery?.isFetching && $uniprotQuery?.data?.go_annotations}
+    {#if $uniprotQuery?.isFetching}
+      <GoLoading />
+    {:else if $uniprotQuery?.error}
+      <div class="alert variant-filled-error">
+        <span>Failed to load GO terms: {$uniprotQuery.error.message}</span>
+      </div>
+    {:else if $uniprotQuery?.data?.go_annotations}
       <GoView
         goAnnotations={$uniprotQuery?.data?.go_annotations}
         {uniprotAcc}
