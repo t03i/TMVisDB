@@ -51,6 +51,11 @@
         "fullName": "TopDB Annotation",
         "description": "Experimentally determined topology from TopDB",
         "labels": {
+            "X": {
+                "description": "Signal peptide",
+                "color_dark": "rgba(var(--color-tertiary-500))",
+                "color_light": "rgba(var(--color-tertiary-500))"
+            },
             "M": {
                 "description": "Membrane Region",
                 "color_dark": "rgba(var(--color-primary-400))",
