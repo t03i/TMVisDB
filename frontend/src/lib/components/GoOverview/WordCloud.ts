@@ -28,7 +28,6 @@ export function WordCloud<T extends Word>(
   const {
     width = 16,
     height = 9,
-    fontFamily = "sans-serif",
     marginTop = 0,
     marginRight = 0,
     marginBottom = 0,
@@ -41,7 +40,6 @@ export function WordCloud<T extends Word>(
   const svgContainer = d3
     .select(svg)
     .attr("viewBox", [0, 0, width, height])
-    .attr("font-family", fontFamily)
     .attr("text-anchor", "middle");
 
   const g = svgContainer
@@ -60,7 +58,8 @@ export function WordCloud<T extends Word>(
       g.append("text")
         .datum(word.text)
         .attr("font-size", `${word.size ?? 1}px`)
-        .attr("fill", options.fill?.(word) ?? "black")
+        .classed("text-token", true)
+        .classed("fill-token", true)
         .attr(
           "transform",
           `translate(${word.x},${word.y}) rotate(${word.rotate})`,
