@@ -26,7 +26,7 @@
       words,
       svg,
       {
-        size: (d) => d.value ?? 1,
+        size: (d) => Math.sqrt(d.value) ?? 1,
         word: (d) => d.text ?? "",
         width: 250,
         height: 100,

@@ -10,7 +10,6 @@ export interface WordCloudOptions<T extends Word> {
   word?: (d: T) => string;
   size?: (d: T) => number;
   rotate?: (d: T) => number;
-  fill?: (d: T) => string;
   fontScale?: number;
   padding?: number;
   marginTop?: number;
