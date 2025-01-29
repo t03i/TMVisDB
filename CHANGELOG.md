@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.6.0 (2025-01-29)
+
+### Features
+
+- Add FAQ section
+  ([`a3ccbd2`](https://github.com/t03i/TMVisDB/commit/a3ccbd2009134de49bc331063fe3dabdac4ac216))
+
+
 ## v1.5.0 (2025-01-29)
 
 ### Features
