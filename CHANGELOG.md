@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.6.1 (2025-01-29)
+
+### Bug Fixes
+
+- Add missing h3 in FAQ
+  ([`4862757`](https://github.com/t03i/TMVisDB/commit/4862757a9c84bf14d906e3b94819d902a9263c63))
+
+
 ## v1.6.0 (2025-01-29)
 
 ### Features
