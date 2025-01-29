@@ -13,15 +13,26 @@ export function sortGoTerms(
   goAnnotations: Array<GOAnnotation>,
   maxWordCount: number = 40,
 ) {
-  // Flatten the array of words first
-  const source = goAnnotations.flatMap((annotation) =>
-    annotation.term.split(/[\s.]+/g),
-  );
+  // Flatten and pre-process the terms
+  const source = goAnnotations.flatMap((annotation) => {
+    const words = annotation.term.split(/[\s.]+/g);
+    // Merge single letters with next word
+    const mergedWords = words.reduce((acc: string[], word, index) => {
+      if (word.length === 1 && index < words.length - 1) {
+        acc.push(`${word}${words[index + 1]}`);
+        words[index + 1] = ""; // Mark next word as processed
+      } else if (word !== "") {
+        acc.push(word);
+      }
+      return acc;
+    }, []);
+    return mergedWords;
+  });
 
   const words = source
-    .map((w) => w.replace(/^[“‘"\-—()\[\]{}]+/g, ""))
-    .map((w) => w.replace(/[;:.!?()\[\]{},"'’”\-—]+$/g, ""))
-    .map((w) => w.replace(/['’]s$/g, ""))
+    .map((w) => w.replace(/^["'"\-—()\[\]{}]+/g, ""))
+    .map((w) => w.replace(/[;:.!?()\[\]{},"''"\-—]+$/g, ""))
+    .map((w) => w.replace(/['']s$/g, ""))
     .map((w) => w.substring(0, 30))
     .map((w) => w.toLowerCase())
     .filter((w) => w && !stopwords.has(w));
