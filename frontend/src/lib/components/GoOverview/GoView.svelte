@@ -59,7 +59,7 @@
           ></iconify-icon>
         </svelte:fragment>
         <svelte:fragment slot="summary">
-          Showing {goAnnotations.length} GO terms
+          Summary of {goAnnotations.length} GO terms
         </svelte:fragment>
         <svelte:fragment slot="content">
           This word cloud visualizes the top {maxWordCount} distinct words found
