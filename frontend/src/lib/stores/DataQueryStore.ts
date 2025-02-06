@@ -46,11 +46,11 @@ class QueryManager {
       ...(this.filterParams.peptide && {
         has_signal_peptide: this.filterParams.peptide === "true",
       }),
-      ...(this.filterParams.min && {
-        sequence_length_min: parseInt(this.filterParams.min),
+      ...(this.filterParams.minlength && {
+        sequence_length_min: parseInt(this.filterParams.minlength),
       }),
-      ...(this.filterParams.max && {
-        sequence_length_max: parseInt(this.filterParams.max),
+      ...(this.filterParams.maxlength && {
+        sequence_length_max: parseInt(this.filterParams.minlength),
       }),
     };
 

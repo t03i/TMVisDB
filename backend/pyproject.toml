@@ -1,6 +1,6 @@
 [project]
 name = "app"
-version = "1.4.3"
+version = "1.6.1"
 description = "API for the tmvis project database"
 readme = "README.md"
 requires-python = ">=3.12"

@@ -19,6 +19,8 @@
     ProteinDetailError,
   } from "$lib/components/ProteinDetail";
 
+  import { GoView, GoLoading } from "$lib/components/GoOverview";
+
   import {
     DBReferencesView,
     DBReferencesLoading,
@@ -83,6 +85,7 @@
     annotationStructureSelection,
     annotationDBReferences,
     annotationTracks,
+    uniprotQuery,
   } = createAnnotationStore(uniprotAcc, infoQuery);
 
   onMount(() => {
@@ -117,9 +120,9 @@
 
 <div
   bind:this={rootContainer}
-  class="m-5 flex h-full flex-col gap-4 p-3 lg:h-lvh"
+  class="m-5 flex h-full min-h-fit flex-col gap-4 p-3"
 >
-  <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-1/2 lg:flex-row">
+  <div class="flex h-lvh min-h-[450px] flex-col gap-4 lg:h-fit lg:flex-row">
     <div class="card h-full w-full lg:w-1/2">
       {#if $structureQuery?.isLoading}
         <div class="h-full w-full p-6">
@@ -146,7 +149,7 @@
         </div>
       {/if}
     </div>
-    <div class="card h-full w-full p-6 lg:w-1/2">
+    <div class="h-full w-full lg:w-1/2">
       {#if !$infoQuery?.error && $infoQuery?.data}
         <ProteinDetailView proteinInfo={$infoQuery.data} />
       {:else if $infoQuery?.isLoading}
@@ -165,6 +168,7 @@
       <DBReferencesView dbReferences={$annotationDBReferences} />
     {/if}
   </div>
+
   <div class="card w-full space-y-6 p-6">
     <h3 class="no-wrap h3">Annotations</h3>
     {#if $annotationsIsFetching}
@@ -174,6 +178,22 @@
         on:feature-clicked={handleFeatureEvent}
         sequence={$structureQuery.data?.sequence}
         trackData={$annotationTracks}
+      />
+    {/if}
+  </div>
+
+  <div class="card w-full space-y-6 p-6">
+    <h3 class="no-wrap h3">GO Term Overview</h3>
+    {#if $uniprotQuery?.isFetching}
+      <GoLoading />
+    {:else if $uniprotQuery?.error}
+      <div class="alert variant-filled-error">
+        <span>Failed to load GO terms: {$uniprotQuery.error.message}</span>
+      </div>
+    {:else if $uniprotQuery?.data?.go_annotations}
+      <GoView
+        goAnnotations={$uniprotQuery?.data?.go_annotations}
+        {uniprotAcc}
       />
     {/if}
   </div>
