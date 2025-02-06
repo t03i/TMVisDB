@@ -10,13 +10,12 @@
   <title>{config.APP_NAME}</title>
 </svelte:head>
 
-<div class="container mx-auto space-y-6 p-4">
+<div class="container mx-auto flex max-w-screen-xl flex-col px-14">
   <h1 class="h1">About {config.APP_NAME}</h1>
 
-  <p>
-    <strong>{config.APP_NAME}</strong> provides per-residue transmembrane
-    topology annotations for proteins predicted as transmembrane proteins from
-    the
+  <p class="mt-3 text-justify">
+    <strong>{config.APP_NAME}</strong> provides per-residue topology annotations
+    for monomeric proteins predicted as transmembrane proteins from the
     <a href="https://doi.org/10.1093/nar/gkab1061" class="anchor"
       >AlphaFold DB</a
     >. The annotations are predicted with
@@ -25,7 +24,7 @@
   </p>
 
   <!-- TODO improve overview image-->
-  <div class="flex place-content-center">
+  <div class="my-8 flex w-full place-content-center">
     <img
       src={overview}
       alt="Overview of {config.APP_NAME}"
@@ -33,7 +32,7 @@
     />
   </div>
 
-  <div class="mt-4 flex space-x-4">
+  <div class="my-4 flex w-full flex-col place-content-center gap-4 md:flex-row">
     <a type="button" class="variant-filled-primary btn" href="filter">
       Start Browsing
     </a>
@@ -49,8 +48,10 @@
     </a>
   </div>
 
+  <hr class="my-4 border-t-4" />
+
   <div class="card my-4 p-4">
-    <h2 class="h3 mb-4">Frequently Asked Questions</h2>
+    <h2 class="h3 mb-4 font-bold">Frequently Asked Questions</h2>
     <FAQ />
   </div>
 </div>
