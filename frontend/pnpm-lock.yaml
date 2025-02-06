@@ -63,7 +63,7 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       molstar:
-        specifier: ^4.11.0
+        specifier: ^4.8.0
         version: 4.11.0(@types/react@18.3.9)(fp-ts@2.16.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       pdbe-molstar:
         specifier: ^3.3.2
@@ -7107,7 +7107,7 @@ snapshots:
 
   send@1.1.0:
     dependencies:
-      debug: 4.3.6
+      debug: 4.4.0
       destroy: 1.2.0
       encodeurl: 2.0.0
       escape-html: 1.0.3

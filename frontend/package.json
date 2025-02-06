@@ -58,7 +58,7 @@
 		"d3": "^7.9.0",
 		"d3-cloud": "^1.2.7",
 		"iconify-icon": "^2.3.0",
-		"molstar": "^4.11.0",
+		"molstar": "=4.8.0",
 		"pdbe-molstar": "^3.3.2"
 	}
 }
