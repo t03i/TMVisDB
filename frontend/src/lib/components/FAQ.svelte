@@ -5,6 +5,7 @@
 <script lang="ts">
   import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
   import config from "$lib/config";
+  import { IssueTemplate, DiscussionCategory } from "$lib/github";
 </script>
 
 <Accordion>
@@ -122,6 +123,72 @@
       If you want to cite a specific parts of {config.APP_NAME}, please check
       the
       <a class="anchor" href="/cite">cite page</a> for more information.
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">What data does {config.APP_NAME} collect?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        {config.APP_NAME} collects minimal usage data to improve our service:
+      </p>
+      <ul class="list-inside list-disc">
+        <li>Anonymous usage statistics</li>
+        <li>Search queries for service improvement</li>
+        <li>Error reports for bug fixing</li>
+      </ul>
+      <p class="mt-2">
+        We do not collect personal information or share data with third parties.
+      </p>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">Can I download the data or access it programmatically?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        Yes! {config.APP_NAME} allows you to
+        <a class="anchor" href="https://zenodo.org/records/14186950"
+          >download a slightly minified version of the backend database</a
+        >
+        and access it through
+        <a class="anchor" href="https://zenodo.org/records/14186950">Zenodo</a>.
+        If you have specific needs, please
+        <a
+          class="anchor"
+          href={config.GITHUB_LINKS.getDiscussionsUrl(DiscussionCategory.QA)}
+        >
+          start a discussion on our GitHub repository</a
+        >.
+      </p>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">What should I do if I encounter technical issues?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        If you experience any technical issues while using {config.APP_NAME},
+        you can:
+      </p>
+      <ul class="list-inside list-disc">
+        <li>Clear your browser cache and reload the page</li>
+        <li>Try a different web browser</li>
+        <li>
+          Report the issue on our <a
+            class="anchor"
+            href={config.GITHUB_LINKS.getNewIssueUrl({
+              template: IssueTemplate.BUG,
+            })}>GitHub repository</a
+          >
+        </li>
+      </ul>
     </svelte:fragment>
   </AccordionItem>
 </Accordion>
