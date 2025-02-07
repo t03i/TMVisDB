@@ -8,6 +8,7 @@
   import { ProgressRadial } from "@skeletonlabs/skeleton";
   import type { CreateQueryResult } from "@tanstack/svelte-query";
   import * as Sentry from "@sentry/svelte";
+  import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
 
   import SequenceInput from "$lib/components/SequenceInput.svelte";
 
@@ -28,9 +29,9 @@
   $: {
     if (identifier) {
       Sentry.addBreadcrumb({
-        category: 'search',
+        category: "search",
         message: `Searching for protein: ${identifier}`,
-        level: 'info'
+        level: "info",
       });
     }
   }
@@ -125,4 +126,24 @@
       >.
     </div>
   {/if}
+  <div class="mb-4 w-full text-center md:w-1/2">
+    <Accordion>
+      <AccordionItem open>
+        <svelte:fragment slot="summary">
+          <h3 class="mt-4 font-semibold">Explanation</h3>
+        </svelte:fragment>
+        <svelte:fragment slot="content">
+          <p class="text-left text-sm">
+            Please enter a UniProt Identifier or Protein Name. If the protein is
+            found in our database, you will be automatically redirected to its
+            detailed entry. If the protein exists only in UniProt, a link to its
+            UniProt entry will be displayed. If the protein is not available in
+            our database, TMbed did not predict a membrane topology or the
+            structure was not available in AlphaFoldDB. In case the protein
+            cannot be found at all, an error message will be shown.
+          </p>
+        </svelte:fragment>
+      </AccordionItem>
+    </Accordion>
+  </div>
 </div>

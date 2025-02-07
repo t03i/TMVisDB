@@ -62,9 +62,12 @@
         You can directly enter a UniProt Identifier or Protein Name <a
           class="anchor"
           href="/search">in the search bar</a
-        > to get information about the protein if available. If the protein is not
-        available in our database, TMbed did not predict a membrane topology or the
-        structure was not available in AlphaFoldDB.
+        > to get information about the protein. If the protein is found in our database,
+        you will be automatically redirected to its detailed entry. If the protein
+        exists in UniProt but not TMVisDB, a link to its UniProt entry will be displayed.
+        If the protein is not available in our database, TMbed did not predict a
+        membrane topology or the structure was not available in AlphaFoldDB. In case
+        the protein cannot be found at all, an error message will be shown.
       </p>
     </svelte:fragment>
   </AccordionItem>
@@ -83,10 +86,14 @@
         <li>TMbed</li>
       </ul>
       While they often agree on the general location of the transmembrane elements,
-      there can be discrepancies in the exact position of the transmembrane helices.
-      In this cases we rely on user discretion to pick annotations that best match
-      the structure but want to highlight that the exact position of the transmembrane
-      element is not reliable.
+      there can be discrepancies in the exact boundary positions. In this cases we
+      rely on user discretion to pick annotations that best match the expectations
+      for the transmembrane protein. However we want to highlight that the exact
+      position of the transmembrane element is often not reliable, not even for experimental
+      annotations, as lipids are not usually part of the structure [<a
+        class="anchor"
+        href="https://doi.org/10.1093/bioinformatics/bti121">1</a
+      >, <a class="anchor" href="https://doi.org/10.1093/nar/gkr703">2</a>].
     </svelte:fragment>
   </AccordionItem>
 
@@ -100,7 +107,10 @@
       suggest to rely on helix annotations as the experimental annotations are
       more widespread and machine-learning methods can often predict them more
       reliably. However, we want to stress that these cases should be handled
-      with care and the structure of the relevant protein examined manually.
+      with care and the structure of the relevant protein examined manually. We
+      generally assume proteins with both a helix and a beta-barrel TMbed
+      prediction to be erroneous although we could not find evidence
+      biologically preventing this configuration.
     </svelte:fragment>
   </AccordionItem>
 
