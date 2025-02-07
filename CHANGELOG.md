@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.6.3 (2025-02-07)
+
+### Bug Fixes
+
+- Add more FAQ items
+  ([`c509ad3`](https://github.com/t03i/TMVisDB/commit/c509ad30ac1b59702eff05d4a2795d5e8874ed7c))
+
+
 ## v1.6.2 (2025-02-07)
 
 ### Bug Fixes
