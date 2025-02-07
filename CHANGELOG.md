@@ -1,6 +1,24 @@
 # CHANGELOG
 
 
+## v1.6.2 (2025-02-07)
+
+### Bug Fixes
+
+- **frontend**: Improve FAQ and search explanation
+  ([`1e629e0`](https://github.com/t03i/TMVisDB/commit/1e629e0a14e95fe69244af08b9b43499126e79b4))
+
+### Chores
+
+- **frontend**: Update frontend dependennciescies and devDependencies
+  ([#20](https://github.com/t03i/TMVisDB/pull/20),
+  [`9eb9083`](https://github.com/t03i/TMVisDB/commit/9eb90833d6d92042a77ba056e143fc0e99ace078))
+
+* chore: update deps
+
+* style: improve frontpage styling
+
+
 ## v1.6.1 (2025-01-29)
 
 ### Bug Fixes
