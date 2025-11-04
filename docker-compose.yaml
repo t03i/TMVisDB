@@ -29,7 +29,9 @@ services:
             - SENTRY_DSN_BACKEND=${SENTRY_DSN_BACKEND}
             - SQLITE_DATABASE_PATH=${SQLITE_DATABASE_PATH}
         volumes:
-            - ./backend/data/tmvis.db:/app/data/tmvis.db:ro
+            - ./backend/data:/app/data:rw
+        ports:
+            - "8000:8000"
         build:
             context: .
             dockerfile: backend.Dockerfile

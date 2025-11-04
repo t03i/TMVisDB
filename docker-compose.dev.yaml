@@ -3,6 +3,8 @@ services:
     restart: "no"
     volumes:
       - ./backend/app:/app/app
+    ports:
+      - "8000:8000"
     build:
       args:
         INSTALL_DEV: true
