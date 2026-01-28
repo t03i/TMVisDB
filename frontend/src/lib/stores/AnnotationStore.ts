@@ -111,6 +111,7 @@ export function createAnnotationStore(
     tmvisdbQuery,
     tmAlphaFoldQuery,
     isFetching,
+    annotations,
     annotationDBReferences,
     annotationTracks,
     annotationStructureSelection,
