@@ -38,6 +38,8 @@
     FeatureViewerLoading,
   } from "$lib/components/FeatureViewer";
 
+  import { DownloadButton } from "$lib/components/DownloadButton";
+
   /** @type {import('./$types').PageData} */
   export let data: { slug: string };
 
@@ -82,6 +84,7 @@
 
   const {
     isFetching: annotationsIsFetching,
+    annotations,
     annotationStructureSelection,
     annotationDBReferences,
     annotationTracks,
@@ -170,7 +173,12 @@
   </div>
 
   <div class="card w-full space-y-6 p-6">
-    <h3 class="no-wrap h3">Annotations</h3>
+    <div class="flex items-center justify-between">
+      <h3 class="no-wrap h3">Annotations</h3>
+      {#if !$annotationsIsFetching && $infoQuery?.data && $annotations && $annotations.length > 0}
+        <DownloadButton proteinInfo={$infoQuery.data} annotations={$annotations} />
+      {/if}
+    </div>
     {#if $annotationsIsFetching}
       <FeatureViewerLoading />
     {:else if $structureQuery.data?.sequence && $annotationTracks}
