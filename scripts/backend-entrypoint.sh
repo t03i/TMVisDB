@@ -15,8 +15,9 @@ echo "Starting with UID: $PUID, GID: $PGID"
 getent group usergroup >/dev/null 2>&1 || groupadd -g "$PGID" usergroup
 getent passwd user >/dev/null 2>&1 || useradd -u "$PUID" -g "$PGID" -m -s /bin/bash user
 
-# Change ownership of the volume
-chown -R user:usergroup /app
+# Change ownership of the volume (excluding read-only mounts)
+chown -R user:usergroup /app/app 2>/dev/null || true
+chown user:usergroup /app 2>/dev/null || true
 
 # Execute the command as user
 exec gosu user "$@"
