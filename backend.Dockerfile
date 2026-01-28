@@ -1,7 +1,7 @@
 # Install uv
 # TODO transition to https://hynek.me/articles/docker-uv/
-FROM python:3.12-slim
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+FROM python:3.12-slim-trixie
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Add basic dependencies
 ARG TINI_VERSION="v0.19.0"
