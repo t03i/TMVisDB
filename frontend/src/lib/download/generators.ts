@@ -5,6 +5,7 @@ import legendData from "$lib/assets/shared/legend.json";
 import type { PublicAnnotation } from "$lib/client/model";
 import type { ProteinInfo } from "$lib/client/model";
 import type { SourceDB } from "$lib/annotations";
+import { mapLabelToUnified } from "./labelMapping";
 
 /**
  * Groups annotations by their source database
@@ -126,8 +127,8 @@ export function generate3Lines(
   for (const [sourceDB, sourceAnnotations] of Object.entries(annotationsBySource)) {
     if (sourceAnnotations.length === 0) continue;
 
-    // Initialize per-residue array with default label 'i' (inside)
-    const topologyLabels: string[] = new Array(sequenceLength).fill("i");
+    // Initialize per-residue array with default label '.' (non-membrane)
+    const topologyLabels: string[] = new Array(sequenceLength).fill(".");
 
     // Apply annotations for this source
     for (const annotation of sourceAnnotations) {
@@ -136,10 +137,12 @@ export function generate3Lines(
 
       // Validate bounds
       if (start >= 0 && end < sequenceLength && start <= end) {
-        const label = annotation.label;
+        const originalLabel = annotation.label;
+        // Map label to unified format
+        const mappedLabel = mapLabelToUnified(sourceDB as SourceDB, originalLabel);
         // Set labels for the annotation range
         for (let i = start; i <= end; i++) {
-          topologyLabels[i] = label;
+          topologyLabels[i] = mappedLabel;
         }
       }
     }
