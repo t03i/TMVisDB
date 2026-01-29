@@ -44,7 +44,7 @@ wheels = [
 
 [[package]]
 name = "app"
-version = "1.7.0"
+version = "1.7.1"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
