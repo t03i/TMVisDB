@@ -31,16 +31,16 @@ interface Config {
   PROTEIN_PAGE_SIZE: number;
 }
 
-// Use different API URLs for server-side (Docker network) vs client-side (browser)
-// Server-side: use Docker service name to connect directly to backend
-// Client-side: use PUBLIC_API_URL which goes through Caddy reverse proxy
+// Use PUBLIC_API_URL for all environments (browser and SSR)
+// This works for both Cloudflare Pages SSR and Docker Compose deployments
 const getApiBaseUrl = (): string => {
-  if (!browser) {
-    // Server-side: use Docker service name (backend container is accessible via Docker network)
-    return "http://backend:8000";
+  if (!PUBLIC_API_URL) {
+    throw new Error(
+      "PUBLIC_API_URL environment variable is required. " +
+      "Set this to your backend API URL (e.g., https://api.yourdomain.com)"
+    );
   }
-  // Client-side: use PUBLIC_API_URL (goes through Caddy reverse proxy)
-  return PUBLIC_API_URL || "http://localhost";
+  return PUBLIC_API_URL;
 };
 
 const config: Config = {
