@@ -170,7 +170,231 @@
 
   <AccordionItem>
     <svelte:fragment slot="summary">
-      <h3 class="h3">What should I do if I encounter technical issues?</h3>
+      <h3 class="h3">What file formats are available for download?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        {config.APP_NAME} provides two download formats for protein annotations:
+      </p>
+      <ul class="list-inside list-disc">
+        <li>
+          <strong>CSV format</strong>: A comma-separated values file containing
+          annotation regions with columns for UniProt ID, source database,
+          label, start position, end position, description, and length. This
+          format is ideal for data analysis and spreadsheet applications.
+        </li>
+        <li>
+          <strong>.3lines format</strong>: A TMbed Format 4 style file
+          containing the protein sequence and topology annotations in a
+          three-line format. This format is compatible with TMbed tools and
+          provides per-residue annotation information. See the next FAQ section
+          for detailed format information.
+        </li>
+      </ul>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">What is the .3lines format?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        The .3lines format follows the <a
+          class="anchor"
+          href="https://github.com/BernhoferM/TMbed?tab=readme-ov-file#prediction-output"
+          >TMbed Format 4</a
+        >
+        for TMbed predictions and
+        <a
+          class="anchor"
+          href="https://github.com/BernhoferM/TMbed?tab=readme-ov-file#prediction-output"
+          >TMbed Format 2</a
+        > specification for all other sources and contains three lines per annotation
+        source:
+      </p>
+      <ol class="list-inside list-decimal">
+        <li>
+          <strong>Header line</strong>
+          <pre
+            class="pre font-bold">&gt;&#123;uniprot_accession&#125;|&#123;uniprot_id&#125; - &#123;source_name&#125;</pre>
+        </li>
+        <li>
+          <strong>Sequence line</strong>: The protein amino acid sequence
+        </li>
+        <li>
+          <strong>Topology line</strong>: A string of annotation symbols, one
+          per residue, indicating the transmembrane topology
+        </li>
+      </ol>
+      <p class="mt-2">Example:</p>
+      <pre
+        class="overflow-x-auto rounded bg-surface-200 p-2 text-sm dark:bg-surface-800">
+>A0A4Q4MGP0|A0A4Q4MGP0_9PLEO - UniProtKB
+MSSNGLTETTLRGTAIGLMVVTTAMVFARAILRSDQKKSIQWDEIWLIVGYMLFMAITGVYINKTSLLFRLLAVEEGRLAPYPSVSKDGFNAQKTFFFTSPGLWLTLWSIKFSLLAFYKRIMVGVKLYLTLWWVVLAYCVLTLVLSIMLHITACGSSPSSWFVENGCGADNVRKSLISFWEGFAVDLSTDLMIMLLPIGIIRNLQIPLARKIQIGGLFALGIFVIIASIVRVIQVGATTGASNTTPSLTWLALWSIIESSVAIMVGCGPGLYRKAKAVYSNTPVHAYNSRGYIKTTADRRPETKGNADDEYGFPMKTMSIDIAARVSRGDSEEELVSQEINGKIRVTRSVVVSHKSE
+...........HHHHHHHHHHHHHHHHHHHHH...........HHHHHHHHHHHHHHHHHHH.................................HHHHHHHHHHHHHHHHHHHHHHH...........HHHHHHHHHHHHHHHHHHHHHH...............................HHHHHHHHHHHHHHHHHHHH...........HHHHHHHHHHHHHHHHHHHH...................HHHHHHHHHHHHHHHHHHHH.....................................................................................
+>A0A4Q4MGP0|A0A4Q4MGP0_9PLEO - TMbed
+MSSNGLTETTLRGTAIGLMVVTTAMVFARAILRSDQKKSIQWDEIWLIVGYMLFMAITGVYINKTSLLFRLLAVEEGRLAPYPSVSKDGFNAQKTFFFTSPGLWLTLWSIKFSLLAFYKRIMVGVKLYLTLWWVVLAYCVLTLVLSIMLHITACGSSPSSWFVENGCGADNVRKSLISFWEGFAVDLSTDLMIMLLPIGIIRNLQIPLARKIQIGGLFALGIFVIIASIVRVIQVGATTGASNTTPSLTWLALWSIIESSVAIMVGCGPGLYRKAKAVYSNTPVHAYNSRGYIKTTADRRPETKGNADDEYGFPMKTMSIDIAARVSRGDSEEELVSQEINGKIRVTRSVVVSHKSE
+ooooooooooohhhhhhhhhhhhhhhhhhhhhiiiiiiiiiHHHHHHHHHHHHHHHHHHHHHHoooooooooooooooooooooooooooooooohhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiHHHHHHHHHHHHHHHHHHHHHHHooooooooooooooooooooooooohhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiHHHHHHHHHHHHHHHHHHHHHHHHooooooooooooooohhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+      </pre>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">What is the CSV format?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        The CSV format provides a structured, tabular representation of
+        annotation data that is easy to import into spreadsheet applications,
+        databases, or data analysis tools.
+      </p>
+      <p class="mt-2">
+        Each row in the CSV file represents a single annotation region and
+        contains the following columns:
+      </p>
+      <ul class="list-inside list-disc">
+        <li>
+          <strong>uniprot_id</strong>: The UniProt accession identifier for the
+          protein
+        </li>
+        <li>
+          <strong>source</strong>: The source database name (e.g., TMbed, TopDB,
+          Membranome, UniProtKB, TMAlphaFold)
+        </li>
+        <li>
+          <strong>label</strong>: The annotation label from the source database
+          (e.g., H, B, S, i, o, X, M, AH, BS)
+        </li>
+        <li>
+          <strong>start</strong>: The starting position of the annotation region
+          (1-indexed)
+        </li>
+        <li>
+          <strong>end</strong>: The ending position of the annotation region
+          (1-indexed, inclusive)
+        </li>
+        <li>
+          <strong>description</strong>: A human-readable description of the
+          annotation label
+        </li>
+        <li>
+          <strong>length</strong>: The length of the annotation region in amino
+          acids
+        </li>
+      </ul>
+      <p class="mt-2">Example:</p>
+      <pre
+        class="overflow-x-auto rounded bg-surface-200 p-2 text-sm dark:bg-surface-800">
+uniprot_id,source,label,start,end,description,length
+A0A4Q4MGP0,uniprot,AH,12,32,Alpha-Helix,21
+A0A4Q4MGP0,uniprot,AH,44,62,Alpha-Helix,19
+A0A4Q4MGP0,uniprot,AH,96,118,Alpha-Helix,23
+A0A4Q4MGP0,uniprot,AH,130,151,Alpha-Helix,22
+A0A4Q4MGP0,uniprot,AH,183,202,Alpha-Helix,20
+A0A4Q4MGP0,uniprot,AH,214,233,Alpha-Helix,20
+A0A4Q4MGP0,uniprot,AH,253,272,Alpha-Helix,20
+A0A4Q4MGP0,tmbed,o,1,11,Outside,11
+A0A4Q4MGP0,tmbed,h,12,32,Alpha-helix (OUT-->IN),21
+A0A4Q4MGP0,tmbed,i,33,41,Inside,9
+A0A4Q4MGP0,tmbed,H,42,63,Alpha-helix (IN-->OUT),22
+A0A4Q4MGP0,tmbed,o,64,95,Outside,32
+A0A4Q4MGP0,tmbed,h,96,118,Alpha-helix (OUT-->IN),23
+A0A4Q4MGP0,tmbed,i,119,128,Inside,10
+      </pre>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">What do the annotation symbols mean?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        The unified TMbed format uses the following symbols to represent
+        transmembrane topology annotations:
+      </p>
+      <ul class="list-inside list-disc">
+        <li>
+          <strong>B</strong>: Transmembrane beta strand (IN→OUT direction)
+        </li>
+        <li>
+          <strong>b</strong>: Transmembrane beta strand (OUT→IN direction)
+        </li>
+        <li>
+          <strong>H</strong>: Transmembrane alpha helix (IN→OUT direction)
+        </li>
+        <li>
+          <strong>h</strong>: Transmembrane alpha helix (OUT→IN direction)
+        </li>
+        <li><strong>S</strong>: Signal peptide</li>
+        <li>
+          <strong>i</strong>: Non-transmembrane region, inside (cytoplasmic
+          side)
+        </li>
+        <li>
+          <strong>o</strong>: Non-transmembrane region, outside (extracellular
+          side)
+        </li>
+        <li>
+          <strong>.</strong>: Non-membrane / unannotated region
+        </li>
+      </ul>
+      <p class="mt-2">
+        TMbed provides directional information (H/h, B/b) indicating the
+        orientation of transmembrane segments. Other annotation sources are
+        mapped to this unified format, which may result in some information loss
+        (e.g., directionality) for sources that don't provide this level of
+        detail.
+      </p>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">How are annotations from different databases mapped?</h3>
+    </svelte:fragment>
+    <svelte:fragment slot="content">
+      <p>
+        To ensure consistency across different annotation sources, labels from
+        various databases are mapped to the unified TMbed format. The following
+        mappings are applied:
+      </p>
+      <ul class="list-inside list-disc">
+        <li>
+          <strong>TopDB</strong>: X→S (Signal peptide), M→H (Membrane, assumed
+          alpha-helix), I→i (Inside), O→o (Outside)
+        </li>
+        <li>
+          <strong>Membranome</strong>: AH→H (Alpha-helix), I→i (Inside), O→o
+          (Outside)
+        </li>
+        <li>
+          <strong>UniProtKB</strong>: AH→H (Alpha-Helix), BS→B (Beta-Sheet)
+        </li>
+        <li>
+          <strong>TMAlphaFold</strong>: AH→H (Alpha-Helix), BS→B (Beta-Sheet)
+        </li>
+        <li>
+          <strong>TMbed</strong>: Already in unified format, no mapping needed
+        </li>
+      </ul>
+      <p class="mt-2">
+        <strong>Important limitations:</strong> Some databases don't distinguish
+        between alpha-helical and beta-strand transmembrane regions (e.g., TopDB's
+        'M' label), so they are mapped to the most common type (alpha-helix). Additionally,
+        most sources don't provide directional information, so uppercase symbols
+        (H, B) are used by default. To avoid information loss, separate entries are
+        generated for each annotation source in the .3lines format, allowing you
+        to compare annotations directly.
+      </p>
+    </svelte:fragment>
+  </AccordionItem>
+
+  <AccordionItem>
+    <svelte:fragment slot="summary">
+      <h3 class="h3">Experiencing technical issues?</h3>
     </svelte:fragment>
     <svelte:fragment slot="content">
       <p>
