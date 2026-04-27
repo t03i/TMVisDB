@@ -1,6 +1,23 @@
 services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:2.9
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - caddy
+    labels:
+      caddy_0.email: ${CERT_EMAIL}
+
   backend:
     restart: "no"
+    networks:
+      - caddy
     volumes:
       - ./backend/app:/app/app
     build:
@@ -51,4 +68,10 @@ services:
       caddy_0.reverse_proxy_1: "frontend:5173"
 
 volumes:
+  caddy-data:
+  caddy-config:
   notused:
+
+networks:
+  caddy:
+    external: false

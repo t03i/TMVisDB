@@ -5,26 +5,17 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         command: --interval 300 --cleanup --label-enable
         restart: always
-        networks:
-            - caddy
         labels:
             - "com.centurylinklabs.watchtower.enable=true"
         environment:
             - WATCHTOWER_NOTIFICATIONS=shoutrrr
             - WATCHTOWER_NOTIFICATIONS_HOSTNAME=$UPDATE_NOTIFICATION_HOST
             - WATCHTOWER_NOTIFICATION_URL=$UPDATE_NOTIFICATION_URL
-    caddy:
-        volumes:
-            - caddy-log:/var/log
     backend:
+        ports:
+            - "127.0.0.1:8000:8000"
         labels:
           com.centurylinklabs.watchtower.enable: "true"
-          caddy_0.log: "{}"
-          caddy_0.log.level: error
-          caddy_0.log.output: file /var/log/caddy.log
-          caddy_0.log.output.roll_size: 10MiB
-          caddy_0.log.output.roll_keep: 10
-          caddy_0.log.output.roll_keep_for: 720h
         volumes: !override
             - tmvis_data:/data
 
@@ -34,4 +25,3 @@ volumes:
         type: "nfs"
         o: "addr=$NAS_ADDR,nolock,soft,rw,acl,nfsvers=3"
         device: "$NAS_PATH"
-    caddy-log:

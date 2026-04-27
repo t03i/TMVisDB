@@ -1,24 +1,7 @@
 services:
-    caddy:
-        image: lucaslorentz/caddy-docker-proxy:2.9
-        ports:
-            - 80:80
-            - 443:443
-        restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock:ro
-            - caddy-data:/data
-            - caddy-config:/config
-        networks:
-            - caddy
-        labels:
-            caddy_0.email: ${CERT_EMAIL}
-
     backend:
         image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
         restart: always
-        networks:
-            - caddy
         command: ["fastapi", "run", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "app/main.py"]
         env_file:
             - .env
@@ -36,14 +19,3 @@ services:
             args:
                 INSTALL_DEV: false
         platform: linux/amd64
-        labels:
-            caddy_0: ${API_DOMAIN?Variable not set}, www.${API_DOMAIN?Variable not set}
-            caddy_0.reverse_proxy_0: "{{upstreams 8000}}"
-
-volumes:
-    caddy-data:
-    caddy-config:
-
-networks:
-    caddy:
-        external: false
