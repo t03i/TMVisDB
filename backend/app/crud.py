@@ -5,6 +5,8 @@ from typing import Iterable, Optional
 from base64 import b64encode, b64decode
 import logging
 from sqlalchemy import Select, func, select, and_
+from sqlalchemy.sql.expression import UnaryExpression
+from sqlalchemy.sql.operators import custom_op
 from sqlmodel import Session
 
 from .models import (
@@ -44,28 +46,39 @@ def _query_to_protein_info(query_result) -> list[ProteinInfo]:
     return protein_infos
 
 
-def _query_filter(filter: ProteinFilter):
+def _no_index(column):
+    """Render as `+column` so SQLite won't drive the query from that index."""
+    return UnaryExpression(column, operator=custom_op("+"))
+
+
+def _query_filter(filter: ProteinFilter, for_count: bool = False):
     conditions = []
+    # Count queries: the boolean/length indexes match millions of rows, so SQLite
+    # driving from them is ~20x slower than starting from the organism filter.
+    col = _no_index if for_count else (lambda c: c)
 
     # Topology filter
     if filter.topology:
         if filter.topology == Topology.ALPHA_HELIX:
-            conditions.append(TMInfo.has_alpha_helix == True)  # noqa: E712
+            conditions.append(col(TMInfo.has_alpha_helix) == True)  # noqa: E712
         elif filter.topology == Topology.BETA_STRAND:
-            conditions.append(TMInfo.has_beta_strand == True)  # noqa: E712
+            conditions.append(col(TMInfo.has_beta_strand) == True)  # noqa: E712
         elif filter.topology == Topology.BOTH:
             conditions.append(
-                and_(TMInfo.has_alpha_helix == True, TMInfo.has_beta_strand == True)  # type: ignore noqa: E712  # noqa: E712
+                and_(
+                    col(TMInfo.has_alpha_helix) == True,  # noqa: E712
+                    col(TMInfo.has_beta_strand) == True,  # noqa: E712
+                )  # type: ignore
             )
 
     # Signal peptide filter
     if filter.has_signal_peptide is not None:
-        conditions.append(TMInfo.has_signal == filter.has_signal_peptide)
+        conditions.append(col(TMInfo.has_signal) == filter.has_signal_peptide)
 
     # Sequence length filter
     if filter.sequence_length_min is not None or filter.sequence_length_max is not None:
         conditions.append(
-            Sequence.seq_length.between(  # type: ignore
+            col(Sequence.seq_length).between(  # type: ignore
                 filter.sequence_length_min
                 if filter.sequence_length_min is not None
                 else settings.MIN_PROTEIN_LENGTH,
@@ -90,7 +103,7 @@ def _decode_cursor(cursor: str) -> int:
 
 def build_base_query(filter: ProteinFilter, for_count: bool = False) -> Select:
     """Build the base query with required joins."""
-    conditions = _query_filter(filter)
+    conditions = _query_filter(filter, for_count)
 
     if for_count:
         # For count queries, we can use an estimate from statistics
